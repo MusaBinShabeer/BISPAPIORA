@@ -1,0 +1,6 @@
+@BISPAPIORAORA_HostAddress = http://localhost:5051
+
+GET {{BISPAPIORAORA_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
