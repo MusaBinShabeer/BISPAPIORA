@@ -12,6 +12,10 @@ namespace BISPAPIORA.Models.DTOS.EnrollmentDTO
         public string fkBank { get; set; } = string.Empty;
         public string ibanNo { get; set; } = string.Empty;
         public int accountType { get; set; } = 0;
+        public string citizenSchemeYear { get; set; } = string.Empty;
+        public  string citizenSchemeQuarter { get; set; } = string.Empty;
+        public  string citizenSchemeStartingMonth { get; set; } = string.Empty;
+        public  double citizenSchemeSavingAmount { get; set; } = 0.0;
     }
     public class AddEnrollmentDTO : EnrollmentDTO
     {
@@ -25,6 +29,14 @@ namespace BISPAPIORA.Models.DTOS.EnrollmentDTO
         public new string ibanNo { get; set; } = string.Empty;
         [Required]
         public new int accountType { get; set; } = 0;
+        [Required]
+        public new string citizenSchemeYear { get; set; } = string.Empty;
+        [Required]
+        public new string citizenSchemeQuarter { get; set; } = string.Empty;
+        [Required]
+        public new string citizenSchemeStartingMonth { get; set; } = string.Empty;
+        [Required]
+        public new double citizenSchemeSavingAmount { get; set; } = 0.0;
     }
     public class UpdateEnrollmentDTO : EnrollmentDTO
     {
@@ -37,9 +49,6 @@ namespace BISPAPIORA.Models.DTOS.EnrollmentDTO
         public string martialStatusName { get; set; } = string.Empty;
         public string accountTypeName { get; set; } = string.Empty;
         public string BankName { get; set; } = string.Empty;
-        public string citizenSchemeYear { get; set; } = string.Empty;
-        public string citizenSchemeQuarter { get; set; } = string.Empty;
-        public string citizenSchemeStartingMonth { get; set; } = string.Empty;
-        public double citizenSchemeSavingAmount { get; set; } = 0.0;
+      
     }
 }

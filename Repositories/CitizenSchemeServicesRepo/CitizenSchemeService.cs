@@ -12,8 +12,8 @@ namespace BISPAPIORA.Repositories.CitizenSchemeServicesRepo
     public class CitizenSchemeService : ICitizenSchemeService
     {
         private readonly IMapper _mapper;
-        private readonly OraDbContext db;
-        public CitizenSchemeService(IMapper mapper, OraDbContext db)
+        private readonly Dbcontext db;
+        public CitizenSchemeService(IMapper mapper, Dbcontext db)
         {
             _mapper = mapper;
             this.db = db;
@@ -22,12 +22,12 @@ namespace BISPAPIORA.Repositories.CitizenSchemeServicesRepo
         {
             try
             {
-                var citizenScheme = await db.tbl_citizen_scheme.Where(x => x.fk_citizen.Equals(Guid.Parse(model.fkCitizen))).FirstOrDefaultAsync();
+                var citizenScheme = await db.tbl_citizen_schemes.Where(x => x.fk_citizen.Equals(Guid.Parse(model.fkCitizen))).FirstOrDefaultAsync();
                 if (citizenScheme == null)
                 {
                     var newCitizenScheme = new tbl_citizen_scheme();
                     newCitizenScheme = _mapper.Map<tbl_citizen_scheme>(model);
-                    db.tbl_citizen_scheme.Add(newCitizenScheme);
+                    db.tbl_citizen_schemes.Add(newCitizenScheme);
                     await db.SaveChangesAsync();
                     return new ResponseModel<CitizenSchemeResponseDTO>()
                     {
@@ -58,10 +58,10 @@ namespace BISPAPIORA.Repositories.CitizenSchemeServicesRepo
         {
             try
             {
-                var existingCitizenScheme = await db.tbl_citizen_scheme.Where(x => x.citizen_scheme_id == Guid.Parse(citizenSchemeId)).FirstOrDefaultAsync();
+                var existingCitizenScheme = await db.tbl_citizen_schemes.Where(x => x.citizen_scheme_id == Guid.Parse(citizenSchemeId)).FirstOrDefaultAsync();
                 if (existingCitizenScheme != null)
                 {
-                    db.tbl_citizen_scheme.Remove(existingCitizenScheme);
+                    db.tbl_citizen_schemes.Remove(existingCitizenScheme);
                     await db.SaveChangesAsync();
                     return new ResponseModel<CitizenSchemeResponseDTO>()
                     {
@@ -91,7 +91,7 @@ namespace BISPAPIORA.Repositories.CitizenSchemeServicesRepo
         {
             try
             {
-                var citizenSchemes = await db.tbl_citizen_scheme.ToListAsync();
+                var citizenSchemes = await db.tbl_citizen_schemes.ToListAsync();
                 if (citizenSchemes.Count() > 0)
                 {
                     return new ResponseModel<List<CitizenSchemeResponseDTO>>()
@@ -123,7 +123,7 @@ namespace BISPAPIORA.Repositories.CitizenSchemeServicesRepo
         {
             try
             {
-                var existingCitizenScheme = await db.tbl_citizen_scheme.Where(x => x.citizen_scheme_id == Guid.Parse(citizenSchemeId)).FirstOrDefaultAsync();
+                var existingCitizenScheme = await db.tbl_citizen_schemes.Where(x => x.citizen_scheme_id == Guid.Parse(citizenSchemeId)).FirstOrDefaultAsync();
                 if (existingCitizenScheme != null)
                 {
                     return new ResponseModel<CitizenSchemeResponseDTO>()
@@ -155,7 +155,7 @@ namespace BISPAPIORA.Repositories.CitizenSchemeServicesRepo
         {
             try
             {
-                var existingCitizenScheme = await db.tbl_citizen_scheme.Where(x => x.citizen_scheme_id == Guid.Parse(model.citizenSchemeId)).FirstOrDefaultAsync();
+                var existingCitizenScheme = await db.tbl_citizen_schemes.Where(x => x.citizen_scheme_id == Guid.Parse(model.citizenSchemeId)).FirstOrDefaultAsync();
                 if (existingCitizenScheme != null)
                 {
                     existingCitizenScheme = _mapper.Map(model, existingCitizenScheme);

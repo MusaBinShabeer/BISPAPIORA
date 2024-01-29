@@ -1,5 +1,5 @@
 using BISPAPIORA.Extensions;
-using BISPAPIORA.Models.DBModels.OraDbContextClass;
+//using BISPAPIORA.Models.DBModels.OraDbContextClass;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);

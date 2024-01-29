@@ -5,7 +5,9 @@ using BISPAPIORA.Models.DTOS.RegistrationDTO;
 using BISPAPIORA.Models.DTOS.ResponseDTO;
 using BISPAPIORA.Repositories.CitizenServicesRepo;
 using Microsoft.EntityFrameworkCore;
-using BISPAPIORA.Models.DbModels.OraDbContextClass;
+using BISPAPIORA.Repositories.BankServicesRepo;
+using BISPAPIORA.Repositories.CitizenBankInfoServicesRepo;
+using BISPAPIORA.Models.DTOS.CitizenBankInfoDTO;
 
 namespace BISPAPIORA.Repositories.RegistrationServicesRepo
 {
@@ -13,21 +15,21 @@ namespace BISPAPIORA.Repositories.RegistrationServicesRepo
     {
         private readonly IMapper _mapper;
         private readonly ICitizenService citizenService;
-        private readonly OraDbContext db;
-        private readonly ModelContext dbf;
-        public RegistrationService(IMapper mapper, OraDbContext db, ICitizenService citizenService, ModelContext dbf)
+        private readonly Dbcontext db;
+        private readonly ICitizenBankInfoService citizenBankService;
+        public RegistrationService(IMapper mapper, Dbcontext db, ICitizenService citizenService, Dbcontext dbf, ICitizenBankInfoService citizenBankService)
         {
             _mapper = mapper;
             this.db = db;
             this.citizenService = citizenService;
-            this.dbf = dbf;
+            this.citizenBankService = citizenBankService;
         }
         public async Task<ResponseModel<RegistrationResponseDTO>> AddRegisteredCitizen(AddRegistrationDTO model)
         {
             try
             {
                 var Citizen = await db.tbl_citizens.Where(x => x.citizen_cnic.ToLower().Equals(model.citizenCnic.ToLower())).FirstOrDefaultAsync();
-                var dbfCitizen = await dbf.HiberProtectionAccounts.Where(x => x.Cnic.ToString().Equals(model.citizenCnic.ToLower())).FirstOrDefaultAsync();
+                var dbfCitizen = await db.HiberProtectionAccounts.Where(x => x.Cnic.ToString().Equals(model.citizenCnic.ToLower())).FirstOrDefaultAsync();
                 if (dbfCitizen == null)
                 {
                     var newDbfCitizen = await citizenService.AddRegisteredDBFCitizen(model);
@@ -41,8 +43,11 @@ namespace BISPAPIORA.Repositories.RegistrationServicesRepo
                                 model.fkCitizen = newCitizen.data.citizenId;
                                 var newRegistration = new tbl_registration();
                                 newRegistration = _mapper.Map<tbl_registration>(model);
-                                await db.tbl_registration.AddAsync(newRegistration);
+                                await db.tbl_registrations.AddAsync(newRegistration);
                                 await db.SaveChangesAsync();
+                                AddRegisteredCitizenBankInfoDTO newBankInfoRequest = new AddRegisteredCitizenBankInfoDTO();
+                                newBankInfoRequest = _mapper.Map<AddRegisteredCitizenBankInfoDTO>(model);
+                                var newRegisteredBankInfo = await citizenBankService.AddRegisteredCitizenBankInfo(newBankInfoRequest);
                                 var response = _mapper.Map<RegistrationResponseDTO>(newCitizen.data);
                                 response.registrationId = newRegistration.registration_id.ToString();
                                 return new ResponseModel<RegistrationResponseDTO>()
@@ -102,10 +107,10 @@ namespace BISPAPIORA.Repositories.RegistrationServicesRepo
         {
             try
             {
-                var registration = await db.tbl_registration.Where(x => x.registration_id == Guid.Parse(registrationId)).FirstOrDefaultAsync();
+                var registration = await db.tbl_registrations.Where(x => x.registration_id == Guid.Parse(registrationId)).FirstOrDefaultAsync();
                 if (registration != null)
                 {
-                    db.tbl_registration.Remove(registration);
+                    db.tbl_registrations.Remove(registration);
                     await db.SaveChangesAsync();
                     return new ResponseModel<RegistrationResponseDTO>()
                     {
@@ -135,7 +140,7 @@ namespace BISPAPIORA.Repositories.RegistrationServicesRepo
         {
             try
             {
-                var existingCitizen = await db.tbl_registration.Where(x => x.registration_id == Guid.Parse(registrationId)).Include(x => x.tbl_citizen).ThenInclude(x => x.citizen_tehsil).ThenInclude(x => x.tbl_district).ThenInclude(x => x.tbl_province).Include(x => x.tbl_citizen).ThenInclude(x => x.citizen_employement).Include(x => x.tbl_citizen).ThenInclude(x => x.citizen_education).FirstOrDefaultAsync();
+                var existingCitizen = await db.tbl_registrations.Where(x => x.registration_id == Guid.Parse(registrationId)).Include(x => x.tbl_citizen).ThenInclude(x => x.tbl_citizen_tehsil).ThenInclude(x => x.tbl_district).ThenInclude(x => x.tbl_province).Include(x => x.tbl_citizen).ThenInclude(x => x.tbl_citizen_employment).Include(x => x.tbl_citizen).ThenInclude(x => x.tbl_citizen_education).FirstOrDefaultAsync();
                 if (existingCitizen != null)
                 {
                     return new ResponseModel<RegistrationResponseDTO>()

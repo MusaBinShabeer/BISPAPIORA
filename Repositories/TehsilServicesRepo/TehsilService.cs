@@ -10,8 +10,8 @@ namespace BISPAPIORA.Repositories.TehsilServicesRepo
     public class TehsilService : ITehsilService
     {
         private readonly IMapper _mapper;
-        private readonly OraDbContext db;
-        public TehsilService(IMapper mapper, OraDbContext db)
+        private readonly Dbcontext db;
+        public TehsilService(IMapper mapper, Dbcontext db)
         {
             _mapper = mapper;
             this.db = db;

@@ -5,20 +5,17 @@ using BISPAPIORA.Models.DTOS.EnrollmentDTO;
 using BISPAPIORA.Models.DTOS.RegistrationDTO;
 using BISPAPIORA.Models.DTOS.ResponseDTO;
 using Microsoft.EntityFrameworkCore;
-using BISPAPIORA.Models.DbModels.OraDbContextClass;
 
 namespace BISPAPIORA.Repositories.CitizenServicesRepo
 {
     public class CitizenService : ICitizenService
     {
         private readonly IMapper _mapper;
-        private readonly OraDbContext db;
-        private readonly ModelContext dbf;
-        public CitizenService(IMapper mapper, OraDbContext db, ModelContext dbf)
+        private readonly Dbcontext db;
+        public CitizenService(IMapper mapper, Dbcontext db)
         {
             _mapper = mapper;
             this.db = db;
-            this.dbf = dbf;
         }
         #region Registered Citizen
         public async Task<ResponseModel<RegistrationResponseDTO>> AddRegisteredCitizen(AddRegistrationDTO model)
@@ -62,12 +59,12 @@ namespace BISPAPIORA.Repositories.CitizenServicesRepo
         {
             try
             {
-                var Citizen = await dbf.HiberProtectionAccounts.Where(x => x.Cnic.ToString().Equals(model.citizenCnic.ToLower())).FirstOrDefaultAsync();
+                var Citizen = await db.HiberProtectionAccounts.Where(x => x.Cnic.ToString().Equals(model.citizenCnic.ToLower())).FirstOrDefaultAsync();
                 if (Citizen == null)
                 {
                     var newCitizen = new HiberProtectionAccount();
                     newCitizen = _mapper.Map<HiberProtectionAccount>(model);
-                    dbf.HiberProtectionAccounts.Add(newCitizen);
+                    db.HiberProtectionAccounts.Add(newCitizen);
                     await db.SaveChangesAsync();
                     return new ResponseModel<RegistrationResponseDTO>()
                     {
@@ -135,7 +132,7 @@ namespace BISPAPIORA.Repositories.CitizenServicesRepo
         {
             try
             {
-                var existingCitizen = await dbf.HiberProtectionAccounts.Where(x => x.Cnic == decimal.Parse(model.citizenCnic)).FirstOrDefaultAsync();
+                var existingCitizen = await db.HiberProtectionAccounts.Where(x => x.Cnic == decimal.Parse(model.citizenCnic)).FirstOrDefaultAsync();
                 if (existingCitizen != null)
                 {
                     existingCitizen = _mapper.Map(model, existingCitizen);
@@ -244,7 +241,7 @@ namespace BISPAPIORA.Repositories.CitizenServicesRepo
         {
             try
             {
-                var existingCitizen = await dbf.HiberProtectionAccounts.Where(x => x.Cnic == decimal.Parse(model.citizenCnic)).FirstOrDefaultAsync();
+                var existingCitizen = await db.HiberProtectionAccounts.Where(x => x.Cnic == decimal.Parse(model.citizenCnic)).FirstOrDefaultAsync();
                 if (existingCitizen != null)
                 {
                     existingCitizen = _mapper.Map(model, existingCitizen);
@@ -312,7 +309,7 @@ namespace BISPAPIORA.Repositories.CitizenServicesRepo
         {
             try
             {
-                var registerdCitizens = await db.tbl_registration.Include(x => x.tbl_citizen).ThenInclude(x => x.citizen_tehsil).ThenInclude(x => x.tbl_district).ThenInclude(x => x.tbl_province).Include(x => x.tbl_citizen).ThenInclude(x => x.citizen_employement).Include(x => x.tbl_citizen).ThenInclude(x => x.citizen_education).Select(x => x.tbl_citizen).ToListAsync();
+                var registerdCitizens = await db.tbl_registrations.Include(x => x.tbl_citizen).ThenInclude(x => x.tbl_citizen_tehsil).ThenInclude(x => x.tbl_district).ThenInclude(x => x.tbl_province).Include(x => x.tbl_citizen).ThenInclude(x => x.tbl_citizen_employment).Include(x => x.tbl_citizen).ThenInclude(x => x.tbl_citizen_education).Select(x => x.tbl_citizen).ToListAsync();
                 if (registerdCitizens.Count() > 0)
                 {
                     return new ResponseModel<List<RegistrationResponseDTO>>()

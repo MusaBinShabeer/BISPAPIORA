@@ -10,8 +10,8 @@ namespace BISPAPIORA.Repositories.DistrictServicesRepo
     public class DistrictService : IDistrictService
     {
         private readonly IMapper _mapper;
-        private readonly OraDbContext db;
-        public DistrictService(IMapper mapper, OraDbContext db)
+        private readonly Dbcontext db;
+        public DistrictService(IMapper mapper, Dbcontext db)
         {
             _mapper = mapper;
             this.db = db;

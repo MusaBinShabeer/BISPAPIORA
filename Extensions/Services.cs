@@ -1,6 +1,16 @@
 ﻿using BISPAPIORA.Models.DBModels.OraDbContextClass;
 using BISPAPIORA.Repositories.CitizenSchemeServicesRepo;
+using BISPAPIORA.Repositories.BankServicesRepo;
 using Microsoft.EntityFrameworkCore;
+using BISPAPIORA.Repositories.ProvinceServicesRepo;
+using BISPAPIORA.Repositories.DistrictServicesRepo;
+using BISPAPIORA.Repositories.TehsilServicesRepo;
+using BISPAPIORA.Repositories.EducationServicesRepo;
+using BISPAPIORA.Repositories.CitizenServicesRepo;
+using BISPAPIORA.Repositories.RegistrationServicesRepo;
+using BISPAPIORA.Repositories.EmploymentServicesRepo;
+using BISPAPIORA.Repositories.EnrollmentServicesRepo;
+using BISPAPIORA.Repositories.CitizenBankInfoServicesRepo;
 
 namespace BISPAPIORA.Extensions
 {
@@ -9,9 +19,7 @@ namespace BISPAPIORA.Extensions
         public static void ConfigureServices(this IServiceCollection services, IConfiguration configuration)
         {
             services.AddHttpContextAccessor();
-            services.AddDbContext<OraDbContext>(options =>
-            options.UseOracle(configuration.GetConnectionString("BISP")), ServiceLifetime.Transient);
-            services.AddDbContext<DbContext>(options =>
+            services.AddDbContext<Dbcontext>(options =>
             options.UseOracle(configuration.GetConnectionString("BISP")), ServiceLifetime.Transient);
             services.AddCors(options =>
             {
@@ -25,17 +33,18 @@ namespace BISPAPIORA.Extensions
                                   });
             });
             services.AddHttpClient();
-            //services.AddAutoMapper(typeof(Program).Assembly);
-            //services.AddTransient<IBankService, BankService>();
-            //services.AddTransient<IProvinceService, ProvinceService>();
-            //services.AddTransient<IDistrictService, DistrictService>();
-            //services.AddTransient<ITehsilService, TehsilService>();
-            //services.AddTransient<IEducationService, EducationService>();
-            //services.AddTransient<ICitizenService, CitizenService>();
-            //services.AddTransient<IRegistrationService, RegistrationService>();
-            //services.AddTransient<IEmploymentService, EmploymentService>();
-            //services.AddTransient<IEnrollmentService, EnrollmentService>();
-            //services.AddTransient<ICitizenSchemeService, CitizenSchemeService>();
+            services.AddAutoMapper(typeof(Program).Assembly);
+            services.AddTransient<IBankService, BankService>();
+            services.AddTransient<IProvinceService, ProvinceService>();
+            services.AddTransient<IDistrictService, DistrictService>();
+            services.AddTransient<ITehsilService, TehsilService>();
+            services.AddTransient<IEducationService, EducationService>();
+            services.AddTransient<ICitizenService, CitizenService>();
+            services.AddTransient<IRegistrationService, RegistrationService>();
+            services.AddTransient<IEmploymentService, EmploymentService>();
+            services.AddTransient<IEnrollmentService, EnrollmentService>();
+            services.AddTransient<ICitizenSchemeService, CitizenSchemeService>();
+            services.AddTransient<ICitizenBankInfoService, CitizenBankInfoService>();
         }
     }
 }

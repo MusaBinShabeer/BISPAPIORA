@@ -12,8 +12,8 @@ namespace BISPAPIORA.Repositories.BankServicesRepo
     public class BankService : IBankService
     {
         private readonly IMapper _mapper;
-        private readonly OraDbContext db;
-        public BankService(IMapper mapper, OraDbContext db)
+        private readonly Dbcontext db;
+        public BankService(IMapper mapper, Dbcontext db)
         {
             _mapper = mapper;
             this.db = db;

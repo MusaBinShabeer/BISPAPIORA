@@ -1,12 +1,13 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using System;
+using System.Collections.Generic;
 
-namespace BISPAPIORA.Models.DBModels.Dbtables
+namespace BISPAPIORA.Models.DBModels.Dbtables;
+
+public partial class tbl_registration
 {
-    public class tbl_registration
-    {
-        [Key]
-        public Guid registration_id { get; set; } = Guid.NewGuid();
-        public Guid fk_citizen { get; set; } = default!;
-        public tbl_citizen tbl_citizen { get; set; } = default!;
-    }
+    public Guid registration_id { get; set; } = Guid.NewGuid();
+
+    public Guid? fk_citizen { get; set; } = default(Guid?);
+
+    public virtual tbl_citizen? tbl_citizen { get; set; }
 }

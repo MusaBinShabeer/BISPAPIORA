@@ -10,8 +10,8 @@ namespace BISPAPIORA.Repositories.EducationServicesRepo
     public class EducationService : IEducationService
     {
         private readonly IMapper _mapper;
-        private readonly OraDbContext db;
-        public EducationService(IMapper mapper, OraDbContext db)
+        private readonly Dbcontext db;
+        public EducationService(IMapper mapper, Dbcontext db)
         {
             _mapper = mapper;
             this.db = db;

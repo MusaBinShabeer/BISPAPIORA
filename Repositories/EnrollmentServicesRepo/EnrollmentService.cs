@@ -5,6 +5,10 @@ using BISPAPIORA.Models.DTOS.EnrollmentDTO;
 using BISPAPIORA.Models.DTOS.ResponseDTO;
 using BISPAPIORA.Repositories.CitizenServicesRepo;
 using Microsoft.EntityFrameworkCore;
+using BISPAPIORA.Repositories.CitizenBankInfoServicesRepo;
+using BISPAPIORA.Models.DTOS.CitizenBankInfoDTO;
+using BISPAPIORA.Repositories.CitizenSchemeServicesRepo;
+using BISPAPIORA.Models.DTOS.CitizenSchemeDTO;
 
 namespace BISPAPIORA.Repositories.EnrollmentServicesRepo
 {
@@ -12,12 +16,16 @@ namespace BISPAPIORA.Repositories.EnrollmentServicesRepo
     {
         private readonly IMapper _mapper;
         private readonly ICitizenService citizenService;
-        private readonly OraDbContext db;
-        public EnrollmentService(IMapper mapper, OraDbContext db, ICitizenService citizenService)
+        private readonly Dbcontext db;
+        private readonly ICitizenBankInfoService citizenBankInfoService;
+        private readonly ICitizenSchemeService citizenSchemeService;
+        public EnrollmentService(IMapper mapper, Dbcontext db, ICitizenService citizenService,ICitizenBankInfoService citizenBankInfoService,ICitizenSchemeService citizenSchemeService)
         {
             _mapper = mapper;
             this.db = db;
             this.citizenService = citizenService;
+            this.citizenBankInfoService= citizenBankInfoService;
+            this.citizenSchemeService = citizenSchemeService;
         }
         public async Task<ResponseModel<EnrollmentResponseDTO>> AddEnrolledCitizen(AddEnrollmentDTO model)
         {
@@ -34,8 +42,14 @@ namespace BISPAPIORA.Repositories.EnrollmentServicesRepo
                             model.fkCitizen = newCitizen.data.citizenId;
                             var newEnrollment = new tbl_enrollment();
                             newEnrollment = _mapper.Map<tbl_enrollment>(model);
-                            await db.tbl_enrollment.AddAsync(newEnrollment);
+                            await db.tbl_enrollments.AddAsync(newEnrollment);
                             await db.SaveChangesAsync();
+                            var newRequest = new AddEnrolledCitizenBankInfoDTO();
+                            newRequest= _mapper.Map<AddEnrolledCitizenBankInfoDTO>(model);
+                            var resposne= citizenBankInfoService.AddEnrolledCitizenBankInfo(newRequest);
+                            var newSchemeReq= new AddCitizenSchemeDTO();
+                            newSchemeReq = _mapper.Map<AddCitizenSchemeDTO>(model);
+                            var schemeResp = citizenSchemeService.AddCitizenScheme(newSchemeReq);
                             var response = _mapper.Map<EnrollmentResponseDTO>(newCitizen.data);
                             response.enrollmentId = newEnrollment.enrollment_id.ToString();
                             return new ResponseModel<EnrollmentResponseDTO>()
@@ -86,10 +100,10 @@ namespace BISPAPIORA.Repositories.EnrollmentServicesRepo
         {
             try
             {
-                var registration = await db.tbl_registration.Where(x => x.registration_id == Guid.Parse(registrationId)).FirstOrDefaultAsync();
+                var registration = await db.tbl_registrations.Where(x => x.registration_id == Guid.Parse(registrationId)).FirstOrDefaultAsync();
                 if (registration != null)
                 {
-                    db.tbl_registration.Remove(registration);
+                    db.tbl_registrations.Remove(registration);
                     await db.SaveChangesAsync();
                     return new ResponseModel<EnrollmentResponseDTO>()
                     {
@@ -119,7 +133,7 @@ namespace BISPAPIORA.Repositories.EnrollmentServicesRepo
         {
             try
             {
-                var existingCitizen = await db.tbl_registration.Where(x => x.registration_id == Guid.Parse(registrationId)).Include(x => x.tbl_citizen).ThenInclude(x => x.citizen_tehsil).ThenInclude(x => x.tbl_district).ThenInclude(x => x.tbl_province).Include(x => x.tbl_citizen).ThenInclude(x => x.citizen_employement).Include(x => x.tbl_citizen).ThenInclude(x => x.citizen_education).FirstOrDefaultAsync();
+                var existingCitizen = await db.tbl_registrations.Where(x => x.registration_id == Guid.Parse(registrationId)).Include(x => x.tbl_citizen).ThenInclude(x => x.tbl_citizen_tehsil).ThenInclude(x => x.tbl_district).ThenInclude(x => x.tbl_province).Include(x => x.tbl_citizen).ThenInclude(x => x.tbl_citizen_employment).Include(x => x.tbl_citizen).ThenInclude(x => x.tbl_citizen_education).FirstOrDefaultAsync();
                 if (existingCitizen != null)
                 {
                     return new ResponseModel<EnrollmentResponseDTO>()

@@ -10,8 +10,8 @@ namespace BISPAPIORA.Repositories.ProvinceServicesRepo
     public class ProvinceService : IProvinceService
     {
         private readonly IMapper _mapper;
-        private readonly OraDbContext db;
-        public ProvinceService(IMapper mapper, OraDbContext db)
+        private readonly Dbcontext db;
+        public ProvinceService(IMapper mapper, Dbcontext db)
         {
             _mapper = mapper;
             this.db = db;

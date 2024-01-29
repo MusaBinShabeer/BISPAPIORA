@@ -12,8 +12,8 @@ namespace BISPAPIORA.Repositories.EmploymentServicesRepo
     public class EmploymentService : IEmploymentService
     {
         private readonly IMapper _mapper;
-        private readonly OraDbContext db;
-        public EmploymentService(IMapper mapper, OraDbContext db)
+        private readonly Dbcontext db;
+        public EmploymentService(IMapper mapper, Dbcontext db)
         {
             _mapper = mapper;
             this.db = db;

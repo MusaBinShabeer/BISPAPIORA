@@ -1,15 +1,19 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using System;
+using System.Collections.Generic;
 
-namespace BISPAPIORA.Models.DBModels.Dbtables
+namespace BISPAPIORA.Models.DBModels.Dbtables;
+
+public partial class tbl_tehsil
 {
-    public class tbl_tehsil
-    {
-        [Key]
-        public Guid tehsil_id { get; set; } = Guid.NewGuid();
-        public string tehsil_name { get; set; } = string.Empty;
-        public bool is_active { get; set; } = true;
-        public Guid fk_district { get; set; } = default!;
-        public tbl_district tbl_district { get; set; } = default!;
-        public IEnumerable<tbl_citizen> citizens { get; set; } = default!;
-    }
+    public Guid tehsil_id { get; set; } = Guid.NewGuid();
+
+    public string? tehsil_name { get; set; } = string.Empty;
+
+    public bool? is_active { get; set; } = true;
+
+    public Guid? fk_district { get; set; } = new Guid();
+
+    public virtual tbl_district? tbl_district { get; set; }
+
+    public virtual ICollection<tbl_citizen> tbl_citizens { get; set; } = new List<tbl_citizen>();
 }
