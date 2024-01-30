@@ -200,10 +200,6 @@ namespace BISPAPIORA.Extensions.Middleware
                 }
                 var inspector = new FileFormatInspector();
                 var format = inspector.DetermineFileFormat(data);
-                //if (format is Pdf)
-                //{
-                //    return true;
-                //}
                 //else if (format is OfficeOpenXml)
                 //{
                 //    return true;
