@@ -93,5 +93,23 @@ namespace BISPAPIORA.Controllers
             var response = tehsilService.GetTehsilsList();
             return Ok(await response);
         }
+        [HttpGet("GetByDistrictId")]
+        public async Task<ActionResult<ResponseModel<List<TehsilResponseDTO>>>> GetByDistrictId(string id)
+        {
+            if (!string.IsNullOrEmpty(id))
+            {
+                var response = tehsilService.GetTehsilByDistrictId(id);
+                return Ok(await response);
+            }
+            else
+            {
+                var response = new ResponseModel<TehsilResponseDTO>()
+                {
+                    remarks = "Parameter missing",
+                    success = false
+                };
+                return BadRequest(response);
+            }
+        }
     }
 }

@@ -90,7 +90,7 @@ namespace BISPAPIORA.Repositories.RegistrationServicesRepo
                     {
                         success = false,
                         remarks = $"Citizen with name {model.citizenName} already exists",
-                        data = _mapper.Map<RegistrationResponseDTO>(Citizen),
+                        data = _mapper.Map<RegistrationResponseDTO>(dbfCitizen),
                     };
                 }
             }

@@ -183,5 +183,37 @@ namespace BISPAPIORA.Repositories.DistrictServicesRepo
                 };
             }
         }
+        public async Task<ResponseModel<List<DistrictResponseDTO>>> GetDistrictByProviceId(string provinceId)
+        {
+            try
+            {
+                var existingDistricts = await db.tbl_districts.Include(x => x.tbl_province).Where(x => x.fk_province == Guid.Parse(provinceId)).ToListAsync();
+                if (existingDistricts != null)
+                {
+                    return new ResponseModel<List<DistrictResponseDTO>>()
+                    {
+                        data = _mapper.Map<List<DistrictResponseDTO>>(existingDistricts),
+                        remarks = "Districts found successfully",
+                        success = true,
+                    };
+                }
+                else
+                {
+                    return new ResponseModel<List<DistrictResponseDTO>>()
+                    {
+                        success = false,
+                        remarks = "No Record"
+                    };
+                }
+            }
+            catch (Exception ex)
+            {
+                return new ResponseModel<List<DistrictResponseDTO>>()
+                {
+                    success = false,
+                    remarks = $"There Was Fatal Error {ex.Message.ToString()}"
+                };
+            }
+        }
     }
 }

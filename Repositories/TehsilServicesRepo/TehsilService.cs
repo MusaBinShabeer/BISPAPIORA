@@ -4,6 +4,7 @@ using BISPAPIORA.Models.DBModels.Dbtables;
 using BISPAPIORA.Models.DTOS.TehsilDTO;
 using BISPAPIORA.Models.DTOS.ResponseDTO;
 using Microsoft.EntityFrameworkCore;
+using BISPAPIORA.Models.DTOS.DistrictDTO;
 
 namespace BISPAPIORA.Repositories.TehsilServicesRepo
 {
@@ -177,6 +178,38 @@ namespace BISPAPIORA.Repositories.TehsilServicesRepo
             catch (Exception ex)
             {
                 return new ResponseModel<TehsilResponseDTO>()
+                {
+                    success = false,
+                    remarks = $"There Was Fatal Error {ex.Message.ToString()}"
+                };
+            }
+        }
+        public async Task<ResponseModel<List<TehsilResponseDTO>>> GetTehsilByDistrictId(string districtId)
+        {
+            try
+            {
+                var existingTehsils = await db.tbl_tehsils.Include(x => x.tbl_district).Where(x => x.fk_district == Guid.Parse(districtId)).ToListAsync();
+                if (existingTehsils != null)
+                {
+                    return new ResponseModel<List<TehsilResponseDTO>>()
+                    {
+                        data = _mapper.Map<List<TehsilResponseDTO>>(existingTehsils),
+                        remarks = "Tehsils found successfully",
+                        success = true,
+                    };
+                }
+                else
+                {
+                    return new ResponseModel<List<TehsilResponseDTO>>()
+                    {
+                        success = false,
+                        remarks = "No Record"
+                    };
+                }
+            }
+            catch (Exception ex)
+            {
+                return new ResponseModel<List<TehsilResponseDTO>>()
                 {
                     success = false,
                     remarks = $"There Was Fatal Error {ex.Message.ToString()}"

@@ -23,12 +23,12 @@ namespace BISPAPIORA.Extensions.AutomapperProfiles
                .ForMember(d => d.Cnic, opt => opt.MapFrom((src, dest) => otherServices.Check(src.citizenCnic)? decimal.Parse(src.citizenCnic):dest.Cnic))
                .ForMember(d => d.Gender, opt => opt.MapFrom((src, dest) => otherServices.Check(src.citizenGender)? $"{(GenderEnum)src.citizenGender}" : dest.Gender))
                .ForMember(d => d.Name, opt => opt.MapFrom((src,dest) => otherServices.Check(src.citizenName)?src.citizenName:dest.Name));
-            CreateMap<HiberProtectionAccount, RegistrationResponseDTO>()
-               .ForMember(d => d.citizenAddress, opt => opt.MapFrom(src => src.Address))
-               .ForMember(d => d.citizenPhoneNo, opt => opt.MapFrom(src => src.MobileNo))
-               .ForMember(d => d.citizenCnic, opt => opt.MapFrom(src => src.Cnic))
-               .ForMember(d => d.genderName, opt => opt.MapFrom(src => src.Gender))
-               .ForMember(d => d.citizenName, opt => opt.MapFrom(src => src.Name));
+            //CreateMap<HiberProtectionAccount, RegistrationResponseDTO>()
+            //   .ForMember(d => d.citizenAddress, opt => opt.MapFrom(src => src.Address))
+            //   .ForMember(d => d.citizenPhoneNo, opt => opt.MapFrom(src => src.MobileNo))
+            //   .ForMember(d => d.citizenCnic, opt => opt.MapFrom(src => src.Cnic))
+            //   .ForMember(d => d.genderName, opt => opt.MapFrom(src => src.Gender))
+            //   .ForMember(d => d.citizenName, opt => opt.MapFrom(src => src.Name));
         }
     }
 }
