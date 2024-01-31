@@ -443,12 +443,23 @@ namespace BISPAPIORA.Repositories.CitizenServicesRepo
                     .Include(x => x.tbl_citizen_employment)
                     .Include(x => x.tbl_citizen_education)
                     .Include(x => x.tbl_citizen_scheme)
+                    .Include(x=>x.tbl_citizen_registration)
+                    .Include(x=>x.tbl_enrollment)
                     .Include(x => x.tbl_citizen_bank_info).ThenInclude(x => x.tbl_bank).FirstOrDefaultAsync();
-                    if (existingCitizen != null)
+                if (existingCitizen != null)
+                {
+                    var response = _mapper.Map<RegistrationResponseDTO>(existingCitizen);
+                    if (existingCitizen.tbl_enrollment != null)
                     {
+                        response.isEnrolled = true;
+                    }
+                    if (existingCitizen.tbl_citizen_registration != null)
+                    {
+                        response.isRegisteered = true;
+                    }
                         return new ResponseModel<RegistrationResponseDTO>()
                         {
-                            data = _mapper.Map<RegistrationResponseDTO>(existingCitizen),
+                            data = response,
                             remarks = "Citizen found successfully",
                             success = true,
                         };

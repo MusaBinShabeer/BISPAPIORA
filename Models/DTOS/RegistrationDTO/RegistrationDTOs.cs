@@ -55,5 +55,7 @@ namespace BISPAPIORA.Models.DTOS.RegistrationDTO
         public string bankName { get; set; } = string.Empty;
         public string ibanNo { get; set; } = string.Empty;
         public string fkBank { get; set; } = string.Empty;
+        public bool isRegisteered { get; set; } = false;
+        public bool isEnrolled { get; set; } = false;
     }
 }
