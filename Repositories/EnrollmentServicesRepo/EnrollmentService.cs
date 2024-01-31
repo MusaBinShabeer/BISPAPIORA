@@ -31,7 +31,7 @@ namespace BISPAPIORA.Repositories.EnrollmentServicesRepo
         {
             try
             {
-                var Citizen = await db.tbl_citizens.Where(x => x.citizen_cnic.ToLower().Equals(model.citizenCnic.ToLower())).FirstOrDefaultAsync();
+                var Citizen = await db.tbl_citizens.Where(x => x.citizen_cnic.ToLower().Equals(model.citizenCnic.ToLower())).Include(x=>x.tbl_enrollment).FirstOrDefaultAsync();
                 if (Citizen == null)
                 {
                     var newCitizen = await citizenService.AddEnrolledCitizen(model);
@@ -79,12 +79,61 @@ namespace BISPAPIORA.Repositories.EnrollmentServicesRepo
                 }
                 else
                 {
-                    return new ResponseModel<EnrollmentResponseDTO>()
+                    if (Citizen.tbl_enrollment == null)
                     {
-                        success = false,
-                        remarks = $"Citizen with name {model.citizenName} already exists",
-                        data = _mapper.Map<EnrollmentResponseDTO>(Citizen),
-                    };
+                        var updateModel = _mapper.Map<UpdateEnrollmentDTO>(model);
+                        updateModel.enrollmentId = Citizen.tbl_enrollment.enrollment_id.ToString();
+                        var newCitizen = await citizenService.UpdateEnrolledCitizen(updateModel);
+                        if (newCitizen.success)
+                        {
+                            if (newCitizen.data != null)
+                            {
+                                model.fkCitizen = newCitizen.data.citizenId;
+                                var newEnrollment = new tbl_enrollment();
+                                newEnrollment = _mapper.Map<tbl_enrollment>(model);
+                                await db.tbl_enrollments.AddAsync(newEnrollment);
+                                await db.SaveChangesAsync();
+                                var newRequest = new AddEnrolledCitizenBankInfoDTO();
+                                newRequest = _mapper.Map<AddEnrolledCitizenBankInfoDTO>(model);
+                                var resposne = citizenBankInfoService.AddEnrolledCitizenBankInfo(newRequest);
+                                var newSchemeReq = new AddCitizenSchemeDTO();
+                                newSchemeReq = _mapper.Map<AddCitizenSchemeDTO>(model);
+                                var schemeResp = citizenSchemeService.AddCitizenScheme(newSchemeReq);
+                                var response = _mapper.Map<EnrollmentResponseDTO>(newCitizen.data);
+                                response.enrollmentId = newEnrollment.enrollment_id.ToString();
+                                return new ResponseModel<EnrollmentResponseDTO>()
+                                {
+                                    success = true,
+                                    remarks = $"Citizen {model.citizenName} has been enrolled successfully",
+                                    data = response,
+                                };
+                            }
+                            else
+                            {
+                                return new ResponseModel<EnrollmentResponseDTO>()
+                                {
+                                    success = false,
+                                    remarks = $"Citizen {model.citizenName} has been not been enrolled successfully",
+                                };
+                            }
+                        }
+                        else
+                        {
+                            return new ResponseModel<EnrollmentResponseDTO>()
+                            {
+                                success = false,
+                                remarks = newCitizen.remarks
+                            };
+                        }
+                    }
+                    else
+                    {
+                        return new ResponseModel<EnrollmentResponseDTO>()
+                        {
+                            success = false,
+                            remarks = "Already Enrolled"
+                        };
+                    }
                 }
             }
             catch (Exception ex)

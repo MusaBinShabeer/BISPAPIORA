@@ -2,8 +2,9 @@
 {
     public enum MartialStatusEnum
     {
-        Married = 1,
-        Unmarried = 2,
-        Divorced = 3,
+        Married = 0,
+        Unmarried = 1,
+        Divorced = 2,
+        Widowed = 3,
     }
 }

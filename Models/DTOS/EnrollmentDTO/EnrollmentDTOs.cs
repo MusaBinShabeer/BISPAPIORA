@@ -21,6 +21,8 @@ namespace BISPAPIORA.Models.DTOS.EnrollmentDTO
         public  double citizenSchemeSavingAmount { get; set; } = 0.0;
         public string fileName { get; set; } = string.Empty;
         public string filePath { get; set; } = string.Empty;
+        public string thumbPrintName { get; set; } = string.Empty;
+        public string thumbPrintPath { get; set; } = string.Empty;
     }
     public class AddEnrollmentDTO : EnrollmentDTO
     {
