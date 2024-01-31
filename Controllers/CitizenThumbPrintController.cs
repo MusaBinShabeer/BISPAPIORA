@@ -1,8 +1,10 @@
-﻿using BISPAPIORA.Models.DTOS.DistrictDTO;
+﻿using BISPAPIORA.Models.DTOS.CitizenAttachmentDTO;
+using BISPAPIORA.Models.DTOS.CitizenThumbPrintDTO;
 using BISPAPIORA.Models.DTOS.ResponseDTO;
 using BISPAPIORA.Models.DTOS.TehsilDTO;
+using BISPAPIORA.Repositories.CitizenThumbPrintServicesRepo;
 using BISPAPIORA.Repositories.DistrictServicesRepo;
-using BISPAPIORA.Repositories.TehsilServicesRepo;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
@@ -10,24 +12,24 @@ namespace BISPAPIORA.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class DistrictController : ControllerBase
+    public class CitizenThumbPrintController : ControllerBase
     {
-        private readonly IDistrictService districtService;
-        public DistrictController(IDistrictService districtService)
+        private readonly ICitizenThumbPrintService citizenThumbPrintService;
+        public CitizenThumbPrintController(ICitizenThumbPrintService citizenThumbPrintService)
         {
-            this.districtService = districtService;
+            this.citizenThumbPrintService = citizenThumbPrintService;
         }
         [HttpPost]
-        public async Task<ActionResult<ResponseModel<DistrictResponseDTO>>> Post(AddDistrictDTO model)
+        public async Task<ActionResult<ResponseModel<CitizenThumbPrintResponseDTO>>> Post(AddCitizenThumbPrintDTO model)
         {
             if (ModelState.IsValid)
             {
-                var response = districtService.AddDistrict(model);
+                var response = citizenThumbPrintService.AddCitizenThumbPrint(model);
                 return Ok(await response);
             }
             else
             {
-                var response = new ResponseModel<DistrictResponseDTO>()
+                var response = new ResponseModel<CitizenThumbPrintResponseDTO>()
                 {
                     remarks = "Model Not Verified",
                     success = false
@@ -36,16 +38,16 @@ namespace BISPAPIORA.Controllers
             }
         }
         [HttpPut]
-        public async Task<ActionResult<ResponseModel<DistrictResponseDTO>>> Put(UpdateDistrictDTO model)
+        public async Task<ActionResult<ResponseModel<CitizenThumbPrintResponseDTO>>> Put(UpdateCitizenThumbPrintDTO model)
         {
             if (ModelState.IsValid)
             {
-                var response = districtService.UpdateDistrict(model);
+                var response = citizenThumbPrintService.UpdateCitizenThumbPrint(model);
                 return Ok(await response);
             }
             else
             {
-                var response = new ResponseModel<DistrictResponseDTO>()
+                var response = new ResponseModel<CitizenThumbPrintResponseDTO>()
                 {
                     remarks = "Model Not Verified",
                     success = false
@@ -54,16 +56,16 @@ namespace BISPAPIORA.Controllers
             }
         }
         [HttpDelete]
-        public async Task<ActionResult<ResponseModel<DistrictResponseDTO>>> Delete(string id)
+        public async Task<ActionResult<ResponseModel<CitizenThumbPrintResponseDTO>>> Delete(string id)
         {
             if (ModelState.IsValid)
             {
-                var response = districtService.DeleteDistrict(id);
+                var response = citizenThumbPrintService.DeleteCitizenThumbPrint(id);
                 return Ok(await response);
             }
             else
             {
-                var response = new ResponseModel<DistrictResponseDTO>()
+                var response = new ResponseModel<CitizenThumbPrintResponseDTO>()
                 {
                     remarks = "Model Not Verified",
                     success = false
@@ -72,16 +74,16 @@ namespace BISPAPIORA.Controllers
             }
         }
         [HttpGet("GetById")]
-        public async Task<ActionResult<ResponseModel<DistrictResponseDTO>>> GetById(string id)
+        public async Task<ActionResult<ResponseModel<CitizenThumbPrintResponseDTO>>> GetById(string id)
         {
             if (!string.IsNullOrEmpty(id))
             {
-                var response = districtService.GetDistrict(id);
+                var response = citizenThumbPrintService.GetCitizenThumbPrint(id);
                 return Ok(await response);
             }
             else
             {
-                var response = new ResponseModel<DistrictResponseDTO>()
+                var response = new ResponseModel<CitizenThumbPrintResponseDTO>()
                 {
                     remarks = "Parameter missing",
                     success = false
@@ -90,22 +92,22 @@ namespace BISPAPIORA.Controllers
             }
         }
         [HttpGet]
-        public async Task<ActionResult<ResponseModel<List<DistrictResponseDTO>>>> Get()
+        public async Task<ActionResult<ResponseModel<List<CitizenThumbPrintResponseDTO>>>> Get()
         {
-            var response = districtService.GetDistrictsList();
+            var response = citizenThumbPrintService.GetCitizenThumbPrintsList();
             return Ok(await response);
         }
-        [HttpGet("GetByProvinceId")]
-        public async Task<ActionResult<ResponseModel<List<TehsilResponseDTO>>>> GetByProvinceId(string id)
+        [HttpGet("GetByCitizenId")]
+        public async Task<ActionResult<ResponseModel<List<CitizenThumbPrintResponseDTO>>>> GetByCitizenId(string id)
         {
             if (!string.IsNullOrEmpty(id))
             {
-                var response = districtService.GetDistrictByProviceId(id);
+                var response = citizenThumbPrintService.GetCitizenThumbPrintByCitizenId(id);
                 return Ok(await response);
             }
             else
             {
-                var response = new ResponseModel<TehsilResponseDTO>()
+                var response = new ResponseModel<CitizenThumbPrintResponseDTO>()
                 {
                     remarks = "Parameter missing",
                     success = false
