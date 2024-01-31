@@ -81,18 +81,19 @@ namespace BISPAPIORA.Repositories.EnrollmentServicesRepo
                 {
                     if (Citizen.tbl_enrollment == null)
                     {
+                        model.fkCitizen = Citizen.citizen_id.ToString();
                         var updateModel = _mapper.Map<UpdateEnrollmentDTO>(model);
-                        updateModel.enrollmentId = Citizen.tbl_enrollment.enrollment_id.ToString();
+                        var newEnrollment = new tbl_enrollment();
+                        newEnrollment = _mapper.Map<tbl_enrollment>(model);
+                        await db.tbl_enrollments.AddAsync(newEnrollment);
+                        await db.SaveChangesAsync();
+                        updateModel.enrollmentId = newEnrollment.enrollment_id.ToString();
                         var newCitizen = await citizenService.UpdateEnrolledCitizen(updateModel);
                         if (newCitizen.success)
                         {
                             if (newCitizen.data != null)
                             {
-                                model.fkCitizen = newCitizen.data.citizenId;
-                                var newEnrollment = new tbl_enrollment();
-                                newEnrollment = _mapper.Map<tbl_enrollment>(model);
-                                await db.tbl_enrollments.AddAsync(newEnrollment);
-                                await db.SaveChangesAsync();
+                                model.fkCitizen = newCitizen.data.citizenId;                                
                                 var newRequest = new AddEnrolledCitizenBankInfoDTO();
                                 newRequest = _mapper.Map<AddEnrolledCitizenBankInfoDTO>(model);
                                 var resposne = citizenBankInfoService.AddEnrolledCitizenBankInfo(newRequest);

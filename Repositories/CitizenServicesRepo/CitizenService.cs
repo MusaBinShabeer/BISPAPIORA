@@ -265,8 +265,23 @@ namespace BISPAPIORA.Repositories.CitizenServicesRepo
                 {
                     existingCitizen = _mapper.Map(model, existingCitizen);
                     await db.SaveChangesAsync();
-                    model.citizenCnic = existingCitizen.citizen_cnic;
-                    await UpdateEnrolledDBFCitizen(model);
+                    //model.citizenCnic = existingCitizen.citizen_cnic;
+                    //await UpdateEnrolledDBFCitizen(model);
+                    var newAttachmentDto = new AddCitizenAttachmentDTO()
+                    {
+                        citizenAttachmentName = model.fileName,
+                        citizenAttachmentPath = model.filePath,
+                        fkCitizen = existingCitizen.citizen_id.ToString()
+                    };
+                    var resposneOfattachment = await attachmentService.AddCitizenAttachment(newAttachmentDto);
+
+                    var newthumbPrintDto = new AddCitizenThumbPrintDTO()
+                    {
+                        citizenThumbPrintName = model.fileName,
+                        citizenThumbPrintPath = model.filePath,
+                        fkCitizen = existingCitizen.citizen_id.ToString()
+                    };
+                    var responseOfThumbPrint = await thumbprintService.AddCitizenThumbPrint(newthumbPrintDto);
                     return new ResponseModel<EnrollmentResponseDTO>()
                     {
                         remarks = $"Citizen: {model.citizenName} has been updated",
