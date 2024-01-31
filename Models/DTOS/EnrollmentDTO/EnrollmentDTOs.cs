@@ -5,7 +5,7 @@ namespace BISPAPIORA.Models.DTOS.EnrollmentDTO
 {
     public class EnrollmentDTO : CitizenDTOs
     {
-        public int martialStatus { get; set; } = 0;
+        public int maritalStatus { get; set; } = 0;
         public string fatherSpouseName { get; set; } = string.Empty;
         public string dateOfBirth { get; set; } = string.Empty;
         public string fkCitizen { get; set; } = string.Empty;
@@ -27,7 +27,7 @@ namespace BISPAPIORA.Models.DTOS.EnrollmentDTO
     public class AddEnrollmentDTO : EnrollmentDTO
     {
         [Required]
-        public new int martialStatus { get; set; } = 0;
+        public new int maritalStatus { get; set; } = 0;
         [Required]
         public new string fkBank { get; set; } = string.Empty;
         [Required]
@@ -57,7 +57,7 @@ namespace BISPAPIORA.Models.DTOS.EnrollmentDTO
     {
         public string citizenId { get; set; } = string.Empty;
         public string enrollmentId { get; set; } = string.Empty;
-        public string martialStatusName { get; set; } = string.Empty;
+        public string maritalStatusName { get; set; } = string.Empty;
         public string accountTypeName { get; set; } = string.Empty;
         public string tehsilName { get; set; } = string.Empty;
         public string districtName { get; set; } = string.Empty;

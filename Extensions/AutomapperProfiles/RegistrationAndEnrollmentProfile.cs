@@ -21,7 +21,7 @@ namespace BISPAPIORA.Extensions.AutomapperProfiles
             .ForMember(d => d.citizenName, opt => opt.MapFrom(src => src.citizenName))
             .ForMember(d => d.citizenPhoneNo, opt => opt.MapFrom(src => src.citizenPhoneNo))
             .ForMember(d => d.citizenGender, opt => opt.MapFrom(src => src.citizenGender))
-            .ForMember(d => d.martialStatus, opt => opt.MapFrom(src =>src.martialStatus))
+            .ForMember(d => d.maritalStatus, opt => opt.MapFrom(src =>src.maritalStatus))
             .ForMember(d => d.citizenAddress, opt => opt.MapFrom(src => src.citizenAddress))
             .ForMember(d => d.fatherSpouseName, opt => opt.MapFrom(src => src.fatherSpouseName))
             .ForMember(d => d.fkTehsil, opt => opt.MapFrom(src => Guid.Parse(src.fkTehsil)))
