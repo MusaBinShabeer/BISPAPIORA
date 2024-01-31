@@ -190,6 +190,11 @@ public partial class Dbcontext : DbContext
                 .IsUnicode(false)
                 .HasDefaultValueSql("''")
                 .HasColumnName("BANK_NAME");
+            entity.Property(e => e.bank_prefix_iban)
+                .HasMaxLength(255)
+                .IsUnicode(false)
+                .HasDefaultValueSql("''")
+                .HasColumnName("BANK_PREFIX_IBAN");
             entity.Property(e => e.is_active)
                 .IsRequired()
                 .HasPrecision(1)
