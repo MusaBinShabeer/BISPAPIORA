@@ -97,7 +97,6 @@ namespace BISPAPIORA.Controllers
             var response = citizenAttachmentService.GetCitizenAttachmentsList();
             return Ok(await response);
         }
-        [HttpGet("GetByCitizenId")]
         public async Task<ActionResult<ResponseModel<List<CitizenAttachmentResponseDTO>>>> GetByCitizenId(string id)
         {
             if (!string.IsNullOrEmpty(id))
