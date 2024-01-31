@@ -1,4 +1,6 @@
 ﻿using BISPAPIORA.Extensions.Middleware;
+using BISPAPIORA.Models.DTOS.FileManagerDTO;
+using BISPAPIORA.Models.DTOS.ResponseDTO;
 using BISPAPIORA.Repositories.FileManagerServicesRepo;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.Features;
@@ -23,7 +25,7 @@ namespace BISPAPIORA.Controllers
         [HttpPost, DisableRequestSizeLimit]
         [DisableFormValueModelBinding]
         [Route("[Action]")]
-        public async Task<IActionResult> UploadFile( )
+        public async Task<ActionResult<ResponseModel<FileManagerResponseDTO>>> UploadFile( )
         {
             string fileNameWithoutExtension = "";
             string fileExtension = "";
@@ -152,7 +154,7 @@ namespace BISPAPIORA.Controllers
                 return BadRequest(ModelState);
             }
             var response = await fileManagerService.UploadFileAsync(streamedFileContent, fileNameWithoutExtension,fileExtension);
-            return Ok();
+            return Ok(response);
         }
     }
 }

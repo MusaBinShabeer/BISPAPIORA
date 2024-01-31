@@ -19,6 +19,8 @@ namespace BISPAPIORA.Models.DTOS.EnrollmentDTO
         public  string citizenSchemeQuarter { get; set; } = string.Empty;
         public  string citizenSchemeStartingMonth { get; set; } = string.Empty;
         public  double citizenSchemeSavingAmount { get; set; } = 0.0;
+        public string fileName { get; set; } = string.Empty;
+        public string filePath { get; set; } = string.Empty;
     }
     public class AddEnrollmentDTO : EnrollmentDTO
     {

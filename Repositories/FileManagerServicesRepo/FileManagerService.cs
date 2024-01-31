@@ -1,11 +1,12 @@
-﻿using BISPAPIORA.Models.DTOS.ResponseDTO;
+﻿using BISPAPIORA.Models.DTOS.FileManagerDTO;
+using BISPAPIORA.Models.DTOS.ResponseDTO;
 using System.IO.Pipelines;
 
 namespace BISPAPIORA.Repositories.FileManagerServicesRepo
 {
     public class FileManagerService : IFileManagerService
     {
-        public async Task<ResponseModel> UploadFileAsync(byte[] file,string fileName, string extension)
+        public async Task<ResponseModel<FileManagerResponseDTO>> UploadFileAsync(byte[] file,string fileName, string extension)
         {
            
 
@@ -25,10 +26,15 @@ namespace BISPAPIORA.Repositories.FileManagerServicesRepo
             File.WriteAllBytes(filePath, file);
             //using (FileStream fs = new FileStream(filePath, FileMode.Open, FileAccess.Read, FileShare.Read, int.MaxValue, FileOptions.DeleteOnClose))
             //{
-                
+
             //}
-            return new ResponseModel()
+            return new ResponseModel<FileManagerResponseDTO>()
             {
+                data = new FileManagerResponseDTO()
+                {
+                    fileName = uniqueFileName,
+                    filePath = uploadsFolder
+                },
                 remarks = "Success",
                 success = true,
             };
