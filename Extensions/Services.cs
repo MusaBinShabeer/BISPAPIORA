@@ -12,6 +12,8 @@ using BISPAPIORA.Repositories.EmploymentServicesRepo;
 using BISPAPIORA.Repositories.EnrollmentServicesRepo;
 using BISPAPIORA.Repositories.CitizenBankInfoServicesRepo;
 using BISPAPIORA.Repositories.FileManagerServicesRepo;
+using BISPAPIORA.Repositories.CitizenAttachmentServicesRepo;
+using BISPAPIORA.Repositories.CitizenThumbPrintServicesRepo;
 
 namespace BISPAPIORA.Extensions
 {
@@ -50,6 +52,8 @@ namespace BISPAPIORA.Extensions
             services.AddTransient<ICitizenSchemeService, CitizenSchemeService>();
             services.AddTransient<ICitizenBankInfoService, CitizenBankInfoService>();
             services.AddTransient<IFileManagerService, FileManagerService>();
+            services.AddTransient<ICitizenAttachmentService, CitizenAttachmentService>();
+            services.AddTransient<ICitizenThumbPrintService, CitizenThumbPrintService>();
         }
 }
 }
