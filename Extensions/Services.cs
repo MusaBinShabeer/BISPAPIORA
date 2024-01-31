@@ -1,5 +1,4 @@
 ﻿using BISPAPIORA.Models.DBModels.OraDbContextClass;
-using BISPAPIORA.Repositories.CitizenAttachmentServicesRepo;
 using BISPAPIORA.Repositories.CitizenSchemeServicesRepo;
 using BISPAPIORA.Repositories.BankServicesRepo;
 using Microsoft.EntityFrameworkCore;
@@ -13,7 +12,6 @@ using BISPAPIORA.Repositories.EmploymentServicesRepo;
 using BISPAPIORA.Repositories.EnrollmentServicesRepo;
 using BISPAPIORA.Repositories.CitizenBankInfoServicesRepo;
 using BISPAPIORA.Repositories.FileManagerServicesRepo;
-using BISPAPIORA.Repositories.CitizenThumbPrintServicesRepo;
 
 namespace BISPAPIORA.Extensions
 {
@@ -23,7 +21,10 @@ namespace BISPAPIORA.Extensions
         {
             services.AddHttpContextAccessor();
             services.AddDbContext<Dbcontext>(options =>
-            options.UseOracle(configuration.GetConnectionString("BISP")), ServiceLifetime.Transient);
+            options.UseOracle(("User Id=admin;Password=vNrGBdITbyvVQtTspIx1;Data Source=oracle-database.cfgeu0k04wh6.us-east-1.rds.amazonaws.com:1521/bispdb;")), ServiceLifetime.Transient);
+            //services.AddDbContext<Dbcontext>(options =>
+            //           options.UseOracle(("User Id=savings;Password=savings;Data Source=localhost:1521/savings;")), ServiceLifetime.Transient);
+
             services.AddCors(options =>
             {
                 options.AddPolicy(name: "AllowedOrigins",
@@ -49,8 +50,6 @@ namespace BISPAPIORA.Extensions
             services.AddTransient<ICitizenSchemeService, CitizenSchemeService>();
             services.AddTransient<ICitizenBankInfoService, CitizenBankInfoService>();
             services.AddTransient<IFileManagerService, FileManagerService>();
-            services.AddTransient<ICitizenAttachmentService, CitizenAttachmentService>();
-            services.AddTransient<ICitizenThumbPrintService, CitizenThumbPrintService>();
         }
-    }
+}
 }

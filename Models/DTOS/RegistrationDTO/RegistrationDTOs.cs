@@ -4,7 +4,7 @@ using BISPAPIORA.Models.DTOS.CitizenDTO;
 
 namespace BISPAPIORA.Models.DTOS.RegistrationDTO
 {
-    public class RegistrationDTO: CitizenDTOs
+    public class RegistrationDTOs: CitizenDTOs
     {
         public string fkCitizen { get; set; } = string.Empty;
         public string fkTehsil { get; set; } = string.Empty;
@@ -13,8 +13,10 @@ namespace BISPAPIORA.Models.DTOS.RegistrationDTO
         public string accountHolderName { get; set; } = string.Empty;
         public double aIOA { get; set; } = 0.0;                         //Average Income Of Account
         public bool familySavingAccount { get; set; } = false;
+        public string fileName { get; set; } = string.Empty;
+        public string filePath { get; set; } = string.Empty;
     }
-    public class AddRegistrationDTO : RegistrationDTO
+    public class AddRegistrationDTO : RegistrationDTOs
     {
         
         [Required]
@@ -35,12 +37,12 @@ namespace BISPAPIORA.Models.DTOS.RegistrationDTO
         public string ibanNo { get; set; } = string.Empty;
 
     }
-    public class UpdateRegistrationDTO : RegistrationDTO
+    public class UpdateRegistrationDTO : RegistrationDTOs
     {
         [Required]
         public string registrationId { get; set; } = string.Empty;
     }
-    public class RegistrationResponseDTO : RegistrationDTO
+    public class RegistrationResponseDTO : RegistrationDTOs
     {
         public string registrationId { get; set; } = string.Empty;
         public string citizenId { get; set; } = string.Empty;
