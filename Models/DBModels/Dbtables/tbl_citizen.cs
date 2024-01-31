@@ -42,4 +42,6 @@ public partial class tbl_citizen
     public virtual tbl_enrollment? tbl_enrollment { get; set; }
 
     public virtual tbl_registration? tbl_citizen_registration { get; set; }
+    public virtual tbl_citizen_attachment? tbl_citizen_attachment { get; set; }
+    public virtual tbl_citizen_thumb_print? tbl_citizen_thumb_print { get; set; }
 }

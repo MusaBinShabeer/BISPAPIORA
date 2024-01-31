@@ -504,6 +504,61 @@ public partial class Dbcontext : DbContext
                 .OnDelete(DeleteBehavior.Cascade)
                 .HasConstraintName("FK_DISTRICT_TEHSIL");
         });
+        modelBuilder.Entity<tbl_citizen_attachment>(entity =>
+        {
+            entity.HasKey(e => e.citizen_attachment_id).HasName("SYS_C006061");
+
+            entity.ToTable("TBL_CITIZEN_ATTACHMENT");
+
+            entity.HasIndex(e => e.fk_citizen, "SYS_C006062").IsUnique();
+
+            entity.Property(e => e.citizen_attachment_id)
+                .HasDefaultValueSql("SYS_GUID() ")
+                .HasColumnName("CITIZEN_ATTACHMENT_ID");
+            entity.Property(e => e.attachment_name)
+                .HasMaxLength(255)
+                .IsUnicode(false)
+                .HasDefaultValueSql("'' ")
+                .HasColumnName("CITIZEN_ATTACHMENT_NAME");
+            entity.Property(e => e.attachment_path)
+                .HasMaxLength(255)
+                .IsUnicode(false)
+                .HasDefaultValueSql("'' ")
+                .HasColumnName("CITIZEN_ATTACHMENT_PATH");
+            entity.Property(e => e.fk_citizen).HasColumnName("FK_CITIZEN");
+            entity.HasOne(d => d.tbl_citizen).WithOne(p => p.tbl_citizen_attachment)
+               .HasForeignKey<tbl_citizen_attachment>(d => d.fk_citizen)
+               .OnDelete(DeleteBehavior.Cascade)
+               .HasConstraintName("FK_CITIZEN_ATTACHMENT_CITIZEN");
+        });
+
+        modelBuilder.Entity<tbl_citizen_thumb_print>(entity =>
+        {
+            entity.HasKey(e => e.citizen_thumb_print_id).HasName("SYS_C006067");
+
+            entity.ToTable("TBL_CITIZEN_THUMB_PRINT");
+
+            entity.HasIndex(e => e.fk_citizen, "SYS_C006068").IsUnique();
+
+            entity.Property(e => e.citizen_thumb_print_id)
+                .HasDefaultValueSql("SYS_GUID() ")
+                .HasColumnName("CITIZEN_THUMB_PRINT_ID");
+            entity.Property(e => e.citizen_thumb_print_name)
+                .HasMaxLength(255)
+                .IsUnicode(false)
+                .HasDefaultValueSql("'' ")
+                .HasColumnName("CITIZEN_THUMB_PRINT_NAME");
+            entity.Property(e => e.citizen_thumb_print_path)
+                .HasMaxLength(255)
+                .IsUnicode(false)
+                .HasDefaultValueSql("'' ")
+                .HasColumnName("CITIZEN_THUMB_PRINT_PATH");
+            entity.Property(e => e.fk_citizen).HasColumnName("FK_CITIZEN");
+            entity.HasOne(d => d.tbl_citizen).WithOne(p => p.tbl_citizen_thumb_print)
+               .HasForeignKey<tbl_citizen_thumb_print>(d => d.fk_citizen)
+               .OnDelete(DeleteBehavior.Cascade)
+               .HasConstraintName("FK_CITIZEN_THUMB_PRINT_CITIZEN");
+        });
 
         OnModelCreatingPartial(modelBuilder);
     }
