@@ -22,8 +22,8 @@ namespace BISPAPIORA.Repositories.CitizenServicesRepo
         {
             _mapper = mapper;
             this.db = db;
-            this.attachmentService = attachmentService;
-            this.thumbprintService = thumbprintService;
+            this.attachmentService = citizenAttachmentService;
+            this.thumbprintService = thumbPrintService;
         }
         #region Registered Citizen
         public async Task<ResponseModel<RegistrationResponseDTO>> AddRegisteredCitizen(AddRegistrationDTO model)
@@ -213,7 +213,7 @@ namespace BISPAPIORA.Repositories.CitizenServicesRepo
                 {
                     var newCitizen = new tbl_citizen();
                     newCitizen = _mapper.Map<tbl_citizen>(model);
-                    db.tbl_citizens.Add(newCitizen);
+                    await db.tbl_citizens.AddAsync(newCitizen);
                     await db.SaveChangesAsync();
                     var newAttachmentDto = new AddCitizenAttachmentDTO()
                     {
