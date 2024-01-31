@@ -307,12 +307,18 @@ namespace BISPAPIORA.Repositories.CitizenServicesRepo
         {
             try
             {
-                var enrolledCitizens = await db.tbl_enrollments.Include(x => x.tbl_citizen).ThenInclude(x => x.tbl_citizen_tehsil).ThenInclude(x => x.tbl_district).ThenInclude(x => x.tbl_province).Include(x => x.tbl_citizen).ThenInclude(x => x.tbl_citizen_employment).Include(x => x.tbl_citizen).ThenInclude(x => x.tbl_citizen_education).Select(x => x.tbl_citizen).ToListAsync();
+                var enrolledCitizens = await db.tbl_enrollments
+                    .Include(x => x.tbl_citizen).ThenInclude(x => x.tbl_citizen_tehsil).ThenInclude(x => x.tbl_district).ThenInclude(x => x.tbl_province)
+                    .Include(x => x.tbl_citizen).ThenInclude(x => x.tbl_citizen_employment)
+                    .Include(x => x.tbl_citizen).ThenInclude(x => x.tbl_citizen_education)
+                    .Include(x=>x.tbl_citizen).ThenInclude(x=>x.tbl_citizen_scheme)
+                    .Include(x => x.tbl_citizen).ThenInclude(x => x.tbl_citizen_bank_info).ThenInclude(x=>x.tbl_bank).Select(x => x.tbl_citizen).ToListAsync();
                 if (enrolledCitizens.Count() > 0)
                 {
+                    var resposne = _mapper.Map<List<EnrollmentResponseDTO>>(enrolledCitizens);
                     return new ResponseModel<List<EnrollmentResponseDTO>>()
                     {
-                        data = _mapper.Map<List<EnrollmentResponseDTO>>(enrolledCitizens),
+                        data = resposne,
                         remarks = "Success",
                         success = true,
                     };

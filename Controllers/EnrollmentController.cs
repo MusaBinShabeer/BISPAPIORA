@@ -95,7 +95,7 @@ namespace BISPAPIORA.Controllers
         {
             if (!string.IsNullOrEmpty(cnic))
             {
-                var response = registrationService.GetEnrollment(cnic);
+                var response = enrollmentService.GetEnrollment(cnic);
                 return Ok(await response);
             }
             else

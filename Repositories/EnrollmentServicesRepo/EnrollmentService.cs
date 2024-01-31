@@ -55,7 +55,7 @@ namespace BISPAPIORA.Repositories.EnrollmentServicesRepo
                             return new ResponseModel<EnrollmentResponseDTO>()
                             {
                                 success = true,
-                                remarks = $"Citizen {model.citizenName} has been registered successfully",
+                                remarks = $"Citizen {model.citizenName} has been enrolled successfully",
                                 data = response,
                             };
                         }
@@ -64,7 +64,7 @@ namespace BISPAPIORA.Repositories.EnrollmentServicesRepo
                             return new ResponseModel<EnrollmentResponseDTO>()
                             {
                                 success = true,
-                                remarks = $"Citizen {model.citizenName} has been not been registered successfully",
+                                remarks = $"Citizen {model.citizenName} has been not been enrolled successfully",
                             };
                         }
                     }

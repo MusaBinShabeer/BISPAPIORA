@@ -61,6 +61,7 @@ namespace BISPAPIORA.Models.DTOS.EnrollmentDTO
         public string educationName { get; set; } = string.Empty;
         public string employmentName { get; set; } = string.Empty;
         public string BankName { get; set; } = string.Empty;
+        public string genderName { get; set; } = string.Empty;
       
     }
 }
