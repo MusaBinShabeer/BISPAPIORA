@@ -4,6 +4,7 @@ using BISPAPIORA.Models.DBModels.Dbtables;
 using BISPAPIORA.Models.DTOS.BankDTO;
 using BISPAPIORA.Models.DTOS.EnrollmentDTO;
 using BISPAPIORA.Models.DTOS.RegistrationDTO;
+using BISPAPIORA.Models.ENUMS;
 
 namespace BISPAPIORA.Extensions.AutomapperProfiles
 {
@@ -16,6 +17,18 @@ namespace BISPAPIORA.Extensions.AutomapperProfiles
             .ForMember(d => d.fk_citizen, opt => opt.MapFrom(src => Guid.Parse(src.fkCitizen)));
             CreateMap<AddEnrollmentDTO, tbl_enrollment>()
            .ForMember(d => d.fk_citizen, opt => opt.MapFrom(src => Guid.Parse(src.fkCitizen)));
+            CreateMap<AddEnrollmentDTO, UpdateEnrollmentDTO>()
+            .ForMember(d => d.citizenName, opt => opt.MapFrom(src => src.citizenName))
+            .ForMember(d => d.citizenPhoneNo, opt => opt.MapFrom(src => src.citizenPhoneNo))
+            .ForMember(d => d.citizenGender, opt => opt.MapFrom(src => src.citizenGender))
+            .ForMember(d => d.martialStatus, opt => opt.MapFrom(src =>src.martialStatus))
+            .ForMember(d => d.citizenAddress, opt => opt.MapFrom(src => src.citizenAddress))
+            .ForMember(d => d.fatherSpouseName, opt => opt.MapFrom(src => src.fatherSpouseName))
+            .ForMember(d => d.fkTehsil, opt => opt.MapFrom(src => Guid.Parse(src.fkTehsil)))
+            .ForMember(d => d.fkEmployment, opt => opt.MapFrom(src => Guid.Parse(src.fkEmployment)))
+            .ForMember(d => d.fkEducation, opt => opt.MapFrom(src => Guid.Parse(src.fkEducation)))
+            .ForMember(d => d.dateOfBirth, opt => opt.MapFrom((src, dest) => otherServices.Check(src.dateOfBirth) ? src.dateOfBirth : dest.dateOfBirth))
+            .ForMember(d => d.citizenCnic, opt => opt.MapFrom(src => src.citizenCnic));
 
         }
     }

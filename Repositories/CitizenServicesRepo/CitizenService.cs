@@ -5,6 +5,10 @@ using BISPAPIORA.Models.DTOS.EnrollmentDTO;
 using BISPAPIORA.Models.DTOS.RegistrationDTO;
 using BISPAPIORA.Models.DTOS.ResponseDTO;
 using Microsoft.EntityFrameworkCore;
+using BISPAPIORA.Repositories.CitizenAttachmentServicesRepo;
+using BISPAPIORA.Repositories.CitizenThumbPrintServicesRepo;
+using BISPAPIORA.Models.DTOS.CitizenAttachmentDTO;
+using BISPAPIORA.Models.DTOS.CitizenThumbPrintDTO;
 
 namespace BISPAPIORA.Repositories.CitizenServicesRepo
 {
@@ -12,10 +16,14 @@ namespace BISPAPIORA.Repositories.CitizenServicesRepo
     {
         private readonly IMapper _mapper;
         private readonly Dbcontext db;
-        public CitizenService(IMapper mapper, Dbcontext db)
+        private readonly ICitizenAttachmentService attachmentService;
+        private readonly ICitizenThumbPrintService thumbprintService;
+        public CitizenService(IMapper mapper, Dbcontext db,ICitizenThumbPrintService thumbPrintService, ICitizenAttachmentService citizenAttachmentService)
         {
             _mapper = mapper;
             this.db = db;
+            this.attachmentService = attachmentService;
+            this.thumbprintService = thumbprintService;
         }
         #region Registered Citizen
         public async Task<ResponseModel<RegistrationResponseDTO>> AddRegisteredCitizen(AddRegistrationDTO model)
@@ -207,6 +215,21 @@ namespace BISPAPIORA.Repositories.CitizenServicesRepo
                     newCitizen = _mapper.Map<tbl_citizen>(model);
                     db.tbl_citizens.Add(newCitizen);
                     await db.SaveChangesAsync();
+                    var newAttachmentDto = new AddCitizenAttachmentDTO()
+                    {
+                        citizenAttachmentName = model.fileName,
+                        citizenAttachmentPath = model.filePath,
+                        fkCitizen = newCitizen.citizen_id.ToString()
+                    };
+                    var resposneOfattachment = await attachmentService.AddCitizenAttachment(newAttachmentDto);
+
+                    var newthumbPrintDto = new AddCitizenThumbPrintDTO()
+                    {
+                        citizenThumbPrintName = model.fileName,
+                        citizenThumbPrintPath = model.filePath,
+                        fkCitizen = newCitizen.citizen_id.ToString()
+                    };
+                    var responseOfThumbPrint = await thumbprintService.AddCitizenThumbPrint(newthumbPrintDto);
                     return new ResponseModel<EnrollmentResponseDTO>()
                     {
                         success = true,

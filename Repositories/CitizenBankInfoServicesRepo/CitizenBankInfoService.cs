@@ -207,10 +207,13 @@ namespace BISPAPIORA.Repositories.CitizenBankInfoServicesRepo
                 }
                 else
                 {
+                    var updateModel= _mapper.Map<UpdateEnrolledCitizenBankInfoDTO>(model);
+                    updateModel.CitizenBankInfoId = citizenBankInfo.citizen_bank_info_id.ToString();
+                    var response = await UpdateEnrolledCitizenBankInfo(updateModel);
                     return new ResponseModel<EnrolledCitizenBankInfoResponseDTO>()
                     {
-                        success = false,
-                        remarks = $"CitizenBankInfo with name already exists"
+                        success = response.success,
+                        remarks = response.remarks
                     };
                 }
             }
