@@ -435,10 +435,15 @@ namespace BISPAPIORA.Repositories.CitizenServicesRepo
         {
             try
             {
-                var existingRPFCitizen = await db.HiberProtectionAccounts.Where(x => x.Cnic == Decimal.Parse(citizenCnic)).FirstOrDefaultAsync();
-                if (existingRPFCitizen != null)
-                {
-                    var existingCitizen = await db.tbl_citizens.Where(x => x.citizen_cnic == citizenCnic).FirstOrDefaultAsync();
+                //var existingRPFCitizen = await db.HiberProtectionAccounts.Where(x => x.Cnic == Decimal.Parse(citizenCnic)).FirstOrDefaultAsync();
+                //if (existingRPFCitizen != null)
+                //{
+                    var existingCitizen = await db.tbl_citizens.Where(x => x.citizen_cnic == citizenCnic)
+                     .Include(x => x.tbl_citizen_tehsil).ThenInclude(x => x.tbl_district).ThenInclude(x => x.tbl_province)
+                    .Include(x => x.tbl_citizen_employment)
+                    .Include(x => x.tbl_citizen_education)
+                    .Include(x => x.tbl_citizen_scheme)
+                    .Include(x => x.tbl_citizen_bank_info).ThenInclude(x => x.tbl_bank).FirstOrDefaultAsync();
                     if (existingCitizen != null)
                     {
                         return new ResponseModel<RegistrationResponseDTO>()
@@ -452,20 +457,20 @@ namespace BISPAPIORA.Repositories.CitizenServicesRepo
                     {
                         return new ResponseModel<RegistrationResponseDTO>()
                         {
-                            data = _mapper.Map<RegistrationResponseDTO>(existingRPFCitizen),
-                            remarks = "Citizen found successfully",
-                            success = true,
+                            
+                            remarks = "No Record",
+                            success = false,
                         };
                     }
-                }
-                else
-                {
-                    return new ResponseModel<RegistrationResponseDTO>()
-                    {
-                        success = false,
-                        remarks = "No Record"
-                    };
-                }
+                //}
+                //else
+                //{
+                //    return new ResponseModel<RegistrationResponseDTO>()
+                //    {
+                //        success = false,
+                //        remarks = "No Record"
+                //    };
+                //}
             }
             catch (Exception ex)
             {

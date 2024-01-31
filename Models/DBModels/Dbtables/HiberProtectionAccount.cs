@@ -1,10 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 
 namespace BISPAPIORA.Models.DBModels.Dbtables;
 
 public partial class HiberProtectionAccount
 {
+    [Key]
     public decimal? Cnic { get; set; }
 
     public string? Name { get; set; }

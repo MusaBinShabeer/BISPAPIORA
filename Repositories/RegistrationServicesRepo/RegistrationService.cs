@@ -29,49 +29,42 @@ namespace BISPAPIORA.Repositories.RegistrationServicesRepo
             try
             {
                 var Citizen = await db.tbl_citizens.Where(x => x.citizen_cnic.ToLower().Equals(model.citizenCnic.ToLower())).FirstOrDefaultAsync();
-                var dbfCitizen = await db.HiberProtectionAccounts.Where(x => x.Cnic.ToString().Equals(model.citizenCnic.ToLower())).FirstOrDefaultAsync();
-                if (dbfCitizen == null)
+                //var dbfCitizen = await db.HiberProtectionAccounts.Where(x => x.Cnic.ToString().Equals(model.citizenCnic.ToLower())).FirstOrDefaultAsync();
+                //if (dbfCitizen == null)
+                //{
+                //var newDbfCitizen = await citizenService.AddRegisteredDBFCitizen(model);
+                //if (newDbfCitizen.success)
+                //{
+                if (Citizen == null)
                 {
-                    var newDbfCitizen = await citizenService.AddRegisteredDBFCitizen(model);
-                    if (newDbfCitizen.success)
+                    var newCitizen = await citizenService.AddRegisteredCitizen(model);
+                    if (newCitizen.success)
                     {
-                        var newCitizen = await citizenService.AddRegisteredCitizen(model);
-                        if (newCitizen.success)
+                        if (newCitizen.data != null)
                         {
-                            if (newCitizen.data != null)
+                            model.fkCitizen = newCitizen.data.citizenId;
+                            var newRegistration = new tbl_registration();
+                            newRegistration = _mapper.Map<tbl_registration>(model);
+                            await db.tbl_registrations.AddAsync(newRegistration);
+                            await db.SaveChangesAsync();
+                            AddRegisteredCitizenBankInfoDTO newBankInfoRequest = new AddRegisteredCitizenBankInfoDTO();
+                            newBankInfoRequest = _mapper.Map<AddRegisteredCitizenBankInfoDTO>(model);
+                            var newRegisteredBankInfo = await citizenBankService.AddRegisteredCitizenBankInfo(newBankInfoRequest);
+                            var response = _mapper.Map<RegistrationResponseDTO>(newCitizen.data);
+                            response.registrationId = newRegistration.registration_id.ToString();
+                            return new ResponseModel<RegistrationResponseDTO>()
                             {
-                                model.fkCitizen = newCitizen.data.citizenId;
-                                var newRegistration = new tbl_registration();
-                                newRegistration = _mapper.Map<tbl_registration>(model);
-                                await db.tbl_registrations.AddAsync(newRegistration);
-                                await db.SaveChangesAsync();
-                                AddRegisteredCitizenBankInfoDTO newBankInfoRequest = new AddRegisteredCitizenBankInfoDTO();
-                                newBankInfoRequest = _mapper.Map<AddRegisteredCitizenBankInfoDTO>(model);
-                                var newRegisteredBankInfo = await citizenBankService.AddRegisteredCitizenBankInfo(newBankInfoRequest);
-                                var response = _mapper.Map<RegistrationResponseDTO>(newCitizen.data);
-                                response.registrationId = newRegistration.registration_id.ToString();
-                                return new ResponseModel<RegistrationResponseDTO>()
-                                {
-                                    success = true,
-                                    remarks = $"Citizen {model.citizenName} has been registered successfully",
-                                    data = response,
-                                };
-                            }
-                            else
-                            {
-                                return new ResponseModel<RegistrationResponseDTO>()
-                                {
-                                    success = true,
-                                    remarks = $"Citizen {model.citizenName} has been not been registered successfully",
-                                };
-                            }
+                                success = true,
+                                remarks = $"Citizen {model.citizenName} has been registered successfully",
+                                data = response,
+                            };
                         }
                         else
                         {
                             return new ResponseModel<RegistrationResponseDTO>()
                             {
                                 success = true,
-                                remarks = newCitizen.remarks
+                                remarks = $"Citizen {model.citizenName} has been not been registered successfully",
                             };
                         }
                     }
@@ -80,9 +73,18 @@ namespace BISPAPIORA.Repositories.RegistrationServicesRepo
                         return new ResponseModel<RegistrationResponseDTO>()
                         {
                             success = true,
-                            remarks = newDbfCitizen.remarks
+                            remarks = newCitizen.remarks
                         };
                     }
+                    //}
+                    //else
+                    //{
+                    //    return new ResponseModel<RegistrationResponseDTO>()
+                    //    {
+                    //        success = true,
+                    //        remarks = newDbfCitizen.remarks
+                    //    };
+                    //}
                 }
                 else
                 {
@@ -90,9 +92,19 @@ namespace BISPAPIORA.Repositories.RegistrationServicesRepo
                     {
                         success = false,
                         remarks = $"Citizen with name {model.citizenName} already exists",
-                        data = _mapper.Map<RegistrationResponseDTO>(dbfCitizen),
+                        data = _mapper.Map<RegistrationResponseDTO>(Citizen),
                     };
                 }
+                //}
+                //else
+                //{
+                //    return new ResponseModel<RegistrationResponseDTO>()
+                //    {
+                //        success = false,
+                //        remarks = $"Citizen with name {model.citizenName} already exists",
+                //        data = _mapper.Map<RegistrationResponseDTO>(dbfCitizen),
+                //    };
+                //}
             }
             catch (Exception ex)
             {
