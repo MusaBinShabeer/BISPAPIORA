@@ -96,14 +96,14 @@ namespace BISPAPIORA.Repositories.EnrollmentServicesRepo
                 };
             }
         }
-        public async Task<ResponseModel<EnrollmentResponseDTO>> DeleteEnrollment(string registrationId)
+        public async Task<ResponseModel<EnrollmentResponseDTO>> DeleteEnrollment(string enrollmentId)
         {
             try
             {
-                var registration = await db.tbl_registrations.Where(x => x.registration_id == Guid.Parse(registrationId)).FirstOrDefaultAsync();
+                var registration = await db.tbl_enrollments.Where(x => x.enrollment_id == Guid.Parse(enrollmentId)).FirstOrDefaultAsync();
                 if (registration != null)
                 {
-                    db.tbl_registrations.Remove(registration);
+                    db.tbl_enrollments.Remove(registration);
                     await db.SaveChangesAsync();
                     return new ResponseModel<EnrollmentResponseDTO>()
                     {
@@ -129,11 +129,11 @@ namespace BISPAPIORA.Repositories.EnrollmentServicesRepo
                 };
             }
         }
-        public async Task<ResponseModel<EnrollmentResponseDTO>> GetEnrollment(string registrationId)
+        public async Task<ResponseModel<EnrollmentResponseDTO>> GetEnrollment(string enrollmentId)
         {
             try
             {
-                var existingCitizen = await db.tbl_registrations.Where(x => x.registration_id == Guid.Parse(registrationId)).Include(x => x.tbl_citizen).ThenInclude(x => x.tbl_citizen_tehsil).ThenInclude(x => x.tbl_district).ThenInclude(x => x.tbl_province).Include(x => x.tbl_citizen).ThenInclude(x => x.tbl_citizen_employment).Include(x => x.tbl_citizen).ThenInclude(x => x.tbl_citizen_education).FirstOrDefaultAsync();
+                var existingCitizen = await db.tbl_enrollments.Where(x => x.enrollment_id == Guid.Parse(enrollmentId)).Include(x => x.tbl_citizen).ThenInclude(x => x.tbl_citizen_tehsil).ThenInclude(x => x.tbl_district).ThenInclude(x => x.tbl_province).Include(x => x.tbl_citizen).ThenInclude(x => x.tbl_citizen_employment).Include(x => x.tbl_citizen).ThenInclude(x => x.tbl_citizen_education).FirstOrDefaultAsync();
                 if (existingCitizen != null)
                 {
                     return new ResponseModel<EnrollmentResponseDTO>()

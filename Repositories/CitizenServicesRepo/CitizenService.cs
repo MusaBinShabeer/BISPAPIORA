@@ -162,7 +162,39 @@ namespace BISPAPIORA.Repositories.CitizenServicesRepo
                 };
             }
         }
-        #endregion
+        public async Task<ResponseModel<List<RegistrationResponseDTO>>> GetRegisteredCitizensList()
+        {
+            try
+            {
+                var registerdCitizens = await db.tbl_registrations.Include(x => x.tbl_citizen).ThenInclude(x => x.tbl_citizen_tehsil).ThenInclude(x => x.tbl_district).ThenInclude(x => x.tbl_province).Include(x => x.tbl_citizen).ThenInclude(x => x.tbl_citizen_employment).Include(x => x.tbl_citizen).ThenInclude(x => x.tbl_citizen_education).Select(x => x.tbl_citizen).ToListAsync();
+                if (registerdCitizens.Count() > 0)
+                {
+                    return new ResponseModel<List<RegistrationResponseDTO>>()
+                    {
+                        data = _mapper.Map<List<RegistrationResponseDTO>>(registerdCitizens),
+                        remarks = "Success",
+                        success = true,
+                    };
+                }
+                else
+                {
+                    return new ResponseModel<List<RegistrationResponseDTO>>()
+                    {
+                        success = false,
+                        remarks = "No Record"
+                    };
+                }
+            }
+            catch (Exception ex)
+            {
+                return new ResponseModel<List<RegistrationResponseDTO>>()
+                {
+                    success = false,
+                    remarks = $"There Was Fatal Error {ex.Message.ToString()}"
+                };
+            }
+        }
+       
         #region Enrolled Citizen
         public async Task<ResponseModel<EnrollmentResponseDTO>> AddEnrolledCitizen(AddEnrollmentDTO model)
         {
@@ -271,6 +303,39 @@ namespace BISPAPIORA.Repositories.CitizenServicesRepo
                 };
             }
         }
+        public async Task<ResponseModel<List<EnrollmentResponseDTO>>> GetEnrolledCitizensList()
+        {
+            try
+            {
+                var enrolledCitizens = await db.tbl_enrollments.Include(x => x.tbl_citizen).ThenInclude(x => x.tbl_citizen_tehsil).ThenInclude(x => x.tbl_district).ThenInclude(x => x.tbl_province).Include(x => x.tbl_citizen).ThenInclude(x => x.tbl_citizen_employment).Include(x => x.tbl_citizen).ThenInclude(x => x.tbl_citizen_education).Select(x => x.tbl_citizen).ToListAsync();
+                if (enrolledCitizens.Count() > 0)
+                {
+                    return new ResponseModel<List<EnrollmentResponseDTO>>()
+                    {
+                        data = _mapper.Map<List<EnrollmentResponseDTO>>(enrolledCitizens),
+                        remarks = "Success",
+                        success = true,
+                    };
+                }
+                else
+                {
+                    return new ResponseModel<List<EnrollmentResponseDTO>>()
+                    {
+                        success = false,
+                        remarks = "No Record"
+                    };
+                }
+            }
+            catch (Exception ex)
+            {
+                return new ResponseModel<List<EnrollmentResponseDTO>>()
+                {
+                    success = false,
+                    remarks = $"There Was Fatal Error {ex.Message.ToString()}"
+                };
+            }
+        }
+        #endregion
         #endregion
         public async Task<ResponseModel<RegistrationResponseDTO>> DeleteCitizen(string CitizenId)
         {
@@ -299,38 +364,6 @@ namespace BISPAPIORA.Repositories.CitizenServicesRepo
             catch (Exception ex)
             {
                 return new ResponseModel<RegistrationResponseDTO>()
-                {
-                    success = false,
-                    remarks = $"There Was Fatal Error {ex.Message.ToString()}"
-                };
-            }
-        }
-        public async Task<ResponseModel<List<RegistrationResponseDTO>>> GetRegisteredCitizensList()
-        {
-            try
-            {
-                var registerdCitizens = await db.tbl_registrations.Include(x => x.tbl_citizen).ThenInclude(x => x.tbl_citizen_tehsil).ThenInclude(x => x.tbl_district).ThenInclude(x => x.tbl_province).Include(x => x.tbl_citizen).ThenInclude(x => x.tbl_citizen_employment).Include(x => x.tbl_citizen).ThenInclude(x => x.tbl_citizen_education).Select(x => x.tbl_citizen).ToListAsync();
-                if (registerdCitizens.Count() > 0)
-                {
-                    return new ResponseModel<List<RegistrationResponseDTO>>()
-                    {
-                        data = _mapper.Map<List<RegistrationResponseDTO>>(registerdCitizens),
-                        remarks = "Success",
-                        success = true,
-                    };
-                }
-                else
-                {
-                    return new ResponseModel<List<RegistrationResponseDTO>>()
-                    {
-                        success = false,
-                        remarks = "No Record"
-                    };
-                }
-            }
-            catch (Exception ex)
-            {
-                return new ResponseModel<List<RegistrationResponseDTO>>()
                 {
                     success = false,
                     remarks = $"There Was Fatal Error {ex.Message.ToString()}"

@@ -11,11 +11,11 @@ namespace BISPAPIORA.Controllers
     [ApiController]
     public class EnrollmentController : ControllerBase
     {
-        private readonly IEnrollmentService registrationService;
+        private readonly IEnrollmentService enrollmentService;
         private readonly ICitizenService citizenService;
-        public EnrollmentController(IEnrollmentService registrationService, ICitizenService citizenService)
+        public EnrollmentController(IEnrollmentService enrollmentService, ICitizenService citizenService)
         {
-            this.registrationService = registrationService;
+            this.enrollmentService = enrollmentService;
             this.citizenService = citizenService;
         }
         [HttpPost]
@@ -23,7 +23,7 @@ namespace BISPAPIORA.Controllers
         {
             if (ModelState.IsValid)
             {
-                var response = registrationService.AddEnrolledCitizen(model);
+                var response = enrollmentService.AddEnrolledCitizen(model);
                 return Ok(await response);
             }
             else
@@ -59,7 +59,7 @@ namespace BISPAPIORA.Controllers
         {
             if (ModelState.IsValid)
             {
-                var response = registrationService.DeleteEnrollment(id);
+                var response = enrollmentService.DeleteEnrollment(id);
                 return Ok(await response);
             }
             else
@@ -77,7 +77,7 @@ namespace BISPAPIORA.Controllers
         {
             if (!string.IsNullOrEmpty(id))
             {
-                var response = registrationService.GetEnrollment(id);
+                var response = enrollmentService.GetEnrollment(id);
                 return Ok(await response);
             }
             else
@@ -93,7 +93,7 @@ namespace BISPAPIORA.Controllers
         [HttpGet]
         public async Task<ActionResult<ResponseModel<List<EnrollmentResponseDTO>>>> Get()
         {
-            var response = citizenService.GetRegisteredCitizensList();
+            var response = citizenService.GetEnrolledCitizensList();
             return Ok(await response);
         }
     }
