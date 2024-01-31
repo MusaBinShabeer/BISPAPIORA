@@ -484,7 +484,7 @@ namespace BISPAPIORA.Repositories.CitizenServicesRepo
                         return new ResponseModel<RegistrationResponseDTO>()
                         {
                             
-                            remarks = "No Record",
+                            remarks = "Applicant Not Registered",
                             success = false,
                         };
                     }
