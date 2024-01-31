@@ -17,13 +17,16 @@ namespace BISPAPIORA.Controllers
     {
 
         private static readonly FormOptions _defaultFormOptions = new FormOptions();
+        private readonly IFileManagerService fileManagerService;
 
-        FileManagerController() { }
+        public FileManagerController(IFileManagerService fileManagerService) { this.fileManagerService = fileManagerService; }
         [HttpPost, DisableRequestSizeLimit]
         [DisableFormValueModelBinding]
         [Route("[Action]")]
-        public async Task<IActionResult> UploadFile([FromQuery] string allowedExtensions)
+        public async Task<IActionResult> UploadFile( )
         {
+            string fileNameWithoutExtension = "";
+            string fileExtension = "";
             #region Multipart
             if (!MultipartMiddleware.IsMultipartContentType(Request.ContentType))
             {
@@ -58,11 +61,14 @@ namespace BISPAPIORA.Controllers
                         // Don't trust the file name sent by the client. To display
                         // the file name, HTML-encode the value.
                         trustedFileNameForDisplay = WebUtility.HtmlEncode(
-                                contentDisposition.FileName.Value);
-
+                                contentDisposition.FileName.Value); 
+                        fileNameWithoutExtension = Path.GetFileNameWithoutExtension(untrustedFileNameForStorage);
+                        fileExtension = Path.GetExtension(untrustedFileNameForStorage);
+                        var stringArray= new string[1];
+                        stringArray[0] = fileExtension;
                         streamedFileContent =
                             await FileAuthentication.ProcessStreamedFile(section, contentDisposition,
-                                ModelState, allowedExtensions.Split(','), int.MaxValue);
+                                ModelState, stringArray, int.MaxValue);
 
                         if (!ModelState.IsValid)
                         {
@@ -145,7 +151,7 @@ namespace BISPAPIORA.Controllers
 
                 return BadRequest(ModelState);
             }
-            //var response = await fileManagerService.UploadFile(streamedFileContent, untrustedFileNameForStorage,);
+            var response = await fileManagerService.UploadFileAsync(streamedFileContent, fileNameWithoutExtension,fileExtension);
             return Ok();
         }
     }
