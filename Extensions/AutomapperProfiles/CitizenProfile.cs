@@ -32,7 +32,7 @@ namespace BISPAPIORA.Extensions.AutomapperProfiles
              .ForMember(d => d.citizen_address, opt => opt.MapFrom((src, dest) => otherServices.Check(src.citizenAddress) ? src.citizenAddress : dest.citizen_address))
              .ForMember(d => d.fk_tehsil, opt => opt.MapFrom((src, dest) => otherServices.Check(src.fkTehsil) ? Guid.Parse(src.fkTehsil) : dest.fk_tehsil))
              .ForMember(d => d.fk_citizen_education, opt => opt.MapFrom((src, dest) => otherServices.Check(src.fkEducation) ? Guid.Parse(src.fkEducation) : dest.fk_citizen_education))
-             .ForMember(d => d.tbl_citizen_employment, opt => opt.MapFrom((src, dest) => otherServices.Check(src.fkEmployment) ? Guid.Parse(src.fkEmployment) : dest.fk_citizen_employment))
+             .ForMember(d => d.fk_citizen_employment, opt => opt.MapFrom((src, dest) => otherServices.Check(src.fkEmployment) ? Guid.Parse(src.fkEmployment) : dest.fk_citizen_employment))
              .ForMember(d => d.citizen_cnic, opt => opt.MapFrom((src, dest) => otherServices.Check(src.citizenCnic) ? src.citizenCnic : dest.citizen_cnic));
             CreateMap<tbl_registration, RegistrationResponseDTO>()
              .ForMember(d => d.registrationId, opt => opt.MapFrom(src => src.registration_id))
@@ -56,8 +56,6 @@ namespace BISPAPIORA.Extensions.AutomapperProfiles
              .ForMember(d => d.accountHolderName, opt => opt.MapFrom((src) => src.tbl_citizen.tbl_citizen_bank_info.account_holder_name))
              .ForMember(d => d.aIOA, opt => opt.MapFrom((src) => src.tbl_citizen.tbl_citizen_bank_info.a_i_o_f))
              .ForMember(d => d.familySavingAccount, opt => opt.MapFrom((src) => src.tbl_citizen.tbl_citizen_bank_info.family_saving_account))
-             .ForMember(d => d.fkCitizen, opt => opt.MapFrom(src => (src.tbl_citizen.tbl_citizen_bank_info.fk_citizen)))
-             .ForMember(d => d.citizenName, opt => opt.MapFrom((src) => src.tbl_citizen.tbl_citizen_bank_info.tbl_citizen.citizen_name))
              .ForMember(d => d.fkBank, opt => opt.MapFrom(src => (src.tbl_citizen.tbl_citizen_bank_info.fk_bank)))
              .ForMember(d => d.bankName, opt => opt.MapFrom((src) => src.tbl_citizen.tbl_citizen_bank_info.tbl_bank.bank_name));
             CreateMap<tbl_citizen, RegistrationResponseDTO>()
@@ -80,10 +78,26 @@ namespace BISPAPIORA.Extensions.AutomapperProfiles
             .ForMember(d => d.accountHolderName, opt => opt.MapFrom((src) => src.tbl_citizen_bank_info.account_holder_name))
             .ForMember(d => d.aIOA, opt => opt.MapFrom((src) => src.tbl_citizen_bank_info.a_i_o_f))
             .ForMember(d => d.familySavingAccount, opt => opt.MapFrom((src) => src.tbl_citizen_bank_info.family_saving_account))
-            .ForMember(d => d.fkCitizen, opt => opt.MapFrom(src => (src.tbl_citizen_bank_info.fk_citizen)))
-            .ForMember(d => d.citizenName, opt => opt.MapFrom((src) => src.tbl_citizen_bank_info.tbl_citizen.citizen_name))
             .ForMember(d => d.fkBank, opt => opt.MapFrom(src => (src.tbl_citizen_bank_info.fk_bank)))
             .ForMember(d => d.bankName, opt => opt.MapFrom((src) => src.tbl_citizen_bank_info.tbl_bank.bank_name));
+            CreateMap<HiberProtectionAccount, RegistrationResponseDTO>()
+            .ForMember(d => d.citizenId, opt => opt.MapFrom(src => src.Cnic))
+            .ForMember(d => d.citizenName, opt => opt.MapFrom(src => src.Name))
+            .ForMember(d => d.citizenPhoneNo, opt => opt.MapFrom(src => src.MobileNo))
+            .ForMember(d => d.citizenGender, opt => opt.MapFrom(src => (GenderEnum)Enum.Parse(typeof(GenderEnum), src.Gender)))
+            .ForMember(d => d.genderName, opt => opt.MapFrom(src => src.Gender))
+            .ForMember(d => d.citizenAddress, opt => opt.MapFrom(src => src.Address))
+            .ForMember(d => d.tehsilName, opt => opt.MapFrom(src =>src.Tehsil))
+            .ForMember(d => d.districtName, opt => opt.MapFrom(src => src.District))
+            .ForMember(d => d.provinceName, opt => opt.MapFrom(src => src.Province))
+            .ForMember(d => d.employmentName, opt => opt.MapFrom(src => src.EmployementStatus))
+            .ForMember(d => d.educationName, opt => opt.MapFrom(src =>src.EducationalStatus))
+            .ForMember(d => d.citizenCnic, opt => opt.MapFrom(src => src.Cnic))
+            .ForMember(d => d.ibanNo, opt => opt.MapFrom((src) => src.BankAccount))
+            .ForMember(d => d.accountHolderName, opt => opt.MapFrom((src) => src.AccountTitle))
+            .ForMember(d => d.familySavingAccount, opt => opt.MapFrom((src) => ""))
+            .ForMember(d => d.bankName, opt => opt.MapFrom((src) => src.Bank));
+
             #endregion
             #region Enrolled Citizen
             CreateMap<AddEnrollmentDTO, tbl_citizen>()

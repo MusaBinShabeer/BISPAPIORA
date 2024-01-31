@@ -402,5 +402,95 @@ namespace BISPAPIORA.Repositories.CitizenServicesRepo
                 };
             }
         }
+        public async Task<ResponseModel<RegistrationResponseDTO>> GetRegisteredCitizenByCnic(string citizenCnic)
+        {
+            try
+            {
+                var existingRPFCitizen = await db.HiberProtectionAccounts.Where(x => x.Cnic == Decimal.Parse(citizenCnic)).FirstOrDefaultAsync();
+                if (existingRPFCitizen != null)
+                {
+                    var existingCitizen = await db.tbl_citizens.Where(x => x.citizen_cnic == citizenCnic).FirstOrDefaultAsync();
+                    if (existingCitizen != null)
+                    {
+                        return new ResponseModel<RegistrationResponseDTO>()
+                        {
+                            data = _mapper.Map<RegistrationResponseDTO>(existingCitizen),
+                            remarks = "Citizen found successfully",
+                            success = true,
+                        };
+                    }
+                    else
+                    {
+                        return new ResponseModel<RegistrationResponseDTO>()
+                        {
+                            data = _mapper.Map<RegistrationResponseDTO>(existingRPFCitizen),
+                            remarks = "Citizen found successfully",
+                            success = true,
+                        };
+                    }
+                }
+                else
+                {
+                    return new ResponseModel<RegistrationResponseDTO>()
+                    {
+                        success = false,
+                        remarks = "No Record"
+                    };
+                }
+            }
+            catch (Exception ex)
+            {
+                return new ResponseModel<RegistrationResponseDTO>()
+                {
+                    success = false,
+                    remarks = $"There Was Fatal Error {ex.Message.ToString()}"
+                };
+            }
+        }
+        public async Task<ResponseModel<EnrollmentResponseDTO>> GetEnrolledCitizenByCnic(string citizenCnic)
+        {
+            try
+            {
+                var existingRPFCitizen = await db.HiberProtectionAccounts.Where(x => x.Cnic == Decimal.Parse(citizenCnic)).FirstOrDefaultAsync();
+                if (existingRPFCitizen != null)
+                {
+                    var existingCitizen = await db.tbl_citizens.Where(x => x.citizen_cnic == citizenCnic).FirstOrDefaultAsync();
+                    if (existingCitizen != null)
+                    {
+                        return new ResponseModel<EnrollmentResponseDTO>()
+                        {
+                            data = _mapper.Map<EnrollmentResponseDTO>(existingCitizen),
+                            remarks = "Citizen found successfully",
+                            success = true,
+                        };
+                    }
+                    else
+                    {
+                        return new ResponseModel<EnrollmentResponseDTO>()
+                        {
+                            data = _mapper.Map<EnrollmentResponseDTO>(existingRPFCitizen),
+                            remarks = "Citizen found successfully",
+                            success = true,
+                        };
+                    }
+                }
+                else
+                {
+                    return new ResponseModel<EnrollmentResponseDTO>()
+                    {
+                        success = false,
+                        remarks = "No Record"
+                    };
+                }
+            }
+            catch (Exception ex)
+            {
+                return new ResponseModel<EnrollmentResponseDTO>()
+                {
+                    success = false,
+                    remarks = $"There Was Fatal Error {ex.Message.ToString()}"
+                };
+            }
+        }
     }
 }

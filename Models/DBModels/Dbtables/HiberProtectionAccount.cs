@@ -61,9 +61,9 @@ public partial class HiberProtectionAccount
 
     public DateTime? InsertionTimestamp { get; set; }
 
-    public decimal? UniqueHhId { get; set; }
+    public decimal? UniqueHhId { get; set; } // Unique HouseholdId
 
-    public DateTime? SubmissionDate { get; set; }
+    public DateTime? SubmissionDate { get; set; } // through form submission date
 
-    public string? Pmt { get; set; }
+    public string? Pmt { get; set; } // poverty score 40 =< eligible
 }

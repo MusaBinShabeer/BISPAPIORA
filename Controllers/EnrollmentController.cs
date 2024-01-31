@@ -90,6 +90,24 @@ namespace BISPAPIORA.Controllers
                 return BadRequest(response);
             }
         }
+        [HttpGet("GetByCnic")]
+        public async Task<ActionResult<ResponseModel<EnrollmentResponseDTO>>> GetByCnic(string cnic)
+        {
+            if (!string.IsNullOrEmpty(cnic))
+            {
+                var response = registrationService.GetEnrollment(cnic);
+                return Ok(await response);
+            }
+            else
+            {
+                var response = new ResponseModel<EnrollmentResponseDTO>()
+                {
+                    remarks = "Parameter missing",
+                    success = false
+                };
+                return BadRequest(response);
+            }
+        }
         [HttpGet]
         public async Task<ActionResult<ResponseModel<List<EnrollmentResponseDTO>>>> Get()
         {

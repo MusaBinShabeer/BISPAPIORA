@@ -1,6 +1,8 @@
 ﻿using BISPAPIORA.Models.DTOS.DistrictDTO;
 using BISPAPIORA.Models.DTOS.ResponseDTO;
+using BISPAPIORA.Models.DTOS.TehsilDTO;
 using BISPAPIORA.Repositories.DistrictServicesRepo;
+using BISPAPIORA.Repositories.TehsilServicesRepo;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
@@ -92,6 +94,24 @@ namespace BISPAPIORA.Controllers
         {
             var response = districtService.GetDistrictsList();
             return Ok(await response);
+        }
+        [HttpGet("GetByProvinceId")]
+        public async Task<ActionResult<ResponseModel<List<TehsilResponseDTO>>>> GetByProvinceId(string id)
+        {
+            if (!string.IsNullOrEmpty(id))
+            {
+                var response = districtService.GetDistrictByProviceId(id);
+                return Ok(await response);
+            }
+            else
+            {
+                var response = new ResponseModel<TehsilResponseDTO>()
+                {
+                    remarks = "Parameter missing",
+                    success = false
+                };
+                return BadRequest(response);
+            }
         }
     }
 }

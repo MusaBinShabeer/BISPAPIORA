@@ -11,5 +11,6 @@ namespace BISPAPIORA.Repositories.DistrictServicesRepo
         public Task<ResponseModel<List<DistrictResponseDTO>>> GetDistrictsList();
         public Task<ResponseModel<DistrictResponseDTO>> GetDistrict(string districtId);
         public Task<ResponseModel<DistrictResponseDTO>> UpdateDistrict(UpdateDistrictDTO model);
+        public Task<ResponseModel<List<DistrictResponseDTO>>> GetDistrictByProviceId(string provinceId);
     }
 }
