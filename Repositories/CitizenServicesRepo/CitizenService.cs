@@ -350,7 +350,7 @@ namespace BISPAPIORA.Repositories.CitizenServicesRepo
                     .Include(x => x.tbl_citizen).ThenInclude(x => x.tbl_citizen_employment)
                     .Include(x => x.tbl_citizen).ThenInclude(x => x.tbl_citizen_education)
                     .Include(x=>x.tbl_citizen).ThenInclude(x=>x.tbl_citizen_scheme)
-                    .Include(x => x.tbl_citizen).ThenInclude(x => x.tbl_citizen_bank_info).ThenInclude(x=>x.tbl_bank).Select(x => x.tbl_citizen).ToListAsync();
+                    .Include(x => x.tbl_citizen).ThenInclude(x => x.tbl_citizen_bank_info).ThenInclude(x=>x.tbl_bank).ToListAsync();
                 if (enrolledCitizens.Count() > 0)
                 {
                     var resposne = _mapper.Map<List<EnrollmentResponseDTO>>(enrolledCitizens);
