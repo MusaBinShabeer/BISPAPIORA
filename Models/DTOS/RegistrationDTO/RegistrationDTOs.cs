@@ -44,6 +44,7 @@ namespace BISPAPIORA.Models.DTOS.RegistrationDTO
     }
     public class RegistrationResponseDTO : RegistrationDTOs
     {
+        public string enrollmentId { get; set; } = string.Empty;
         public string registrationId { get; set; } = string.Empty;
         public string citizenId { get; set; } = string.Empty;
         public string tehsilName { get; set; } = string.Empty;
