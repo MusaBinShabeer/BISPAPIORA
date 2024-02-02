@@ -251,6 +251,19 @@ public partial class Dbcontext : DbContext
                 .IsUnicode(false)
                 .HasDefaultValueSql("''")
                 .HasColumnName("CITIZEN_PHONE_NO");
+            entity.Property(e => e.is_valid_beneficiary)
+               .HasPrecision(1)
+               .HasColumnName("IS_VALID_BENEFICIARY");
+            entity.Property(e => e.pmt)
+                .HasMaxLength(255)
+                .IsUnicode(false)
+                .HasColumnName("PMT");
+            entity.Property(e => e.submission_date)
+                .HasPrecision(6)
+                .HasColumnName("SUBMISSION_DATE");
+            entity.Property(e => e.unique_hh_id)
+                .HasColumnType("NUMBER")
+                .HasColumnName("UNIQUE_HH_ID");
             entity.Property(e => e.fk_citizen_education).HasColumnName("FK_CITIZEN_EDUCATION");
             entity.Property(e => e.fk_citizen_employment).HasColumnName("FK_CITIZEN_EMPLOYMENT");
             entity.Property(e => e.fk_tehsil).HasColumnName("FK_TEHSIL");
