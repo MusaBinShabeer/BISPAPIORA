@@ -482,7 +482,7 @@ namespace BISPAPIORA.Repositories.CitizenServicesRepo
                     {
                             
                         remarks = "No Record",
-                        success = false,
+                        success = true,
                     };
                 }
                 
