@@ -38,10 +38,13 @@ namespace BISPAPIORA.Repositories.CitizenSchemeServicesRepo
                 }
                 else
                 {
+                    var existingCitizenScheme = _mapper.Map<UpdateCitizenSchemeDTO>(model);
+                    existingCitizenScheme.citizenSchemeId = citizenScheme.citizen_scheme_id.ToString();
+                    var response = await UpdateCitizenScheme(existingCitizenScheme);
                     return new ResponseModel<CitizenSchemeResponseDTO>()
                     {
-                        success = false,
-                        remarks = $"Citizen Scheme with name already exists"
+                        success = response.success,
+                        remarks = response.remarks
                     };
                 }
             }

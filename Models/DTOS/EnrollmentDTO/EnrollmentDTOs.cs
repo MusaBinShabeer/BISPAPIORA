@@ -23,6 +23,7 @@ namespace BISPAPIORA.Models.DTOS.EnrollmentDTO
         public string filePath { get; set; } = string.Empty;
         public string thumbPrintName { get; set; } = string.Empty;
         public string thumbPrintPath { get; set; } = string.Empty;
+        public string quarterCode { get; set; } = string.Empty;
     }
     public class AddEnrollmentDTO : EnrollmentDTO
     {
@@ -42,6 +43,8 @@ namespace BISPAPIORA.Models.DTOS.EnrollmentDTO
         public new string citizenSchemeStartingMonth { get; set; } = string.Empty;
         [Required]
         public new double citizenSchemeSavingAmount { get; set; } = 0.0;
+        [Required]
+        public new string quarterCode { get; set; } = string.Empty;
         [Required]
         public new string fkTehsil { get; set; } = string.Empty;
         [Required]
@@ -66,6 +69,8 @@ namespace BISPAPIORA.Models.DTOS.EnrollmentDTO
         public string employmentName { get; set; } = string.Empty;
         public string BankName { get; set; } = string.Empty;
         public string genderName { get; set; } = string.Empty;
-      
+        public string fkProvince { get; set; } = string.Empty;
+        public string fkDistrict { get; set; } = string.Empty;
+
     }
 }

@@ -16,7 +16,8 @@ namespace BISPAPIORA.Extensions.AutomapperProfiles
             CreateMap<AddRegistrationDTO, tbl_registration>()
             .ForMember(d => d.fk_citizen, opt => opt.MapFrom(src => Guid.Parse(src.fkCitizen)));
             CreateMap<AddEnrollmentDTO, tbl_enrollment>()
-           .ForMember(d => d.fk_citizen, opt => opt.MapFrom(src => Guid.Parse(src.fkCitizen)));
+            //.ForMember(d => d.quarter_code, opt => opt.MapFrom(src => src.quarterCode))
+            .ForMember(d => d.fk_citizen, opt => opt.MapFrom(src => Guid.Parse(src.fkCitizen)));
             CreateMap<AddEnrollmentDTO, UpdateEnrollmentDTO>()
             .ForMember(d => d.citizenName, opt => opt.MapFrom(src => src.citizenName))
             .ForMember(d => d.citizenPhoneNo, opt => opt.MapFrom(src => src.citizenPhoneNo))
@@ -28,7 +29,8 @@ namespace BISPAPIORA.Extensions.AutomapperProfiles
             .ForMember(d => d.fkEmployment, opt => opt.MapFrom(src => Guid.Parse(src.fkEmployment)))
             .ForMember(d => d.fkEducation, opt => opt.MapFrom(src => Guid.Parse(src.fkEducation)))
             .ForMember(d => d.dateOfBirth, opt => opt.MapFrom((src, dest) => otherServices.Check(src.dateOfBirth) ? src.dateOfBirth : dest.dateOfBirth))
-            .ForMember(d => d.citizenCnic, opt => opt.MapFrom(src => src.citizenCnic));
+            .ForMember(d => d.citizenCnic, opt => opt.MapFrom(src => src.citizenCnic))
+            .ForMember(d => d.quarterCode, opt => opt.MapFrom(src => src.quarterCode));
 
         }
     }
