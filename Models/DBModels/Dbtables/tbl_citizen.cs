@@ -44,4 +44,11 @@ public partial class tbl_citizen
     public virtual tbl_registration? tbl_citizen_registration { get; set; }
     public virtual tbl_citizen_attachment? tbl_citizen_attachment { get; set; }
     public virtual tbl_citizen_thumb_print? tbl_citizen_thumb_print { get; set; }
+    public decimal? is_valid_beneficiary { get; set; }
+
+    public decimal? unique_hh_id { get; set; } // Unique HouseholdId
+
+    public DateTime? submission_date { get; set; } // through form submission date
+
+    public string? pmt { get; set; } // poverty score 40 =< eligible
 }
