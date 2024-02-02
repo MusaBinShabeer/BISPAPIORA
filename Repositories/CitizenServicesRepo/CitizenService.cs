@@ -454,7 +454,7 @@ namespace BISPAPIORA.Repositories.CitizenServicesRepo
                 //if (existingRPFCitizen != null)
                 //{
                     var existingCitizen = await db.tbl_citizens.Where(x => x.citizen_cnic == citizenCnic)
-                     .Include(x => x.tbl_citizen_tehsil).ThenInclude(x => x.tbl_district).ThenInclude(x => x.tbl_province)
+                    .Include(x => x.tbl_citizen_tehsil).ThenInclude(x => x.tbl_district).ThenInclude(x => x.tbl_province)
                     .Include(x => x.tbl_citizen_employment)
                     .Include(x => x.tbl_citizen_education)
                     .Include(x => x.tbl_citizen_scheme)
