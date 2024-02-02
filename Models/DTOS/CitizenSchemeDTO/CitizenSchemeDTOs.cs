@@ -8,7 +8,7 @@ namespace BISPAPIORA.Models.DTOS.CitizenSchemeDTO
         public string citizenSchemeQuarter { get; set; } = string.Empty;
         public string citizenSchemeStartingMonth { get; set; } = string.Empty;
         public double citizenSchemeSavingAmount { get; set; } = 0.0;
-        public string quarterCode { get; set; } = string.Empty;
+        public int quarterCode { get; set; } = 0;
         public string fkCitizen { get; set; } = string.Empty;
     }
     public class AddCitizenSchemeDTO : CitizenSchemeDTO
@@ -22,7 +22,7 @@ namespace BISPAPIORA.Models.DTOS.CitizenSchemeDTO
         [Required]
         public new double citizenSchemeSavingAmount { get; set; } = 0.0;
         [Required]
-        public new string quarterCode { get; set; } = string.Empty;
+        public new int quarterCode { get; set; } = 0;
         [Required]
         public new string fkCitizen { get; set; } = string.Empty;
     }
