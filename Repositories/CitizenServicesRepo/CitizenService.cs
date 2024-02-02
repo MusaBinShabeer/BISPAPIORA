@@ -446,21 +446,18 @@ namespace BISPAPIORA.Repositories.CitizenServicesRepo
                 };
             }
         }
-        public async Task<ResponseModel<RegistrationResponseDTO>> GetRegisteredCitizenByCnic(string citizenCnic)
+        public async Task<ResponseModel<RegistrationResponseDTO>> VerifyCitizenRegistrationWithCNIC(string citizenCnic)
         {
             try
             {
-                //var existingRPFCitizen = await db.HiberProtectionAccounts.Where(x => x.Cnic == Decimal.Parse(citizenCnic)).FirstOrDefaultAsync();
-                //if (existingRPFCitizen != null)
-                //{
-                    var existingCitizen = await db.tbl_citizens.Where(x => x.citizen_cnic == citizenCnic)
-                    .Include(x => x.tbl_citizen_tehsil).ThenInclude(x => x.tbl_district).ThenInclude(x => x.tbl_province)
-                    .Include(x => x.tbl_citizen_employment)
-                    .Include(x => x.tbl_citizen_education)
-                    .Include(x => x.tbl_citizen_scheme)
-                    .Include(x=>x.tbl_citizen_registration)
-                    .Include(x=>x.tbl_enrollment)
-                    .Include(x => x.tbl_citizen_bank_info).ThenInclude(x => x.tbl_bank).FirstOrDefaultAsync();
+                var existingCitizen = await db.tbl_citizens.Where(x => x.citizen_cnic == citizenCnic)
+                .Include(x => x.tbl_citizen_tehsil).ThenInclude(x => x.tbl_district).ThenInclude(x => x.tbl_province)
+                .Include(x => x.tbl_citizen_employment)
+                .Include(x => x.tbl_citizen_education)
+                .Include(x => x.tbl_citizen_scheme)
+                .Include(x=>x.tbl_citizen_registration)
+                .Include(x=>x.tbl_enrollment)
+                .Include(x => x.tbl_citizen_bank_info).ThenInclude(x => x.tbl_bank).FirstOrDefaultAsync();
                 if (existingCitizen != null)
                 {
                     var response = _mapper.Map<RegistrationResponseDTO>(existingCitizen);
@@ -472,31 +469,72 @@ namespace BISPAPIORA.Repositories.CitizenServicesRepo
                     {
                         response.isRegisteered = true;
                     }
-                        return new ResponseModel<RegistrationResponseDTO>()
-                        {
-                            data = response,
-                            remarks = "Citizen found successfully",
-                            success = true,
-                        };
-                    }
-                    else
+                    return new ResponseModel<RegistrationResponseDTO>()
                     {
-                        return new ResponseModel<RegistrationResponseDTO>()
-                        {
+                        data = response,
+                        remarks = "Citizen found successfully",
+                        success = true,
+                    };
+                }
+                else
+                {
+                    return new ResponseModel<RegistrationResponseDTO>()
+                    {
                             
-                            remarks = "Applicant Not Registered",
-                            success = false,
-                        };
+                        remarks = "No Record",
+                        success = false,
+                    };
+                }
+                
+            }
+            catch (Exception ex)
+            {
+                return new ResponseModel<RegistrationResponseDTO>()
+                {
+                    success = false,
+                    remarks = $"There Was Fatal Error {ex.Message.ToString()}"
+                };
+            }
+        }
+        public async Task<ResponseModel<RegistrationResponseDTO>> GetRegisteredCitizenByCnic(string citizenCnic)
+        {
+            try
+            {
+                var existingCitizen = await db.tbl_citizens.Where(x => x.citizen_cnic == citizenCnic)
+                .Include(x => x.tbl_citizen_tehsil).ThenInclude(x => x.tbl_district).ThenInclude(x => x.tbl_province)
+                .Include(x => x.tbl_citizen_employment)
+                .Include(x => x.tbl_citizen_education)
+                .Include(x => x.tbl_citizen_scheme)
+                .Include(x => x.tbl_citizen_registration)
+                .Include(x => x.tbl_enrollment)
+                .Include(x => x.tbl_citizen_bank_info).ThenInclude(x => x.tbl_bank).FirstOrDefaultAsync();
+                if (existingCitizen != null)
+                {
+                    var response = _mapper.Map<RegistrationResponseDTO>(existingCitizen);
+                    if (existingCitizen.tbl_enrollment != null)
+                    {
+                        response.isEnrolled = true;
                     }
-                //}
-                //else
-                //{
-                //    return new ResponseModel<RegistrationResponseDTO>()
-                //    {
-                //        success = false,
-                //        remarks = "No Record"
-                //    };
-                //}
+                    if (existingCitizen.tbl_citizen_registration != null)
+                    {
+                        response.isRegisteered = true;
+                    }
+                    return new ResponseModel<RegistrationResponseDTO>()
+                    {
+                        data = response,
+                        remarks = "Citizen found successfully",
+                        success = true,
+                    };
+                }
+                else
+                {
+                    return new ResponseModel<RegistrationResponseDTO>()
+                    {
+
+                        remarks = "Applicant Not Registered",
+                        success = false,
+                    };
+                }
             }
             catch (Exception ex)
             {
