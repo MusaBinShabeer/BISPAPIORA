@@ -23,7 +23,7 @@ namespace BISPAPIORA.Models.DTOS.EnrollmentDTO
         public string filePath { get; set; } = string.Empty;
         public string thumbPrintName { get; set; } = string.Empty;
         public string thumbPrintPath { get; set; } = string.Empty;
-        public string quarterCode { get; set; } = string.Empty;
+        public int quarterCode { get; set; } = 0;
     }
     public class AddEnrollmentDTO : EnrollmentDTO
     {
@@ -44,7 +44,7 @@ namespace BISPAPIORA.Models.DTOS.EnrollmentDTO
         [Required]
         public new double citizenSchemeSavingAmount { get; set; } = 0.0;
         [Required]
-        public new string quarterCode { get; set; } = string.Empty;
+        public new int quarterCode { get; set; } = 0;
         [Required]
         public new string fkTehsil { get; set; } = string.Empty;
         [Required]
