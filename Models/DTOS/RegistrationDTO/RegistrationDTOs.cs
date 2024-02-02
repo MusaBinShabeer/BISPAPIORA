@@ -12,9 +12,9 @@ namespace BISPAPIORA.Models.DTOS.RegistrationDTO
         public string fkEducation { get; set; } = string.Empty;
         public string accountHolderName { get; set; } = string.Empty;
         public double aIOA { get; set; } = 0.0;                         //Average Income Of Account
-        public bool familySavingAccount { get; set; } = false;
-        public string fileName { get; set; } = string.Empty;
-        public string filePath { get; set; } = string.Empty;
+        public bool familySavingAccount { get; set; } = false;      
+        public string fkBank { get; set; } = string.Empty;
+        public string ibanNo { get; set; } = string.Empty;
     }
     public class AddRegistrationDTO : RegistrationDTOs
     {
@@ -26,15 +26,10 @@ namespace BISPAPIORA.Models.DTOS.RegistrationDTO
         [Required]
         public new string fkEducation { get; set; } = string.Empty;
         [Required]
-        public new string accountHolderName { get; set; } = string.Empty;
-        [Required]
         public new double aIOA { get; set; } = 0.0;                         //Average Income Of Account
         [Required]
-        public new bool familySavingAccount { get; set; } = false; 
-        [Required]
-        public string fkBank { get; set; } = string.Empty;
-        [Required]
-        public string ibanNo { get; set; } = string.Empty;
+        public new bool familySavingAccount { get; set; } = false;        
+       
 
     }
     public class UpdateRegistrationDTO : RegistrationDTOs
@@ -54,8 +49,6 @@ namespace BISPAPIORA.Models.DTOS.RegistrationDTO
         public string educationName { get; set; } = string.Empty;
         public string genderName { get; set; } = string.Empty;
         public string bankName { get; set; } = string.Empty;
-        public string ibanNo { get; set; } = string.Empty;
-        public string fkBank { get; set; } = string.Empty;
         public bool isRegisteered { get; set; } = false;
         public bool isEnrolled { get; set; } = false;
     }
