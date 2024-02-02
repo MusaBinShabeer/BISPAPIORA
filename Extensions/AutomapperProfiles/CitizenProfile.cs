@@ -59,6 +59,7 @@ namespace BISPAPIORA.Extensions.AutomapperProfiles
              .ForMember(d => d.fkBank, opt => opt.MapFrom(src => (src.tbl_citizen.tbl_citizen_bank_info.fk_bank)))
              .ForMember(d => d.bankName, opt => opt.MapFrom((src) => src.tbl_citizen.tbl_citizen_bank_info.tbl_bank.bank_name));
             CreateMap<tbl_citizen, RegistrationResponseDTO>()
+              .ForMember(d => d.enrollmentId, opt => opt.MapFrom(src => src.tbl_enrollment != null ? src.tbl_enrollment.enrollment_id.ToString() : ""))
             .ForMember(d => d.citizenId, opt => opt.MapFrom(src => src.citizen_id))
             .ForMember(d => d.citizenName, opt => opt.MapFrom(src => src.citizen_name))
             .ForMember(d => d.citizenPhoneNo, opt => opt.MapFrom(src => src.citizen_phone_no))
@@ -118,11 +119,12 @@ namespace BISPAPIORA.Extensions.AutomapperProfiles
              .ForMember(d => d.citizen_id, opt => opt.MapFrom((src, dest) => dest.citizen_id))
              .ForMember(d => d.citizen_name, opt => opt.MapFrom((src, dest) => otherServices.Check(src.citizenName) ? src.citizenName : dest.citizen_name))
              .ForMember(d => d.citizen_phone_no, opt => opt.MapFrom((src, dest) => otherServices.Check(src.citizenPhoneNo) ? src.citizenPhoneNo : dest.citizen_phone_no))
-             .ForMember(d => d.citizen_martial_status, opt => opt.MapFrom((src, dest) => otherServices.Check(src.maritalStatus) ? $"{(GenderEnum)src.maritalStatus}" : dest.citizen_martial_status))
+             .ForMember(d => d.citizen_martial_status, opt => opt.MapFrom((src, dest) => otherServices.Check(src.maritalStatus) ? $"{(MartialStatusEnum)src.maritalStatus}" : dest.citizen_martial_status))
+             .ForMember(d => d.citizen_gender, opt => opt.MapFrom((src, dest) => otherServices.Check(src.citizenGender) ? $"{(GenderEnum)src.citizenGender}" : dest.citizen_gender))
              .ForMember(d => d.citizen_address, opt => opt.MapFrom((src, dest) => otherServices.Check(src.citizenAddress) ? src.citizenAddress : dest.citizen_address))
              .ForMember(d => d.fk_tehsil, opt => opt.MapFrom((src, dest) => otherServices.Check(src.fkTehsil) ? Guid.Parse(src.fkTehsil) : dest.fk_tehsil))
              .ForMember(d => d.fk_citizen_education, opt => opt.MapFrom((src, dest) => otherServices.Check(src.fkEducation) ? Guid.Parse(src.fkEducation) : dest.fk_citizen_education))
-             .ForMember(d => d.tbl_citizen_employment, opt => opt.MapFrom((src, dest) => otherServices.Check(src.fkEmployment) ? Guid.Parse(src.fkEmployment) : dest.fk_citizen_employment))
+             .ForMember(d => d.fk_citizen_employment, opt => opt.MapFrom((src, dest) => otherServices.Check(src.fkEmployment) ? Guid.Parse(src.fkEmployment) : dest.fk_citizen_employment))
              .ForMember(d => d.citizen_father_spouce_name, opt => opt.MapFrom((src, dest) => otherServices.Check(src.fatherSpouseName) ? src.fatherSpouseName : dest.citizen_father_spouce_name))
              .ForMember(d => d.citizen_date_of_birth, opt => opt.MapFrom((src, dest) => otherServices.Check(src.dateOfBirth) ? DateTime.Parse(src.dateOfBirth) : dest.citizen_date_of_birth))
              .ForMember(d => d.citizen_cnic, opt => opt.MapFrom((src, dest) => otherServices.Check(src.citizenCnic) ? src.citizenCnic : dest.citizen_cnic));
@@ -155,6 +157,7 @@ namespace BISPAPIORA.Extensions.AutomapperProfiles
              .ForMember(d => d.educationName, opt => opt.MapFrom(src => src.tbl_citizen.tbl_citizen_education != null ? src.tbl_citizen.tbl_citizen_education.education_name : ""))
              .ForMember(d => d.citizenSchemeSavingAmount, opt => opt.MapFrom((src) => src.tbl_citizen.tbl_citizen_scheme.citizen_scheme_saving_amount));
             CreateMap<tbl_citizen, EnrollmentResponseDTO>()
+             .ForMember(d => d.enrollmentId, opt => opt.MapFrom(src => src.tbl_enrollment!=null? src.tbl_enrollment.enrollment_id.ToString():"" ))
              .ForMember(d => d.citizenId, opt => opt.MapFrom(src => src.citizen_id))
              .ForMember(d => d.citizenName, opt => opt.MapFrom(src => src.citizen_name))
              .ForMember(d => d.fatherSpouseName, opt => opt.MapFrom(src => src.citizen_name))

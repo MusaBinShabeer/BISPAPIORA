@@ -113,7 +113,8 @@ namespace BISPAPIORA.Extensions.Middleware
                 using (var memoryStream = new MemoryStream())
                 {
                     await section.Body.CopyToAsync(memoryStream);
-
+                    var megabyteSizeLimit = sizeLimit / 1048576;
+                    var msg = $"The file exceeds {megabyteSizeLimit:N1} MB.";
                     // Check if the file is empty or exceeds the size limit.
                     if (memoryStream.Length == 0)
                     {
@@ -121,7 +122,7 @@ namespace BISPAPIORA.Extensions.Middleware
                     }
                     else if (memoryStream.Length > sizeLimit)
                     {
-                        var megabyteSizeLimit = sizeLimit / 1048576;
+                         megabyteSizeLimit = sizeLimit / 1048576;
                         modelState.AddModelError("File",
                         $"The file exceeds {megabyteSizeLimit:N1} MB.");
                     }
@@ -158,6 +159,7 @@ namespace BISPAPIORA.Extensions.Middleware
             }
 
             var ext = Path.GetExtension(fileName).ToLowerInvariant();
+            permittedExtensions[0] = permittedExtensions[0].ToLower();
 
             if (string.IsNullOrEmpty(ext) || !permittedExtensions.Contains(ext))
             {
