@@ -344,6 +344,10 @@ public partial class Dbcontext : DbContext
                 .IsUnicode(false)
                 .HasDefaultValueSql("''")
                 .HasColumnName("CITIZEN_SCHEME_STARTING_MONTH");
+            entity.Property(e => e.citizen_scheme_quarter_code)
+              .HasPrecision(10)
+              .HasDefaultValueSql("0")
+              .HasColumnName("CITIZEN_SCHEME_QUARTER_CODE");
             entity.Property(e => e.citizen_scheme_year)
                 .HasMaxLength(255)
                 .IsUnicode(false)
