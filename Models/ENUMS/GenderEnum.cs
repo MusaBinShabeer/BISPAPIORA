@@ -2,7 +2,7 @@
 {
     public enum GenderEnum
     {
-        Other = 2,
+        Transgender = 2,
         Male = 0,
         Female = 1,
     }
