@@ -188,7 +188,7 @@ namespace BISPAPIORA.Repositories.DistrictServicesRepo
             try
             {
                 var existingDistricts = await db.tbl_districts.Include(x => x.tbl_province).Where(x => x.fk_province == Guid.Parse(provinceId)).ToListAsync();
-                if (existingDistricts != null)
+                if (existingDistricts.Count()>0)
                 {
                     return new ResponseModel<List<DistrictResponseDTO>>()
                     {

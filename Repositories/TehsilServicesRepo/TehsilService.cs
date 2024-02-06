@@ -189,7 +189,7 @@ namespace BISPAPIORA.Repositories.TehsilServicesRepo
             try
             {
                 var existingTehsils = await db.tbl_tehsils.Include(x => x.tbl_district).Where(x => x.fk_district == Guid.Parse(districtId)).ToListAsync();
-                if (existingTehsils != null)
+                if (existingTehsils.Count()>0)
                 {
                     return new ResponseModel<List<TehsilResponseDTO>>()
                     {
