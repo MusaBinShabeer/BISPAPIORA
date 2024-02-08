@@ -38,12 +38,14 @@ public partial class tbl_citizen
     public virtual tbl_citizen_bank_info? tbl_citizen_bank_info { get; set; }
 
     public virtual tbl_citizen_scheme? tbl_citizen_scheme { get; set; }
+    public virtual tbl_citizen_compliance? tbl_citizen_compliance { get; set; }
 
     public virtual tbl_enrollment? tbl_enrollment { get; set; }
 
     public virtual tbl_registration? tbl_citizen_registration { get; set; }
     public virtual tbl_citizen_attachment? tbl_citizen_attachment { get; set; }
     public virtual tbl_citizen_thumb_print? tbl_citizen_thumb_print { get; set; }
+    public virtual ICollection<tbl_transaction> tbl_transactions { get; set; } = new List<tbl_transaction>();
     public decimal? is_valid_beneficiary { get; set; }
 
     public decimal? unique_hh_id { get; set; } // Unique HouseholdId

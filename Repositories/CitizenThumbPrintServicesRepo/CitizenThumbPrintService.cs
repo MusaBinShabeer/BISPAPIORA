@@ -23,8 +23,8 @@ namespace BISPAPIORA.Repositories.CitizenThumbPrintServicesRepo
         {
             try
             {
-                var bank = await db.tbl_citizen_thumb_prints.Where(x => x.citizen_thumb_print_name.ToLower().Equals(model.citizenThumbPrintName.ToLower())).FirstOrDefaultAsync();
-                if (bank == null)
+                var citizenThumbPrint = await db.tbl_citizen_thumb_prints.Where(x => x.citizen_thumb_print_name.ToLower().Equals(model.citizenThumbPrintName.ToLower())).FirstOrDefaultAsync();
+                if (citizenThumbPrint == null)
                 {
                     var newCitizenThumbPrint = new tbl_citizen_thumb_print();
                     newCitizenThumbPrint = _mapper.Map<tbl_citizen_thumb_print>(model);
@@ -190,13 +190,13 @@ namespace BISPAPIORA.Repositories.CitizenThumbPrintServicesRepo
         {
             try
             {
-                var existingDistricts = await db.tbl_citizen_thumb_prints.Include(x => x.tbl_citizen).Where(x => x.fk_citizen == Guid.Parse(citizenId)).ToListAsync();
-                if (existingDistricts != null)
+                var existingCitizenThumbPrints = await db.tbl_citizen_thumb_prints.Include(x => x.tbl_citizen).Where(x => x.fk_citizen == Guid.Parse(citizenId)).ToListAsync();
+                if (existingCitizenThumbPrints != null)
                 {
                     return new ResponseModel<List<CitizenThumbPrintResponseDTO>>()
                     {
-                        data = _mapper.Map<List<CitizenThumbPrintResponseDTO>>(existingDistricts),
-                        remarks = "Citizen Thumb Print found successfully",
+                        data = _mapper.Map<List<CitizenThumbPrintResponseDTO>>(existingCitizenThumbPrints),
+                        remarks = "Citizen Thumb Prints found successfully",
                         success = true,
                     };
                 }
