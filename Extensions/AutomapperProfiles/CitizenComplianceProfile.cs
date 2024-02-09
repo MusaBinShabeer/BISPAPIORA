@@ -27,8 +27,8 @@ namespace BISPAPIORA.Extensions.AutomapperProfiles
             .ForMember(d => d.startingBalanceOnQuarterlyBankStatement, opt => opt.MapFrom((src) => src.starting_balance_on_quarterly_bank_statement))
             .ForMember(d => d.closingBalanceOnQuarterlyBankStatement, opt => opt.MapFrom((src) => src.closing_balance_on_quarterly_bank_statement))
             .ForMember(d => d.citizenComplianceActualSavingAmount, opt => opt.MapFrom((src) => src.citizen_compliance_actual_saving_amount))
-            .ForMember(d => d.citizenComplianceStartingMonth, opt => opt.MapFrom((src) => src.tbl_citizen_scheme.citizen_scheme_starting_month))
-            .ForMember(d => d.citizenComplianceCommittedSavingAmount, opt => opt.MapFrom((src) => src.tbl_citizen_scheme.citizen_scheme_saving_amount))
+            //.ForMember(d => d.citizenComplianceStartingMonth, opt => opt.MapFrom((src) => src.tbl_citizen_scheme.citizen_scheme_starting_month))
+            //.ForMember(d => d.citizenComplianceCommittedSavingAmount, opt => opt.MapFrom((src) => src.tbl_citizen_scheme.citizen_scheme_saving_amount))
             .ForMember(d => d.fkCitizen, opt => opt.MapFrom((src) => src.fk_citizen))
             .ForMember(d => d.fkCitizenScheme, opt => opt.MapFrom((src) => src.fk_citizen_scheme));
         }

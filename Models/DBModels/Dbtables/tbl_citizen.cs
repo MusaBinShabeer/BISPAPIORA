@@ -38,7 +38,7 @@ public partial class tbl_citizen
     public virtual tbl_citizen_bank_info? tbl_citizen_bank_info { get; set; }
 
     public virtual tbl_citizen_scheme? tbl_citizen_scheme { get; set; }
-    public virtual tbl_citizen_compliance? tbl_citizen_compliance { get; set; }
+    //public virtual tbl_citizen_compliance? tbl_citizen_compliance { get; set; }
 
     public virtual tbl_enrollment? tbl_enrollment { get; set; }
 

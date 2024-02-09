@@ -18,5 +18,5 @@ public partial class tbl_citizen_compliance
     public virtual tbl_citizen? tbl_citizen { get; set; }
     public Guid? fk_citizen_scheme { get; set; } = default(Guid?);
 
-    public virtual tbl_citizen_scheme? tbl_citizen_scheme { get; set; }
+    //public virtual tbl_citizen_scheme? tbl_citizen_scheme { get; set; }
 }

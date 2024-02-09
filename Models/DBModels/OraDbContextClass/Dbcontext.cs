@@ -42,7 +42,7 @@ public partial class Dbcontext : DbContext
     public virtual DbSet<tbl_tehsil> tbl_tehsils { get; set; }
     public virtual DbSet<tbl_citizen_attachment> tbl_citizen_attachments { get; set; }
     public virtual DbSet<tbl_citizen_thumb_print> tbl_citizen_thumb_prints { get; set; }
-    public virtual DbSet<tbl_citizen_compliance> tbl_citizen_compliances { get; set; }
+    //public virtual DbSet<tbl_citizen_compliance> tbl_citizen_compliances { get; set; }
     public virtual DbSet<tbl_transaction> tbl_transactions { get; set; }
 
     //    protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
