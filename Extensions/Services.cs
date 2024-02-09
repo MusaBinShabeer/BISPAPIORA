@@ -59,7 +59,7 @@ namespace BISPAPIORA.Extensions
             services.AddTransient<ICitizenAttachmentService, CitizenAttachmentService>();
             services.AddTransient<ICitizenThumbPrintService, CitizenThumbPrintService>();
             //services.AddTransient<ICitizenComplianceService, CitizenComplianceService>();
-            services.AddTransient<ITransactionService, TransactionService>();
+            //services.AddTransient<ITransactionService, TransactionService>();
         }
     }
 }
