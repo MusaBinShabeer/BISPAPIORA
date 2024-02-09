@@ -14,6 +14,8 @@ namespace BISPAPIORA.Models.DTOS.RegistrationDTO
         public double aIOA { get; set; } = 0.0;                         //Average Income Of Account
         public bool familySavingAccount { get; set; } = false;      
         public string fkBank { get; set; } = string.Empty;
+        public string fkBank { get; set; } = string.Empty;
+        public string fkBank { get; set; } = string.Empty;
         public string ibanNo { get; set; } = string.Empty;
     }
     public class AddRegistrationDTO : RegistrationDTOs

@@ -27,7 +27,9 @@ public partial class tbl_citizen
 
     public Guid? fk_citizen_employment { get; set; } = default(Guid?);
 
-    public Guid? fk_tehsil { get; set; } = default(Guid?); 
+    public Guid? fk_tehsil { get; set; } = default(Guid?);
+    public Guid? fk_bank_other_specification { get; set; } = default(Guid?);
+    public Guid? fk_employment_other_specification { get; set; } = default(Guid?);
 
     public virtual tbl_education? tbl_citizen_education { get; set; }
 
@@ -45,6 +47,8 @@ public partial class tbl_citizen
     public virtual tbl_registration? tbl_citizen_registration { get; set; }
     public virtual tbl_citizen_attachment? tbl_citizen_attachment { get; set; }
     public virtual tbl_citizen_thumb_print? tbl_citizen_thumb_print { get; set; }
+    public virtual tbl_bank_other_specification? tbl_bank_other_specification { get; set; }
+    public virtual tbl_employment_other_specification? tbl_employment_other_specification { get; set; }
     //public virtual ICollection<tbl_transaction> tbl_transactions { get; set; } = new List<tbl_transaction>();
     public decimal? is_valid_beneficiary { get; set; }
 

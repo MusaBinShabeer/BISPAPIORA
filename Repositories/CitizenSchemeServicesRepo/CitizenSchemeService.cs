@@ -165,7 +165,7 @@ namespace BISPAPIORA.Repositories.CitizenSchemeServicesRepo
                     await db.SaveChangesAsync();
                     return new ResponseModel<CitizenSchemeResponseDTO>()
                     {
-                        remarks = $"CitizenScheme has been updated",
+                        remarks = $"Citizen Scheme has been updated",
                         data = _mapper.Map<CitizenSchemeResponseDTO>(existingCitizenScheme),
                         success = true,
                     };
