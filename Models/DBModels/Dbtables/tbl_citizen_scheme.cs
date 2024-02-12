@@ -18,6 +18,6 @@ public partial class tbl_citizen_scheme
     public Guid? fk_citizen { get; set; } = new Guid();
 
     public virtual tbl_citizen? tbl_citizen { get; set; }
-    //public virtual ICollection<tbl_citizen_compliance> tbl_citizen_compliances { get; set; } = new List<tbl_citizen_compliance>();
+    public virtual tbl_citizen_compliance tbl_citizen_compliance { get; set; } = default!;
     public int? citizen_scheme_quarter_code { get; set; }
 }

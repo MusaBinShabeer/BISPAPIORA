@@ -15,5 +15,8 @@ public partial class tbl_district
 
     public virtual tbl_province? tbl_province { get; set; }
 
+    public int? district_code { get; set; } = default!;
+    public int? province_code { get; set; } = default!;
+
     public virtual ICollection<tbl_tehsil> tbl_tehsils { get; set; } = new List<tbl_tehsil>();
 }
