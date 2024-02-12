@@ -646,7 +646,6 @@ public partial class Dbcontext : DbContext
                 .HasColumnType("NUMBER(10,2)")
                 .HasColumnName("CLOSING_BALANCE_ON_QUARTERLY_BANK_STATEMENT");
             entity.Property(e => e.fk_citizen).HasColumnName("FK_CITIZEN");
-            entity.Property(e => e.fk_citizen_scheme).HasColumnName("FK_CITIZEN_SCHEME");
             entity.Property(e => e.starting_balance_on_quarterly_bank_statement)
                 .HasDefaultValueSql("0.0")
                 .HasColumnType("NUMBER(10,2)")
@@ -654,11 +653,7 @@ public partial class Dbcontext : DbContext
             entity.HasOne(d => d.tbl_citizen).WithOne(p => p.tbl_citizen_compliance)
              .HasForeignKey<tbl_citizen_compliance>(d => d.fk_citizen)
              .OnDelete(DeleteBehavior.Cascade)
-             .HasConstraintName("Fk_CITIZEN_COMPLIANCE_CITIZEN");
-            entity.HasOne(d => d.tbl_citizen_scheme).WithOne(p => p.tbl_citizen_compliance)
-           .HasForeignKey<tbl_citizen_compliance>(d => d.fk_citizen_scheme)
-           .OnDelete(DeleteBehavior.Cascade)
-           .HasConstraintName("FK_CITIZEN_COMPLIANCE_SCHEME");
+             .HasConstraintName("Fk_CITIZEN_COMPLIANCE_CITIZEN");         
         });
         modelBuilder.Entity<tbl_employment_other_specification>(entity =>
         {
@@ -695,9 +690,7 @@ public partial class Dbcontext : DbContext
                 .HasColumnType("NUMBER(10,2)")
                 .HasColumnName("TRANSACTION_AMOUNT");
             entity.Property(e => e.transaction_date)
-                .HasMaxLength(255)
-                .IsUnicode(false)
-                .HasDefaultValueSql("''")
+                .HasPrecision(6)
                 .HasColumnName("TRANSACTION_DATE");
             entity.Property(e => e.transaction_type)
                 .HasMaxLength(255)

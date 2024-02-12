@@ -114,24 +114,6 @@ namespace BISPAPIORA.Controllers
                 };
                 return BadRequest(response);
             }
-        }
-        [HttpGet("GetByCitizenSchemeId")]
-        public async Task<ActionResult<ResponseModel<List<CitizenComplianceResponseDTO>>>> GetByCitizenSchemeId(string id)
-        {
-            if (!string.IsNullOrEmpty(id))
-            {
-                var response = citizenComplianceService.GetCitizenComplianceByCitizenSchemeId(id);
-                return Ok(await response);
-            }
-            else
-            {
-                var response = new ResponseModel<CitizenComplianceResponseDTO>()
-                {
-                    remarks = "Parameter missing",
-                    success = false
-                };
-                return BadRequest(response);
-            }
-        }
+        }     
     }
 }

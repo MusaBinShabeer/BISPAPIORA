@@ -12,6 +12,5 @@ namespace BISPAPIORA.Repositories.CitizenComplianceServicesRepo
         public Task<ResponseModel<CitizenComplianceResponseDTO>> GetCitizenCompliance(string bankId);
         public Task<ResponseModel<CitizenComplianceResponseDTO>> UpdateCitizenCompliance(UpdateCitizenComplianceDTO model);
         public Task<ResponseModel<List<CitizenComplianceResponseDTO>>> GetCitizenComplianceByCitizenId(string citizenId);
-        public Task<ResponseModel<List<CitizenComplianceResponseDTO>>> GetCitizenComplianceByCitizenSchemeId(string citizenSchemeId);
     }
 }

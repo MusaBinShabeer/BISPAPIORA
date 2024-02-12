@@ -220,37 +220,6 @@ namespace BISPAPIORA.Repositories.CitizenComplianceServicesRepo
                 };
             }
         }
-        public async Task<ResponseModel<List<CitizenComplianceResponseDTO>>> GetCitizenComplianceByCitizenSchemeId(string citizenSchemeId)
-        {
-            try
-            {
-                var existingCitizenCompliances = await db.tbl_citizen_compliances.Include(x => x.tbl_citizen)/*.Include(x => x.tbl_citizen_scheme)*/.Where(x => x.fk_citizen_scheme == Guid.Parse(citizenSchemeId)).ToListAsync();
-                if (existingCitizenCompliances != null)
-                {
-                    return new ResponseModel<List<CitizenComplianceResponseDTO>>()
-                    {
-                        data = _mapper.Map<List<CitizenComplianceResponseDTO>>(existingCitizenCompliances),
-                        remarks = "Citizen Compliances found successfully",
-                        success = true,
-                    };
-                }
-                else
-                {
-                    return new ResponseModel<List<CitizenComplianceResponseDTO>>()
-                    {
-                        success = false,
-                        remarks = "No Record"
-                    };
-                }
-            }
-            catch (Exception ex)
-            {
-                return new ResponseModel<List<CitizenComplianceResponseDTO>>()
-                {
-                    success = false,
-                    remarks = $"There Was Fatal Error {ex.Message.ToString()}"
-                };
-            }
-        }
+      
     }
 }

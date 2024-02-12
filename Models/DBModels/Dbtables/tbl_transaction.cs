@@ -7,7 +7,7 @@ public partial class tbl_transaction
 {
     public Guid transaction_id { get; set; } = Guid.NewGuid();
 
-    public string? transaction_date { get; set; } = string.Empty;
+    public DateTime? transaction_date { get; set; } = default(DateTime?);
 
     public string? transaction_type { get; set; }= string.Empty;
 
