@@ -17,6 +17,7 @@ using BISPAPIORA.Repositories.CitizenThumbPrintServicesRepo;
 using BISPAPIORA.Repositories.CitizenComplianceServicesRepo;
 using BISPAPIORA.Repositories.TransactionServicesRepo;
 using BISPAPIORA.Repositories.BankOtherSpecificationServicesRepo;
+using BISPAPIORA.Repositories.EmploymentOtherSpecificationServicesRepo;
 
 namespace BISPAPIORA.Extensions
 {
@@ -62,6 +63,7 @@ namespace BISPAPIORA.Extensions
             //services.AddTransient<ICitizenComplianceService, CitizenComplianceService>();
             //services.AddTransient<ITransactionService, TransactionService>();
             services.AddTransient<IBankOtherSpecificationService, BankOtherSpecificationService>();
+            services.AddTransient<IEmploymentOtherSpecificationService, EmploymentOtherSpecificationService>();
         }
     }
 }

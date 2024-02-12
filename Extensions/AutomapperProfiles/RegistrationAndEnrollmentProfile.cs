@@ -16,7 +16,6 @@ namespace BISPAPIORA.Extensions.AutomapperProfiles
             CreateMap<AddRegistrationDTO, tbl_registration>()
             .ForMember(d => d.fk_citizen, opt => opt.MapFrom(src => Guid.Parse(src.fkCitizen)));
             CreateMap<AddEnrollmentDTO, tbl_enrollment>()
-            //.ForMember(d => d.quarter_code, opt => opt.MapFrom(src => src.quarterCode))
             .ForMember(d => d.fk_citizen, opt => opt.MapFrom(src => Guid.Parse(src.fkCitizen)));
             CreateMap<AddEnrollmentDTO, UpdateEnrollmentDTO>()
             .ForMember(d => d.citizenName, opt => opt.MapFrom(src => src.citizenName))

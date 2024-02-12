@@ -8,6 +8,10 @@ using Microsoft.EntityFrameworkCore;
 using BISPAPIORA.Repositories.BankServicesRepo;
 using BISPAPIORA.Repositories.CitizenBankInfoServicesRepo;
 using BISPAPIORA.Models.DTOS.CitizenBankInfoDTO;
+using BISPAPIORA.Models.DTOS.BankOtherSpecificationDTO;
+using BISPAPIORA.Repositories.BankOtherSpecificationServicesRepo;
+using BISPAPIORA.Repositories.EmploymentServicesRepo;
+using BISPAPIORA.Models.DTOS.EmploymentOtherSpecificationDTO;
 
 namespace BISPAPIORA.Repositories.RegistrationServicesRepo
 {
@@ -17,24 +21,22 @@ namespace BISPAPIORA.Repositories.RegistrationServicesRepo
         private readonly ICitizenService citizenService;
         private readonly Dbcontext db;
         private readonly ICitizenBankInfoService citizenBankService;
-        public RegistrationService(IMapper mapper, Dbcontext db, ICitizenService citizenService, Dbcontext dbf, ICitizenBankInfoService citizenBankService)
+        private readonly IBankOtherSpecificationService bankOtherSpecificationService;
+        private readonly IEmploymentOtherSpecificationService employmentOtherSpecificationService;
+        public RegistrationService(IMapper mapper, Dbcontext db, ICitizenService citizenService, Dbcontext dbf, ICitizenBankInfoService citizenBankService, IBankOtherSpecificationService bankOtherSpecificationService, IEmploymentOtherSpecificationService employmentOtherSpecificationService)
         {
             _mapper = mapper;
             this.db = db;
             this.citizenService = citizenService;
             this.citizenBankService = citizenBankService;
+            this.bankOtherSpecificationService = bankOtherSpecificationService;
+            this.employmentOtherSpecificationService = employmentOtherSpecificationService;
         }
         public async Task<ResponseModel<RegistrationResponseDTO>> AddRegisteredCitizen(AddRegistrationDTO model)
         {
             try
             {
-                var Citizen = await db.tbl_citizens.Where(x => x.citizen_cnic.ToLower().Equals(model.citizenCnic.ToLower())).FirstOrDefaultAsync();
-                //var dbfCitizen = await db.HiberProtectionAccounts.Where(x => x.Cnic.ToString().Equals(model.citizenCnic.ToLower())).FirstOrDefaultAsync();
-                //if (dbfCitizen == null)
-                //{
-                //var newDbfCitizen = await citizenService.AddRegisteredDBFCitizen(model);
-                //if (newDbfCitizen.success)
-                //{
+                var Citizen = await db.tbl_citizens.Where(x => x.citizen_cnic.ToLower().Equals(model.citizenCnic.ToLower())).FirstOrDefaultAsync();                
                 if (Citizen == null)
                 {
                     var newCitizen = await citizenService.AddRegisteredCitizen(model);
@@ -47,9 +49,27 @@ namespace BISPAPIORA.Repositories.RegistrationServicesRepo
                             newRegistration = _mapper.Map<tbl_registration>(model);
                             await db.tbl_registrations.AddAsync(newRegistration);
                             await db.SaveChangesAsync();
+                            #region Bank Info
                             AddRegisteredCitizenBankInfoDTO newBankInfoRequest = new AddRegisteredCitizenBankInfoDTO();
                             newBankInfoRequest = _mapper.Map<AddRegisteredCitizenBankInfoDTO>(model);
                             var newRegisteredBankInfo = await citizenBankService.AddRegisteredCitizenBankInfo(newBankInfoRequest);
+                            #endregion
+                            #region Citizen Bank Other Specification
+                            if (!string.IsNullOrEmpty(model.citizenBankOtherSpecification))
+                            {
+                                var addBankOtherSpecification = new AddBankOtherSpecificationDTO();
+                                addBankOtherSpecification = _mapper.Map<AddBankOtherSpecificationDTO>(model);
+                                var responseBankOtherSpecification= await bankOtherSpecificationService.AddBankOtherSpecification(addBankOtherSpecification);
+                            }
+                            #endregion
+                            #region Citizen Employment Other Specifcation
+                            if (!string.IsNullOrEmpty(model.citizenEmploymentOtherSpecification)) 
+                            {
+                                var addEmploymentOtherSpecification = new AddEmploymentOtherSpecificationDTO();
+                                addEmploymentOtherSpecification = _mapper.Map<AddEmploymentOtherSpecificationDTO>(model);
+                                var responseEmploymentOtherSpecification = await employmentOtherSpecificationService.AddEmploymentOtherSpecification(addEmploymentOtherSpecification);
+                            }
+                            #endregion
                             var response = _mapper.Map<RegistrationResponseDTO>(newCitizen.data);
                             response.registrationId = newRegistration.registration_id.ToString();
                             return new ResponseModel<RegistrationResponseDTO>()
@@ -76,15 +96,6 @@ namespace BISPAPIORA.Repositories.RegistrationServicesRepo
                             remarks = newCitizen.remarks
                         };
                     }
-                    //}
-                    //else
-                    //{
-                    //    return new ResponseModel<RegistrationResponseDTO>()
-                    //    {
-                    //        success = true,
-                    //        remarks = newDbfCitizen.remarks
-                    //    };
-                    //}
                 }
                 else
                 {
@@ -95,16 +106,6 @@ namespace BISPAPIORA.Repositories.RegistrationServicesRepo
                         data = _mapper.Map<RegistrationResponseDTO>(Citizen),
                     };
                 }
-                //}
-                //else
-                //{
-                //    return new ResponseModel<RegistrationResponseDTO>()
-                //    {
-                //        success = false,
-                //        remarks = $"Citizen with name {model.citizenName} already exists",
-                //        data = _mapper.Map<RegistrationResponseDTO>(dbfCitizen),
-                //    };
-                //}
             }
             catch (Exception ex)
             {
