@@ -9,6 +9,8 @@ using BISPAPIORA.Repositories.CitizenAttachmentServicesRepo;
 using BISPAPIORA.Repositories.CitizenThumbPrintServicesRepo;
 using BISPAPIORA.Models.DTOS.CitizenAttachmentDTO;
 using BISPAPIORA.Models.DTOS.CitizenThumbPrintDTO;
+using BISPAPIORA.Models.DTOS.CitizenBankInfoDTO;
+using BISPAPIORA.Repositories.CitizenBankInfoServicesRepo;
 
 namespace BISPAPIORA.Repositories.CitizenServicesRepo
 {
@@ -17,13 +19,15 @@ namespace BISPAPIORA.Repositories.CitizenServicesRepo
         private readonly IMapper _mapper;
         private readonly Dbcontext db;
         private readonly ICitizenAttachmentService attachmentService;
+        private readonly ICitizenBankInfoService citizenBankInfoService;
         private readonly ICitizenThumbPrintService thumbprintService;
-        public CitizenService(IMapper mapper, Dbcontext db,ICitizenThumbPrintService thumbPrintService, ICitizenAttachmentService citizenAttachmentService)
+        public CitizenService(IMapper mapper, Dbcontext db,ICitizenBankInfoService citizenBankInfoService,ICitizenThumbPrintService thumbPrintService, ICitizenAttachmentService citizenAttachmentService)
         {
             _mapper = mapper;
             this.db = db;
             this.attachmentService = citizenAttachmentService;
             this.thumbprintService = thumbPrintService;
+            this.citizenBankInfoService = citizenBankInfoService;
         }
         #region Registered Citizen
         public async Task<ResponseModel<RegistrationResponseDTO>> AddRegisteredCitizen(AddRegistrationDTO model)
@@ -109,8 +113,10 @@ namespace BISPAPIORA.Repositories.CitizenServicesRepo
                 {
                     existingCitizen = _mapper.Map(model, existingCitizen);
                     await db.SaveChangesAsync();
+                    var AddBankInfoRequest = new AddRegisteredCitizenBankInfoDTO();
+                    AddBankInfoRequest= _mapper.Map<AddRegisteredCitizenBankInfoDTO>(model);
+                    var bankInfo = citizenBankInfoService.AddRegisteredCitizenBankInfo(AddBankInfoRequest);
                     model.citizenCnic = existingCitizen.citizen_cnic; 
-                    await UpdateRegisteredDBFCitizen(model);
                     return new ResponseModel<RegistrationResponseDTO>()
                     {
                         remarks = $"Citizen: {model.citizenName} has been updated",
@@ -174,7 +180,7 @@ namespace BISPAPIORA.Repositories.CitizenServicesRepo
         {
             try
             {
-                var registerdCitizens = await db.tbl_registrations.Include(x => x.tbl_citizen).ThenInclude(x => x.tbl_citizen_tehsil).ThenInclude(x => x.tbl_district).ThenInclude(x => x.tbl_province).Include(x => x.tbl_citizen).ThenInclude(x => x.tbl_citizen_employment).Include(x => x.tbl_citizen).ThenInclude(x => x.tbl_citizen_education).Select(x => x.tbl_citizen).ToListAsync();
+                var registerdCitizens = await db.tbl_registrations.Include(x => x.tbl_citizen).ThenInclude(x => x.tbl_citizen_tehsil).ThenInclude(x => x.tbl_district).ThenInclude(x => x.tbl_province).Include(x => x.tbl_citizen).ThenInclude(x => x.tbl_citizen_employment).Include(x => x.tbl_citizen).ThenInclude(x => x.tbl_citizen_education).Include(x=>x.tbl_citizen.tbl_citizen_bank_info).ThenInclude(x=>x.tbl_bank).Include(x=>x.tbl_citizen.tbl_bank_other_specification).Include(x=>x.tbl_citizen.tbl_citizen_registration).Select(x => x.tbl_citizen).ToListAsync();
                 if (registerdCitizens.Count() > 0)
                 {
                     return new ResponseModel<List<RegistrationResponseDTO>>()
