@@ -38,11 +38,14 @@ namespace BISPAPIORA.Repositories.CitizenBankInfoServicesRepo
                 }
                 else
                 {
+                    citizenBankInfo=_mapper.Map(model, citizenBankInfo);
+                    await db.SaveChangesAsync();
                     return new ResponseModel<RegisteredCitizenBankInfoResponseDTO>()
                     {
-                        success = false,
-                        remarks = $"CitizenBankInfo with name already exists"
-                    };
+                        remarks = $"CitizenBankInfo has been added successfully",
+                        data = _mapper.Map<RegisteredCitizenBankInfoResponseDTO>(citizenBankInfo),
+                        success = true,
+                    };                   
                 }
             }
             catch (Exception ex)
