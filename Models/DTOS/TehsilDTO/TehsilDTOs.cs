@@ -6,6 +6,8 @@ namespace BISPAPIORA.Models.DTOS.TehsilDTO
     {
         public string tehsilName { get; set; } = string.Empty;
         public string fkDistrict { get; set; } = string.Empty;
+        public int districtCode { get; set; } = default!;
+        public int tehsilCode { get; set; } = default!;
         public bool isActive { get; set; } = true;
     }
     public class AddTehsilDTO : TehsilDTO
@@ -14,6 +16,10 @@ namespace BISPAPIORA.Models.DTOS.TehsilDTO
         public new string tehsilName { get; set; } = string.Empty;
         [Required]
         public new string fkDistrict { get; set; } = string.Empty;
+        [Required]
+        public new int districtCode { get; set; } = default!;
+        [Required]
+        public new int tehsilCode { get; set; } = default!;
     }
     public class UpdateTehsilDTO : TehsilDTO
     {
