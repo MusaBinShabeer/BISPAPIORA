@@ -60,8 +60,8 @@ namespace BISPAPIORA.Extensions
             services.AddTransient<IFileManagerService, FileManagerService>();
             services.AddTransient<ICitizenAttachmentService, CitizenAttachmentService>();
             services.AddTransient<ICitizenThumbPrintService, CitizenThumbPrintService>();
-            //services.AddTransient<ICitizenComplianceService, CitizenComplianceService>();
-            //services.AddTransient<ITransactionService, TransactionService>();
+            services.AddTransient<ICitizenComplianceService, CitizenComplianceService>();
+            services.AddTransient<ITransactionService, TransactionService>();
             services.AddTransient<IBankOtherSpecificationService, BankOtherSpecificationService>();
             services.AddTransient<IEmploymentOtherSpecificationService, EmploymentOtherSpecificationService>();
         }
