@@ -48,7 +48,7 @@ namespace BISPAPIORA.Extensions.AutomapperProfiles
              .ForMember(d => d.provinceName, opt => opt.MapFrom(src => src.tbl_citizen.tbl_citizen_tehsil != null ? src.tbl_citizen.tbl_citizen_tehsil.tbl_district.tbl_province.province_name : ""))
              .ForMember(d => d.tehsilName, opt => opt.MapFrom(src => src.tbl_citizen.tbl_citizen_tehsil != null ? src.tbl_citizen.tbl_citizen_tehsil.tehsil_name : ""))
              .ForMember(d => d.fkEmployment, opt => opt.MapFrom(src => src.tbl_citizen.fk_citizen_employment))
-             .ForMember(d => d.employmentName, opt => opt.MapFrom(src => src.tbl_citizen.tbl_citizen_employment != null ? src.tbl_citizen.tbl_citizen_employment.employment_name : ""))
+             .ForMember(d => d.employmentName, opt => opt.MapFrom(src =>src.tbl_citizen.tbl_employment_other_specification!=null? src.tbl_citizen.tbl_employment_other_specification.employment_other_specification:( src.tbl_citizen.tbl_citizen_employment != null ? src.tbl_citizen.tbl_citizen_employment.employment_name : "")))
              .ForMember(d => d.fkEducation, opt => opt.MapFrom(src => src.tbl_citizen.fk_citizen_education))
              .ForMember(d => d.educationName, opt => opt.MapFrom(src => src.tbl_citizen.tbl_citizen_education != null ? src.tbl_citizen.tbl_citizen_education.education_name : ""))
              .ForMember(d => d.citizenCnic, opt => opt.MapFrom(src => src.tbl_citizen.citizen_cnic))
@@ -57,7 +57,7 @@ namespace BISPAPIORA.Extensions.AutomapperProfiles
              .ForMember(d => d.aIOA, opt => opt.MapFrom((src) => src.tbl_citizen.tbl_citizen_bank_info.a_i_o_f))
              .ForMember(d => d.familySavingAccount, opt => opt.MapFrom((src) => src.tbl_citizen.tbl_citizen_bank_info.family_saving_account))
              .ForMember(d => d.fkBank, opt => opt.MapFrom(src => (src.tbl_citizen.tbl_citizen_bank_info.fk_bank)))
-             .ForMember(d => d.bankName, opt => opt.MapFrom((src) => src.tbl_citizen.tbl_citizen_bank_info.tbl_bank.bank_name));
+             .ForMember(d => d.bankName, opt => opt.MapFrom((src) =>src.tbl_citizen.tbl_bank_other_specification!=null?src.tbl_citizen.tbl_bank_other_specification.bank_other_specification :src.tbl_citizen.tbl_citizen_bank_info.tbl_bank.bank_name));
             CreateMap<tbl_citizen, RegistrationResponseDTO>()
               .ForMember(d => d.enrollmentId, opt => opt.MapFrom(src => src.tbl_enrollment != null ? src.tbl_enrollment.enrollment_id.ToString() : ""))
               .ForMember(d => d.registrationId, opt => opt.MapFrom(src => src.tbl_citizen_registration != null ? src.tbl_citizen_registration.registration_id.ToString() : ""))
@@ -74,7 +74,7 @@ namespace BISPAPIORA.Extensions.AutomapperProfiles
             .ForMember(d => d.districtName, opt => opt.MapFrom(src => src.tbl_citizen_tehsil != null ? src.tbl_citizen_tehsil.tbl_district.district_name : ""))
             .ForMember(d => d.provinceName, opt => opt.MapFrom(src => src.tbl_citizen_tehsil != null ? src.tbl_citizen_tehsil.tbl_district.tbl_province.province_name : ""))
             .ForMember(d => d.fkEmployment, opt => opt.MapFrom(src => src.fk_citizen_employment))
-            .ForMember(d => d.employmentName, opt => opt.MapFrom(src => src.tbl_citizen_employment != null ? src.tbl_citizen_employment.employment_name : ""))
+            .ForMember(d => d.employmentName, opt => opt.MapFrom(src => src.tbl_employment_other_specification != null ? src.tbl_employment_other_specification.employment_other_specification : (src.tbl_citizen_employment != null ? src.tbl_citizen_employment.employment_name : "")))
             .ForMember(d => d.fkEducation, opt => opt.MapFrom(src => src.fk_citizen_education))
             .ForMember(d => d.educationName, opt => opt.MapFrom(src => src.tbl_citizen_education != null ? src.tbl_citizen_education.education_name : ""))
             .ForMember(d => d.citizenCnic, opt => opt.MapFrom(src => src.citizen_cnic))
@@ -83,7 +83,7 @@ namespace BISPAPIORA.Extensions.AutomapperProfiles
             .ForMember(d => d.aIOA, opt => opt.MapFrom((src) => src.tbl_citizen_bank_info.a_i_o_f))
             .ForMember(d => d.familySavingAccount, opt => opt.MapFrom((src) => src.tbl_citizen_bank_info.family_saving_account))
             .ForMember(d => d.fkBank, opt => opt.MapFrom(src => (src.tbl_citizen_bank_info.fk_bank)))
-            .ForMember(d => d.bankName, opt => opt.MapFrom((src) => src.tbl_citizen_bank_info.tbl_bank.bank_name));
+            .ForMember(d => d.bankName, opt => opt.MapFrom((src) => src.tbl_bank_other_specification != null ? src.tbl_bank_other_specification.bank_other_specification : src.tbl_citizen_bank_info.tbl_bank.bank_name));
             #endregion
             #region Enrolled Citizen
             CreateMap<AddEnrollmentDTO, tbl_citizen>()
@@ -126,7 +126,7 @@ namespace BISPAPIORA.Extensions.AutomapperProfiles
              .ForMember(d => d.citizenCnic, opt => opt.MapFrom(src => src.tbl_citizen.citizen_cnic))
              .ForMember(d => d.ibanNo, opt => opt.MapFrom((src) => src.tbl_citizen.tbl_citizen_bank_info.iban_no))
              .ForMember(d => d.accountTypeName, opt => opt.MapFrom((src) => src.tbl_citizen.tbl_citizen_bank_info.account_type))
-             .ForMember(d => d.BankName, opt => opt.MapFrom((src) => src.tbl_citizen.tbl_citizen_bank_info.tbl_bank.bank_name))
+             .ForMember(d => d.BankName, opt => opt.MapFrom((src) => src.tbl_citizen.tbl_bank_other_specification != null ? src.tbl_citizen.tbl_bank_other_specification.bank_other_specification : src.tbl_citizen.tbl_citizen_bank_info.tbl_bank.bank_name))          
              .ForMember(d => d.citizenSchemeYear, opt => opt.MapFrom((src) => src.tbl_citizen.tbl_citizen_scheme.citizen_scheme_year))
              .ForMember(d => d.citizenSchemeQuarter, opt => opt.MapFrom((src) => src.tbl_citizen.tbl_citizen_scheme.citizen_scheme_quarter))
              .ForMember(d => d.quarterCode, opt => opt.MapFrom((src) => src.tbl_citizen.tbl_citizen_scheme.citizen_scheme_quarter_code))
@@ -138,7 +138,7 @@ namespace BISPAPIORA.Extensions.AutomapperProfiles
              .ForMember(d => d.districtName, opt => opt.MapFrom(src => src.tbl_citizen.tbl_citizen_tehsil != null ? src.tbl_citizen.tbl_citizen_tehsil.tbl_district.district_name : ""))
              .ForMember(d => d.provinceName, opt => opt.MapFrom(src => src.tbl_citizen.tbl_citizen_tehsil != null ? src.tbl_citizen.tbl_citizen_tehsil.tbl_district.tbl_province.province_name : ""))
              .ForMember(d => d.fkEmployment, opt => opt.MapFrom(src => src.tbl_citizen.fk_citizen_employment))
-             .ForMember(d => d.employmentName, opt => opt.MapFrom(src => src.tbl_citizen.tbl_citizen_employment != null ? src.tbl_citizen.tbl_citizen_employment.employment_name : ""))
+             .ForMember(d => d.educationName, opt => opt.MapFrom(src => src.tbl_citizen.tbl_citizen_education != null ? src.tbl_citizen.tbl_citizen_education.education_name : ""))
              .ForMember(d => d.fkEducation, opt => opt.MapFrom(src => src.tbl_citizen.fk_citizen_education))
              .ForMember(d => d.educationName, opt => opt.MapFrom(src => src.tbl_citizen.tbl_citizen_education != null ? src.tbl_citizen.tbl_citizen_education.education_name : ""))
              .ForMember(d => d.citizenSchemeSavingAmount, opt => opt.MapFrom((src) => src.tbl_citizen.tbl_citizen_scheme.citizen_scheme_saving_amount));
@@ -156,8 +156,8 @@ namespace BISPAPIORA.Extensions.AutomapperProfiles
              .ForMember(d => d.dateOfBirth, opt => opt.MapFrom(src => src.citizen_date_of_birth))
              .ForMember(d => d.citizenCnic, opt => opt.MapFrom(src => src.citizen_cnic))
              .ForMember(d => d.ibanNo, opt => opt.MapFrom((src) => src.tbl_citizen_bank_info.iban_no))
-             .ForMember(d => d.accountTypeName, opt => opt.MapFrom((src) => src.tbl_citizen_bank_info.account_type))           
-             .ForMember(d => d.BankName, opt => opt.MapFrom((src) => src.tbl_citizen_bank_info.tbl_bank.bank_name))
+             .ForMember(d => d.accountTypeName, opt => opt.MapFrom((src) => src.tbl_citizen_bank_info.account_type))
+             .ForMember(d => d.BankName, opt => opt.MapFrom((src) => src.tbl_bank_other_specification != null ? src.tbl_bank_other_specification.bank_other_specification : src.tbl_citizen_bank_info.tbl_bank.bank_name))            
              .ForMember(d => d.citizenSchemeYear, opt => opt.MapFrom((src) => src.tbl_citizen_scheme.citizen_scheme_year))
              .ForMember(d => d.citizenSchemeQuarter, opt => opt.MapFrom((src) => src.tbl_citizen_scheme.citizen_scheme_quarter))
              .ForMember(d => d.quarterCode, opt => opt.MapFrom((src) => src.tbl_citizen_scheme.citizen_scheme_quarter_code))
@@ -169,7 +169,7 @@ namespace BISPAPIORA.Extensions.AutomapperProfiles
              .ForMember(d => d.districtName, opt => opt.MapFrom(src => src.tbl_citizen_tehsil != null ? src.tbl_citizen_tehsil.tbl_district.district_name : ""))
              .ForMember(d => d.provinceName, opt => opt.MapFrom(src => src.tbl_citizen_tehsil != null ? src.tbl_citizen_tehsil.tbl_district.tbl_province.province_name : ""))
              .ForMember(d => d.fkEmployment, opt => opt.MapFrom(src => src.fk_citizen_employment))
-             .ForMember(d => d.employmentName, opt => opt.MapFrom(src => src.tbl_citizen_employment != null ? src.tbl_citizen_employment.employment_name : ""))
+             .ForMember(d => d.employmentName, opt => opt.MapFrom(src => src.tbl_employment_other_specification != null ? src.tbl_employment_other_specification.employment_other_specification : (src.tbl_citizen_employment != null ? src.tbl_citizen_employment.employment_name : "")))
              .ForMember(d => d.fkEducation, opt => opt.MapFrom(src => src.fk_citizen_education))
              .ForMember(d => d.educationName, opt => opt.MapFrom(src => src.tbl_citizen_education != null ? src.tbl_citizen_education.education_name : ""))
              .ForMember(d => d.citizenSchemeSavingAmount, opt => opt.MapFrom((src) => src.tbl_citizen_scheme.citizen_scheme_saving_amount));
