@@ -47,6 +47,10 @@ public partial class Dbcontext : DbContext
     public virtual DbSet<tbl_employment_other_specification> tbl_employment_other_specifications { get; set; }
     public virtual DbSet<tbl_bank_other_specification> tbl_bank_other_specifications { get; set; }
 
+    public virtual DbSet<tbl_image_citizen_attachment> tbl_image_citizen_attachments { get; set; }
+
+    public virtual DbSet<tbl_image_citizen_thumb_print> tbl_image_citizen_thumb_prints { get; set; }
+
     //    protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     //#warning To protect potentially sensitive information in your connection string, you should move it out of source code. You can avoid scaffolding the connection string by using the Name= syntax to read it from configuration - see https://go.microsoft.com/fwlink/?linkid=2131148. For more guidance on storing connection strings, see https://go.microsoft.com/fwlink/?LinkId=723263.
     //        => optionsBuilder.UseOracle("User Id=admin;Password=vNrGBdITbyvVQtTspIx1;Data Source=oracle-database.cfgeu0k04wh6.us-east-1.rds.amazonaws.com:1521/bispdb;");
@@ -580,6 +584,60 @@ public partial class Dbcontext : DbContext
                  .HasForeignKey(d => d.fk_citizen)
                  .OnDelete(DeleteBehavior.Cascade)
                  .HasConstraintName("FK_TRANSACTION_CITIZEN");
+        });
+
+        modelBuilder.Entity<tbl_image_citizen_attachment>(entity =>
+        {
+            entity.HasKey(e => e.id).HasName("SYS_C007846");
+
+            entity.ToTable("TBL_IMAGE_CITIZEN_ATTACHMENT");
+
+            entity.Property(e => e.id)
+                .HasDefaultValueSql("SYS_GUID() ")
+                .HasColumnName("ID");
+            entity.Property(e => e.cnic)
+                .HasMaxLength(255)
+                .IsUnicode(false)
+                .HasColumnName("CNIC");
+            entity.Property(e => e.content_type)
+                .HasMaxLength(255)
+                .IsUnicode(false)
+                .HasColumnName("CONTENT_TYPE");
+            entity.Property(e => e.data)
+                .HasColumnType("BLOB")
+                .HasColumnName("DATA");
+            entity.Property(e => e.fk_citizen).HasColumnName("FK_CITIZEN");
+            entity.Property(e => e.name)
+                .HasMaxLength(255)
+                .IsUnicode(false)
+                .HasColumnName("NAME");
+        });
+
+        modelBuilder.Entity<tbl_image_citizen_thumb_print>(entity =>
+        {
+            entity.HasKey(e => e.id).HasName("SYS_C007849");
+
+            entity.ToTable("TBL_IMAGE_CITIZEN_THUMB_PRINT");
+
+            entity.Property(e => e.id)
+                .HasDefaultValueSql("SYS_GUID() ")
+                .HasColumnName("ID");
+            entity.Property(e => e.cnic)
+                .HasMaxLength(255)
+                .IsUnicode(false)
+                .HasColumnName("CNIC");
+            entity.Property(e => e.content_type)
+                .HasMaxLength(255)
+                .IsUnicode(false)
+                .HasColumnName("CONTENT_TYPE");
+            entity.Property(e => e.data)
+                .HasColumnType("BLOB")
+                .HasColumnName("DATA");
+            entity.Property(e => e.fk_citizen).HasColumnName("FK_CITIZEN");
+            entity.Property(e => e.name)
+                .HasMaxLength(255)
+                .IsUnicode(false)
+                .HasColumnName("NAME");
         });
 
         OnModelCreatingPartial(modelBuilder);

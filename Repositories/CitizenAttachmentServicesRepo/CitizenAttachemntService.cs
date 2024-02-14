@@ -190,12 +190,12 @@ namespace BISPAPIORA.Repositories.CitizenAttachmentServicesRepo
         {
             try
             {
-                var existingDistricts = await db.tbl_citizen_thumb_prints.Include(x => x.tbl_citizen).Where(x => x.fk_citizen == Guid.Parse(citizenId)).ToListAsync();
-                if (existingDistricts != null)
+                var existingCitizenAttachments = await db.tbl_citizen_attachments.Include(x => x.tbl_citizen).Where(x => x.fk_citizen == Guid.Parse(citizenId)).ToListAsync();
+                if (existingCitizenAttachments != null)
                 {
                     return new ResponseModel<List<CitizenAttachmentResponseDTO>>()
                     {
-                        data = _mapper.Map<List<CitizenAttachmentResponseDTO>>(existingDistricts),
+                        data = _mapper.Map<List<CitizenAttachmentResponseDTO>>(existingCitizenAttachments),
                         remarks = "Citizen Attachment found successfully",
                         success = true,
                     };
