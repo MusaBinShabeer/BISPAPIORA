@@ -132,7 +132,14 @@ namespace BISPAPIORA.Controllers
 
                 // Drain any remaining section body that hasn't been consumed and
                 // read the headers for the next section.
+                var image = new FileManagerImageDTO
+                {
+                    fileName = trustedFileNameForDisplay,  // Use the trusted file name for display
+                    fileData = streamedFileContent,
+                    fileContentType = section.ContentType
+                };
                 section = await reader.ReadNextSectionAsync();
+               
             }
             #endregion
 
@@ -153,7 +160,7 @@ namespace BISPAPIORA.Controllers
 
                 return BadRequest(ModelState);
             }
-            var response = await fileManagerService.UploadFileAsync(streamedFileContent, fileNameWithoutExtension,fileExtension);
+            var response = await fileManagerService.UploadFileAsync(streamedFileContent, fileNameWithoutExtension,fileExtension);           
             return Ok(response);
         }
     }
