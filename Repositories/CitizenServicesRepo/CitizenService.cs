@@ -67,43 +67,7 @@ namespace BISPAPIORA.Repositories.CitizenServicesRepo
                 };
             }
         }
-        public async Task<ResponseModel<RegistrationResponseDTO>> AddRegisteredDBFCitizen(AddRegistrationDTO model)
-        {
-            try
-            {
-                var Citizen = await db.HiberProtectionAccounts.Where(x => x.Cnic.ToString().Equals(model.citizenCnic.ToLower())).FirstOrDefaultAsync();
-                if (Citizen == null)
-                {
-                    var newCitizen = new HiberProtectionAccount();
-                    newCitizen = _mapper.Map<HiberProtectionAccount>(model);
-                    db.HiberProtectionAccounts.Add(newCitizen);
-                    await db.SaveChangesAsync();
-                    return new ResponseModel<RegistrationResponseDTO>()
-                    {
-                        success = true,
-                        remarks = $"Citizen {model.citizenName} has been added successfully",
-                        data = _mapper.Map<RegistrationResponseDTO>(newCitizen),
-                    };
-                }
-                else
-                {
-                    return new ResponseModel<RegistrationResponseDTO>()
-                    {
-                        success = false,
-                        remarks = $"Citizen with name {model.citizenName} already exists",
-                        data = _mapper.Map<RegistrationResponseDTO>(Citizen),
-                    };
-                }
-            }
-            catch (Exception ex)
-            {
-                return new ResponseModel<RegistrationResponseDTO>()
-                {
-                    success = false,
-                    remarks = $"There Was Fatal Error {ex.Message.ToString()}"
-                };
-            }
-        }
+
         public async Task<ResponseModel<RegistrationResponseDTO>> UpdateRegisteredCitizen(UpdateRegistrationDTO model)
         {
             try
@@ -142,41 +106,7 @@ namespace BISPAPIORA.Repositories.CitizenServicesRepo
                 };
             }
         }
-        public async Task<ResponseModel<RegistrationResponseDTO>> UpdateRegisteredDBFCitizen(UpdateRegistrationDTO model)
-        {
-            try
-            {
-                var existingCitizen = await db.HiberProtectionAccounts.Where(x => x.Cnic == decimal.Parse(model.citizenCnic)).FirstOrDefaultAsync();
-                if (existingCitizen != null)
-                {
-                    existingCitizen = _mapper.Map(model, existingCitizen);
-                    await db.SaveChangesAsync();
-                    return new ResponseModel<RegistrationResponseDTO>()
-                    {
-                        remarks = $"Citizen: {model.citizenName} has been updated",
-                        data = _mapper.Map<RegistrationResponseDTO>(existingCitizen),
-                        success = true,
-                    };
-                }
-                else
-                {
-                    return new ResponseModel<RegistrationResponseDTO>()
-                    {
-                        success = false,
-                        remarks = "No Record"
-                    };
-                }
-            }
-            catch (Exception ex)
-            {
-                return new ResponseModel<RegistrationResponseDTO>()
-                {
-                    success = false,
-                    remarks = $"There Was Fatal Error {ex.Message.ToString()}"
-                };
-            }
-        }
-        public async Task<ResponseModel<List<RegistrationResponseDTO>>> GetRegisteredCitizensList()
+      public async Task<ResponseModel<List<RegistrationResponseDTO>>> GetRegisteredCitizensList()
         {
             try
             {
@@ -313,41 +243,7 @@ namespace BISPAPIORA.Repositories.CitizenServicesRepo
                 };
             }
         }
-        public async Task<ResponseModel<EnrollmentResponseDTO>> UpdateEnrolledDBFCitizen(UpdateEnrollmentDTO model)
-        {
-            try
-            {
-                var existingCitizen = await db.HiberProtectionAccounts.Where(x => x.Cnic == decimal.Parse(model.citizenCnic)).FirstOrDefaultAsync();
-                if (existingCitizen != null)
-                {
-                    existingCitizen = _mapper.Map(model, existingCitizen);
-                    await db.SaveChangesAsync();
-                    return new ResponseModel<EnrollmentResponseDTO>()
-                    {
-                        remarks = $"Citizen: {model.citizenName} has been updated",
-                        data = _mapper.Map<EnrollmentResponseDTO>(existingCitizen),
-                        success = true,
-                    };
-                }
-                else
-                {
-                    return new ResponseModel<EnrollmentResponseDTO>()
-                    {
-                        success = false,
-                        remarks = "No Record"
-                    };
-                }
-            }
-            catch (Exception ex)
-            {
-                return new ResponseModel<EnrollmentResponseDTO>()
-                {
-                    success = false,
-                    remarks = $"There Was Fatal Error {ex.Message.ToString()}"
-                };
-            }
-        }
-        public async Task<ResponseModel<List<EnrollmentResponseDTO>>> GetEnrolledCitizensList()
+         public async Task<ResponseModel<List<EnrollmentResponseDTO>>> GetEnrolledCitizensList()
         {
             try
             {
@@ -555,7 +451,7 @@ namespace BISPAPIORA.Repositories.CitizenServicesRepo
         {
             try
             {
-                var existingRPFCitizen = await db.HiberProtectionAccounts.Where(x => x.Cnic == Decimal.Parse(citizenCnic)).FirstOrDefaultAsync();
+                var existingRPFCitizen = await db.tbl_citizens.Where(x => x.citizen_cnic == (citizenCnic)).FirstOrDefaultAsync();
                 if (existingRPFCitizen != null)
                 {
                     var existingCitizen = await db.tbl_citizens.Where(x => x.citizen_cnic == citizenCnic).FirstOrDefaultAsync();

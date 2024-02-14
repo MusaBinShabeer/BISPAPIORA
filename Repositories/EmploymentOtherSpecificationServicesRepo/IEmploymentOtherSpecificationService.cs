@@ -1,7 +1,7 @@
 ﻿using BISPAPIORA.Models.DTOS.ResponseDTO;
 using BISPAPIORA.Models.DTOS.EmploymentOtherSpecificationDTO;
 
-namespace BISPAPIORA.Repositories.EmploymentServicesRepo
+namespace BISPAPIORA.Repositories.EmploymentOtherSpecificationServicesRepo
 {
     public interface IEmploymentOtherSpecificationService
     {

@@ -10,8 +10,8 @@ using BISPAPIORA.Repositories.CitizenBankInfoServicesRepo;
 using BISPAPIORA.Models.DTOS.CitizenBankInfoDTO;
 using BISPAPIORA.Models.DTOS.BankOtherSpecificationDTO;
 using BISPAPIORA.Repositories.BankOtherSpecificationServicesRepo;
-using BISPAPIORA.Repositories.EmploymentServicesRepo;
 using BISPAPIORA.Models.DTOS.EmploymentOtherSpecificationDTO;
+using BISPAPIORA.Repositories.EmploymentOtherSpecificationServicesRepo;
 
 namespace BISPAPIORA.Repositories.RegistrationServicesRepo
 {
