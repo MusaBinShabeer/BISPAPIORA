@@ -1,7 +1,9 @@
 ﻿using BISPAPIORA.Extensions.Middleware;
 using BISPAPIORA.Models.DTOS.FileManagerDTO;
+using BISPAPIORA.Models.DTOS.ImageCitizenAttachmentDTO;
 using BISPAPIORA.Models.DTOS.ResponseDTO;
 using BISPAPIORA.Repositories.FileManagerServicesRepo;
+using BISPAPIORA.Repositories.ImageCitizenAttachmentServicesRepo;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.Features;
 using Microsoft.AspNetCore.Mvc;
@@ -20,12 +22,17 @@ namespace BISPAPIORA.Controllers
 
         private static readonly FormOptions _defaultFormOptions = new FormOptions();
         private readonly IFileManagerService fileManagerService;
+        private readonly IImageCitizenAttachmentService imageCitizenAttachmentService;
 
-        public FileManagerController(IFileManagerService fileManagerService) { this.fileManagerService = fileManagerService; }
+        public FileManagerController(IFileManagerService fileManagerService, IImageCitizenAttachmentService imageCitizenAttachmentService) 
+        {
+            this.fileManagerService = fileManagerService;
+            this.imageCitizenAttachmentService = imageCitizenAttachmentService;
+        }
         [HttpPost, DisableRequestSizeLimit]
         [DisableFormValueModelBinding]
         [Route("[Action]")]
-        public async Task<ActionResult<ResponseModel<FileManagerResponseDTO>>> UploadFile( )
+        public async Task<ActionResult<ResponseModel<FileManagerResponseDTO>>> UploadAttachmentFile(string citizenCnic)
         {
             string fileNameWithoutExtension = "";
             string fileExtension = "";
@@ -132,12 +139,14 @@ namespace BISPAPIORA.Controllers
 
                 // Drain any remaining section body that hasn't been consumed and
                 // read the headers for the next section.
-                var image = new FileManagerImageDTO
+                var image = new AddImageCitizenAttachmentDTO()
                 {
-                    fileName = trustedFileNameForDisplay,  // Use the trusted file name for display
-                    fileData = streamedFileContent,
-                    fileContentType = section.ContentType
+                    imageCitizenAttachmentName = trustedFileNameForDisplay,  // Use the trusted file name for display
+                    imageCitizenAttachmentData = streamedFileContent,
+                    imageCitizenAttachmentContentType = section.ContentType,
+                    imageCitizenAttachmentCnic= citizenCnic
                 };
+                var imageResponse= imageCitizenAttachmentService.AddImageCitizenAttachment(image);
                 section = await reader.ReadNextSectionAsync();
                
             }
