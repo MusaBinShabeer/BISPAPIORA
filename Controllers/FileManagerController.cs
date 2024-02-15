@@ -24,14 +24,13 @@ namespace BISPAPIORA.Controllers
         private readonly IFileManagerService fileManagerService;
         private readonly IImageCitizenAttachmentService imageCitizenAttachmentService;
 
-        public FileManagerController(IFileManagerService fileManagerService, IImageCitizenAttachmentService imageCitizenAttachmentService) 
+        public FileManagerController(IFileManagerService fileManagerService, IImageCitizenAttachmentService imageCitizenAttachmentService)
         {
             this.fileManagerService = fileManagerService;
             this.imageCitizenAttachmentService = imageCitizenAttachmentService;
         }
         [HttpPost, DisableRequestSizeLimit]
         [DisableFormValueModelBinding]
-        [Route("[Action]")]
         public async Task<ActionResult<ResponseModel<FileManagerResponseDTO>>> UploadAttachmentFile(string citizenCnic)
         {
             string fileNameWithoutExtension = "";
@@ -70,10 +69,10 @@ namespace BISPAPIORA.Controllers
                         // Don't trust the file name sent by the client. To display
                         // the file name, HTML-encode the value.
                         trustedFileNameForDisplay = WebUtility.HtmlEncode(
-                                contentDisposition.FileName.Value); 
+                                contentDisposition.FileName.Value);
                         fileNameWithoutExtension = Path.GetFileNameWithoutExtension(untrustedFileNameForStorage);
                         fileExtension = Path.GetExtension(untrustedFileNameForStorage);
-                        var stringArray= new string[1];
+                        var stringArray = new string[1];
                         stringArray[0] = fileExtension;
                         streamedFileContent =
                             await FileAuthentication.ProcessStreamedFile(section, contentDisposition,
@@ -144,11 +143,11 @@ namespace BISPAPIORA.Controllers
                     imageCitizenAttachmentName = trustedFileNameForDisplay,  // Use the trusted file name for display
                     imageCitizenAttachmentData = streamedFileContent,
                     imageCitizenAttachmentContentType = section.ContentType,
-                    imageCitizenAttachmentCnic= citizenCnic
+                    imageCitizenAttachmentCnic = citizenCnic
                 };
-                var imageResponse= imageCitizenAttachmentService.AddImageCitizenAttachment(image);
+                var imageResponse = imageCitizenAttachmentService.AddImageCitizenAttachment(image);
                 section = await reader.ReadNextSectionAsync();
-               
+
             }
             #endregion
 
@@ -169,8 +168,28 @@ namespace BISPAPIORA.Controllers
 
                 return BadRequest(ModelState);
             }
-            var response = await fileManagerService.UploadFileAsync(streamedFileContent, fileNameWithoutExtension,fileExtension);           
+            var response = await fileManagerService.UploadFileAsync(streamedFileContent, fileNameWithoutExtension, fileExtension);
             return Ok(response);
+        }
+        [HttpGet("DownloadImageCitizenAttachmentByCNIC")]
+        public async Task<IActionResult> DownloadImageCitizenAttachmentByCNIC(string cnic)
+        {
+            try
+            {
+                var imageCitizenAttachment = await imageCitizenAttachmentService.GetImageCitizenAttachmentByCitizenCnic(cnic);
+                return new FileContentResult(imageCitizenAttachment.data.imageCitizenAttachmentData, imageCitizenAttachment.data.imageCitizenAttachmentContentType)
+                {
+                    FileDownloadName = imageCitizenAttachment.data.imageCitizenAttachmentName
+                };
+            }
+            catch (FileNotFoundException ex)
+            {
+                return NotFound(ex.Message);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, ex.Message);
+            }
         }
     }
 }

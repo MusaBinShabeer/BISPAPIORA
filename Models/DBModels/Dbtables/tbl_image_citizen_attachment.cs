@@ -5,15 +5,15 @@ namespace BISPAPIORA.Models.DBModels.Dbtables;
 
 public partial class tbl_image_citizen_attachment
 {
-    public Guid id { get; set; }
+    public Guid id { get; set; } = Guid.NewGuid();
 
-    public string? name { get; set; }
+    public string? name { get; set; } = string.Empty;
 
     public byte[]? data { get; set; }
 
-    public string? content_type { get; set; }
+    public string? content_type { get; set; } = string.Empty;
 
-    public string? cnic { get; set; }
+    public string? cnic { get; set; } = string.Empty;
 
-    public Guid? fk_citizen { get; set; }
+    public Guid? fk_citizen { get; set; } = default!;
 }
