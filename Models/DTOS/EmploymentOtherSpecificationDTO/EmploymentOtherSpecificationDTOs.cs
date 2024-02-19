@@ -14,5 +14,6 @@ namespace BISPAPIORA.Models.DTOS.EmploymentOtherSpecificationDTO
     public class EmploymentOtherSpecificationResponseDTO : AddEmploymentOtherSpecificationDTO
     {
         public string employmentOtherSpecificationId { get; set; } = string.Empty;
+        public int employmentOtherSpecificationCode { get; set; } = default!;
     }
 }

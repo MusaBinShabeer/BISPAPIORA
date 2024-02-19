@@ -25,6 +25,7 @@ namespace BISPAPIORA.Extensions.AutomapperProfiles
              .ForMember(d => d.citizenAttachmentPath, opt => opt.MapFrom((src) => src.attachment_path))
              .ForMember(d => d.fkCitizen, opt => opt.MapFrom(src => src.fk_citizen))
              .ForMember(d => d.citizenName, opt => opt.MapFrom(src => src.tbl_citizen.citizen_name))
+             .ForMember(d => d.citizenAttachmentCode, opt => opt.MapFrom(src => src.code))
              .ForMember(d => d.citizenCnic, opt => opt.MapFrom(src => src.tbl_citizen.citizen_cnic));
         }
     }

@@ -14,5 +14,6 @@ namespace BISPAPIORA.Models.DTOS.BankOtherSpecificationDTO
     public class BankOtherSpecificationResponseDTO : AddBankOtherSpecificationDTO
     {
         public string bankOtherSpecificationId { get; set; } = string.Empty;
+        public int bankOtherSpecificationCode { get; set; } = default!;
     }
 }

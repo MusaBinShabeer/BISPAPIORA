@@ -23,12 +23,12 @@ namespace BISPAPIORA.Extensions.AutomapperProfiles
             .ForMember(d => d.fkCitizen, opt => opt.MapFrom(src => src.fkCitizen))
             .ForMember(d => d.fkBank, opt => opt.MapFrom(src => src.fkBank));
             CreateMap<UpdateRegistrationDTO, AddRegisteredCitizenBankInfoDTO>()
-         .ForMember(d => d.ibanNo, opt => opt.MapFrom(src => (src.ibanNo)))
-         .ForMember(d => d.accountHolderName, opt => opt.MapFrom(src => src.accountHolderName))
-         .ForMember(d => d.aIOA, opt => opt.MapFrom(src => src.aIOA))
-         .ForMember(d => d.familySavingAccount, opt => opt.MapFrom(src => src.familySavingAccount))
-         .ForMember(d => d.fkCitizen, opt => opt.MapFrom(src => src.fkCitizen))
-         .ForMember(d => d.fkBank, opt => opt.MapFrom(src => src.fkBank));
+             .ForMember(d => d.ibanNo, opt => opt.MapFrom(src => (src.ibanNo)))
+             .ForMember(d => d.accountHolderName, opt => opt.MapFrom(src => src.accountHolderName))
+             .ForMember(d => d.aIOA, opt => opt.MapFrom(src => src.aIOA))
+             .ForMember(d => d.familySavingAccount, opt => opt.MapFrom(src => src.familySavingAccount))
+             .ForMember(d => d.fkCitizen, opt => opt.MapFrom(src => src.fkCitizen))
+             .ForMember(d => d.fkBank, opt => opt.MapFrom(src => src.fkBank));
             CreateMap<AddRegisteredCitizenBankInfoDTO, tbl_citizen_bank_info>()
             .ForMember(d => d.iban_no, opt => opt.MapFrom(src => (src.ibanNo)))
             .ForMember(d => d.account_holder_name, opt => opt.MapFrom(src => src.accountHolderName))
@@ -52,6 +52,7 @@ namespace BISPAPIORA.Extensions.AutomapperProfiles
             .ForMember(d => d.familySavingAccount, opt => opt.MapFrom((src) => src.family_saving_account))
             .ForMember(d => d.fkCitizen, opt => opt.MapFrom(src => (src.fk_citizen)))
             .ForMember(d => d.citizenName, opt => opt.MapFrom((src) => src.tbl_citizen.citizen_name))
+            .ForMember(d => d.citizenBankInfoCode, opt => opt.MapFrom(src => src.code))
             .ForMember(d => d.fkBank, opt => opt.MapFrom(src => (src.fk_bank)))
             .ForMember(d => d.BankName, opt => opt.MapFrom((src) => src.tbl_bank.bank_name));
           
@@ -68,10 +69,10 @@ namespace BISPAPIORA.Extensions.AutomapperProfiles
            .ForMember(d => d.fkCitizen, opt => opt.MapFrom(src => src.fkCitizen))
            .ForMember(d => d.fkBank, opt => opt.MapFrom(src => src.fkBank));
             CreateMap<AddEnrolledCitizenBankInfoDTO, UpdateEnrolledCitizenBankInfoDTO>()
-         .ForMember(d => d.ibanNo, opt => opt.MapFrom(src => src.ibanNo))
-         .ForMember(d => d.accountType, opt => opt.MapFrom(src => src.accountType))
-         .ForMember(d => d.fkCitizen, opt => opt.MapFrom(src => src.fkCitizen))
-         .ForMember(d => d.fkBank, opt => opt.MapFrom(src => src.fkBank));
+             .ForMember(d => d.ibanNo, opt => opt.MapFrom(src => src.ibanNo))
+             .ForMember(d => d.accountType, opt => opt.MapFrom(src => src.accountType))
+             .ForMember(d => d.fkCitizen, opt => opt.MapFrom(src => src.fkCitizen))
+             .ForMember(d => d.fkBank, opt => opt.MapFrom(src => src.fkBank));
             CreateMap<UpdateEnrolledCitizenBankInfoDTO, tbl_citizen_bank_info>()
             .ForMember(d => d.citizen_bank_info_id, opt => opt.MapFrom((src, dest) => (dest.citizen_bank_info_id)))
             .ForMember(d => d.iban_no, opt => opt.MapFrom((src, dest) => otherServices.Check(src.ibanNo) ? src.ibanNo : dest.iban_no))

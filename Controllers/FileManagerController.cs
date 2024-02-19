@@ -37,7 +37,6 @@ namespace BISPAPIORA.Controllers
         }
         [HttpPost, DisableRequestSizeLimit]
         [DisableFormValueModelBinding]
-        [Route("[Action]")]
         public async Task<ActionResult<ResponseModel<FileManagerResponseDTO>>> UploadAttachmentFile(string citizenCnic)
         {
             string fileNameWithoutExtension = "";
@@ -317,6 +316,26 @@ namespace BISPAPIORA.Controllers
             //    return BadRequest(ModelState);
             //}
             ////var response = await fileManagerService.UploadFileAsync(streamedFileContent, fileNameWithoutExtension,fileExtension);
+        }
+        [HttpGet("DownloadImageCitizenAttachmentByCNIC")]
+        public async Task<IActionResult> DownloadImageCitizenAttachmentByCNIC(string cnic)
+        {
+            try
+            {
+                var imageCitizenAttachment = await imageCitizenAttachmentService.GetImageCitizenAttachmentByCitizenCnic(cnic);
+                return new FileContentResult(imageCitizenAttachment.data.imageCitizenAttachmentData, imageCitizenAttachment.data.imageCitizenAttachmentContentType)
+                {
+                    FileDownloadName = imageCitizenAttachment.data.imageCitizenAttachmentName
+                };
+            }
+            catch (FileNotFoundException ex)
+            {
+                return NotFound(ex.Message);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, ex.Message);
+            }
         }
     }
 }

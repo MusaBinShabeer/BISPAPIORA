@@ -53,5 +53,6 @@ namespace BISPAPIORA.Models.DTOS.RegistrationDTO
         public bool isEnrolled { get; set; } = false;
         public string fkProvince { get; set; } = string.Empty;
         public string fkDistrict { get; set; } = string.Empty;
+        public int citizenCode { get; set; } = default!;
     }
 }

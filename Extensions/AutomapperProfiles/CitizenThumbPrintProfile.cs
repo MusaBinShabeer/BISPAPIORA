@@ -21,6 +21,7 @@ namespace BISPAPIORA.Extensions.AutomapperProfiles
              .ForMember(d => d.fk_citizen, opt => opt.MapFrom((src, dest) => src.fkCitizen));
             CreateMap<tbl_citizen_thumb_print, CitizenThumbPrintResponseDTO>()
              .ForMember(d => d.citizenThumbPrintId, opt => opt.MapFrom(src => src.citizen_thumb_print_id))
+             .ForMember(d => d.citizenThumbPrintCode, opt => opt.MapFrom(src => src.code))
              .ForMember(d => d.citizenThumbPrintName, opt => opt.MapFrom((src) => src.citizen_thumb_print_name))
              .ForMember(d => d.citizenThumbPrintPath, opt => opt.MapFrom((src) => src.citizen_thumb_print_path))
              .ForMember(d => d.fkCitizen, opt => opt.MapFrom(src => src.fk_citizen))
