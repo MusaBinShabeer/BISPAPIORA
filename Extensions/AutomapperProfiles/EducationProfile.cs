@@ -20,6 +20,7 @@ namespace BISPAPIORA.Extensions.AutomapperProfiles
              .ForMember(d => d.is_active, opt => opt.MapFrom((src, dest) => src.isActive));
             CreateMap<tbl_education, EducationResponseDTO>()
             .ForMember(d => d.educationId, opt => opt.MapFrom(src => src.education_id))
+            .ForMember(d => d.educationCode, opt => opt.MapFrom(src => src.code))
             .ForMember(d => d.educationName, opt => opt.MapFrom((src) => src.education_name))
             .ForMember(d => d.isActive, opt => opt.MapFrom(src => src.is_active));
         }

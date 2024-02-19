@@ -8,6 +8,7 @@ public partial class tbl_citizen_attachment
     public Guid citizen_attachment_id { get; set; } = Guid.NewGuid();
 
     public string attachment_name { get; set; } = null!;
+    public decimal code { get; set; } = 0;
 
     public string attachment_path { get; set; } = null!;
 

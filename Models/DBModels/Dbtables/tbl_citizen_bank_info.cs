@@ -6,6 +6,7 @@ namespace BISPAPIORA.Models.DBModels.Dbtables;
 public partial class tbl_citizen_bank_info
 {
     public Guid citizen_bank_info_id { get; set; } = Guid.NewGuid();
+    public decimal code { get; set; } = 0;
 
     public string? iban_no { get; set; } = string.Empty;
 

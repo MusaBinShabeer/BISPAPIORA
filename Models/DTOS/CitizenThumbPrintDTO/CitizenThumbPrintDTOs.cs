@@ -25,5 +25,6 @@ namespace BISPAPIORA.Models.DTOS.CitizenThumbPrintDTO
         public string citizenThumbPrintId { get; set; } = string.Empty;
         public string citizenName { get; set; } = string.Empty;
         public string citizenCnic { get; set; } = string.Empty;
+        public int citizenThumbPrintCode { get; set; } = default!;
     }
 }

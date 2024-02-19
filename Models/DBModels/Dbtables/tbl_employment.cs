@@ -6,6 +6,7 @@ namespace BISPAPIORA.Models.DBModels.Dbtables;
 public partial class tbl_employment
 {
     public Guid employment_id { get; set; } = Guid.NewGuid();
+    public decimal code { get; set; } = 0;
 
     public string? employment_name { get; set; } = string.Empty;
 

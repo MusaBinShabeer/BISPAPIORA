@@ -8,6 +8,7 @@ public partial class tbl_citizen
     public Guid citizen_id { get; set; } = Guid.NewGuid();
 
     public string citizen_cnic { get; set; } = string.Empty;
+    public decimal code { get; set; }
 
     public string? citizen_name { get; set; } = string.Empty;
 
@@ -28,7 +29,6 @@ public partial class tbl_citizen
     public Guid? fk_citizen_employment { get; set; } = default(Guid?);
 
     public Guid? fk_tehsil { get; set; } = default(Guid?);
-
     public virtual tbl_education? tbl_citizen_education { get; set; }
 
     public virtual tbl_employment? tbl_citizen_employment { get; set; }

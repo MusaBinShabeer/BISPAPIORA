@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Http.Features;
 using Microsoft.EntityFrameworkCore;
 using System.Security.Claims;
 using BISPAPIORA.Models.DTOS.ImageCitizenAttachmentDTO;
+using Microsoft.AspNetCore.Mvc;
 
 namespace BISPAPIORA.Repositories.ImageCitizenAttachmentServicesRepo
 {
@@ -124,6 +125,38 @@ namespace BISPAPIORA.Repositories.ImageCitizenAttachmentServicesRepo
             try
             {
                 var existingImageCitizenAttachment = await db.tbl_image_citizen_attachments/*.Include(x => x.tbl_citizen)*/.Where(x => x.id == Guid.Parse(imageCitizenAttachmentId)).FirstOrDefaultAsync();
+                if (existingImageCitizenAttachment != null)
+                {
+                    return new ResponseModel<ImageCitizenAttachmentResponseDTO>()
+                    {
+                        data = _mapper.Map<ImageCitizenAttachmentResponseDTO>(existingImageCitizenAttachment),
+                        remarks = "Image Citizen Attachment found successfully",
+                        success = true,
+                    };
+                }
+                else
+                {
+                    return new ResponseModel<ImageCitizenAttachmentResponseDTO>()
+                    {
+                        success = false,
+                        remarks = "No Record"
+                    };
+                }
+            }
+            catch (Exception ex)
+            {
+                return new ResponseModel<ImageCitizenAttachmentResponseDTO>()
+                {
+                    success = false,
+                    remarks = $"There Was Fatal Error {ex.Message.ToString()}"
+                };
+            }
+        }
+        public async Task<ResponseModel<ImageCitizenAttachmentResponseDTO>> GetImageCitizenAttachmentByCitizenCnic(string citizenCnic)
+        {
+            try
+            {
+                var existingImageCitizenAttachment = await db.tbl_image_citizen_attachments/*.Include(x => x.tbl_citizen)*/.Where(x => x.cnic == citizenCnic).FirstOrDefaultAsync();
                 if (existingImageCitizenAttachment != null)
                 {
                     return new ResponseModel<ImageCitizenAttachmentResponseDTO>()
