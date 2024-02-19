@@ -8,6 +8,7 @@ namespace BISPAPIORA.Repositories.ImageCitizenAttachmentServicesRepo
     public interface IImageCitizenAttachmentService
     {
         public Task<ResponseModel<ImageCitizenAttachmentResponseDTO>> AddImageCitizenAttachment(AddImageCitizenAttachmentDTO model);
+        public Task<ResponseModel<ImageCitizenAttachmentResponseDTO>> AddFkCitizenToAttachment(AddImageCitizenAttachmentDTO model);
         public Task<ResponseModel<ImageCitizenAttachmentResponseDTO>> DeleteImageCitizenAttachment(string bankId);
         public Task<ResponseModel<List<ImageCitizenAttachmentResponseDTO>>> GetImageCitizenAttachmentsList();
         public Task<ResponseModel<ImageCitizenAttachmentResponseDTO>> GetImageCitizenAttachment(string bankId);

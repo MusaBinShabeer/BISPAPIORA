@@ -9,6 +9,8 @@ namespace BISPAPIORA.Repositories.ImageCitizenThumbPrintServicesRepo
     public interface IImageCitizenThumbPrintService
     {
         public Task<ResponseModel<ImageCitizenThumbPrintResponseDTO>> AddImageCitizenThumbPrint(AddImageCitizenThumbPrintDTO model);
+
+        public Task<ResponseModel<ImageCitizenThumbPrintResponseDTO>> AddFkCitizentoImage(AddImageCitizenThumbPrintDTO model);
         public Task<ResponseModel<ImageCitizenThumbPrintResponseDTO>> DeleteImageCitizenThumbPrint(string bankId);
         public Task<ResponseModel<List<ImageCitizenThumbPrintResponseDTO>>> GetImageCitizenThumbPrintsList();
         public Task<ResponseModel<ImageCitizenThumbPrintResponseDTO>> GetImageCitizenThumbPrint(string bankId);
