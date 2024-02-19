@@ -27,5 +27,6 @@ namespace BISPAPIORA.Models.DTOS.ImageCitizenAttachmentDTO
         public string imageCitizenAttachmentId { get; set; } = string.Empty;
         public string citizenName { get; set; } = string.Empty;
         public string citizenCnic { get; set; } = string.Empty;
+        public int imageCitizenAttachmentCode { get; set; } = default!;
     }
 }

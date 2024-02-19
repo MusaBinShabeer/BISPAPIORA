@@ -23,5 +23,6 @@ namespace BISPAPIORA.Models.DTOS.BankDTO
     public class BankResponseDTO : BankDTO
     {
         public string bankId { get; set; } = string.Empty;
+        public int bankCode { get; set; } = default!;
     }
 }

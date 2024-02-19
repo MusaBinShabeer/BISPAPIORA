@@ -20,5 +20,6 @@ namespace BISPAPIORA.Models.DTOS.EducationDTO
     public class EducationResponseDTO : EducationDTO
     {
         public string educationId { get; set; } = string.Empty;
+        public int educationCode { get; set; } = default!;
     }
 }

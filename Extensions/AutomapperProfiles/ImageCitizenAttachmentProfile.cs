@@ -25,7 +25,8 @@ namespace BISPAPIORA.Extensions.AutomapperProfiles
                 .ForMember(d => d.fk_citizen, opt => opt.MapFrom((src, dest) => otherServices.Check(src.fkCitizen) ? Guid.Parse(src.fkCitizen) : dest.fk_citizen));
             CreateMap<tbl_image_citizen_attachment, ImageCitizenAttachmentResponseDTO>()
                 .ForMember(d => d.imageCitizenAttachmentId, opt => opt.MapFrom(src => src.id))
-                .ForMember(d => d.imageCitizenAttachmentData, opt => opt.MapFrom((src) => src.name))
+                .ForMember(d => d.imageCitizenAttachmentCode, opt => opt.MapFrom(src => src.code))
+                .ForMember(d => d.imageCitizenAttachmentName, opt => opt.MapFrom((src) => src.name))
                 .ForMember(d => d.imageCitizenAttachmentData, opt => opt.MapFrom((src) => src.data))
                 .ForMember(d => d.imageCitizenAttachmentContentType, opt => opt.MapFrom((src) => src.content_type))
                 .ForMember(d => d.imageCitizenAttachmentCnic, opt => opt.MapFrom((src) => src.cnic))

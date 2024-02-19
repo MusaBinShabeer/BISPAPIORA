@@ -23,6 +23,7 @@ namespace BISPAPIORA.Extensions.AutomapperProfiles
              .ForMember(d => d.bankId, opt => opt.MapFrom(src => src.bank_id))
              .ForMember(d => d.bankName, opt => opt.MapFrom((src) => src.bank_name))
              .ForMember(d => d.bankPrefixIban, opt => opt.MapFrom((src) => src.bank_prefix_iban))
+             .ForMember(d => d.bankCode, opt => opt.MapFrom(src => src.code))
              .ForMember(d => d.isActive, opt => opt.MapFrom(src => src.is_active));
         }
     }

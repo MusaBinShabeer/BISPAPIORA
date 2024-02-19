@@ -20,5 +20,6 @@ namespace BISPAPIORA.Models.DTOS.EmploymentDTO
     public class EmploymentResponseDTO : EmploymentDTO
     {
         public string employmentId { get; set; } = string.Empty;
+        public int employmentCode { get; set; } = default!;
     }
 }

@@ -34,5 +34,6 @@ namespace BISPAPIORA.Models.DTOS.CitizenSchemeDTO
     public class CitizenSchemeResponseDTO : CitizenSchemeDTO
     {
         public string citizenSchemeId { get; set; } = string.Empty;
+        public int citizenSchemeCode { get; set; } = default!;
     }
 }
