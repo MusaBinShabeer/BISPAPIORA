@@ -545,9 +545,6 @@ public partial class Dbcontext : DbContext
                 .IsUnicode(false)
                 .HasDefaultValueSql("''")
                 .HasColumnName("BANK_OTHER_SPECIFICATION");
-            entity.Property(e => e.citizen_code)
-                .HasColumnType("NUMBER")
-                .HasColumnName("CITIZEN_CODE");
             entity.Property(e => e.code)
                 .ValueGeneratedOnAdd()
                 .HasColumnType("NUMBER")
