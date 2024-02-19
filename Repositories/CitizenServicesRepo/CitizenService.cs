@@ -11,6 +11,10 @@ using BISPAPIORA.Models.DTOS.CitizenAttachmentDTO;
 using BISPAPIORA.Models.DTOS.CitizenThumbPrintDTO;
 using BISPAPIORA.Models.DTOS.CitizenBankInfoDTO;
 using BISPAPIORA.Repositories.CitizenBankInfoServicesRepo;
+using BISPAPIORA.Models.DTOS.ImageCitizenAttachmentDTO;
+using BISPAPIORA.Repositories.ImageCitizenAttachmentServicesRepo;
+using BISPAPIORA.Repositories.ImageCitizenThumbPrintServicesRepo;
+using BISPAPIORA.Models.DTOS.ImageCitizenThumbPrintDTO;
 
 namespace BISPAPIORA.Repositories.CitizenServicesRepo
 {
@@ -18,10 +22,10 @@ namespace BISPAPIORA.Repositories.CitizenServicesRepo
     {
         private readonly IMapper _mapper;
         private readonly Dbcontext db;
-        private readonly ICitizenAttachmentService attachmentService;
+        private readonly IImageCitizenAttachmentService attachmentService;
         private readonly ICitizenBankInfoService citizenBankInfoService;
-        private readonly ICitizenThumbPrintService thumbprintService;
-        public CitizenService(IMapper mapper, Dbcontext db,ICitizenBankInfoService citizenBankInfoService,ICitizenThumbPrintService thumbPrintService, ICitizenAttachmentService citizenAttachmentService)
+        private readonly IImageCitizenThumbPrintService thumbprintService;
+        public CitizenService(IMapper mapper, Dbcontext db,ICitizenBankInfoService citizenBankInfoService, IImageCitizenThumbPrintService thumbPrintService, IImageCitizenAttachmentService citizenAttachmentService)
         {
             _mapper = mapper;
             this.db = db;
@@ -39,7 +43,7 @@ namespace BISPAPIORA.Repositories.CitizenServicesRepo
                 {
                     var newCitizen = new tbl_citizen();
                     newCitizen = _mapper.Map<tbl_citizen>(model);
-                    db.tbl_citizens.Add(newCitizen);
+                    db.tbl_citizens.Add(newCitizen);                    
                     await db.SaveChangesAsync();
                     return new ResponseModel<RegistrationResponseDTO>()
                     {
@@ -67,7 +71,6 @@ namespace BISPAPIORA.Repositories.CitizenServicesRepo
                 };
             }
         }
-
         public async Task<ResponseModel<RegistrationResponseDTO>> UpdateRegisteredCitizen(UpdateRegistrationDTO model)
         {
             try
@@ -151,21 +154,17 @@ namespace BISPAPIORA.Repositories.CitizenServicesRepo
                     newCitizen = _mapper.Map<tbl_citizen>(model);
                     await db.tbl_citizens.AddAsync(newCitizen);
                     await db.SaveChangesAsync();
-                    var newAttachmentDto = new AddCitizenAttachmentDTO()
+                    var newAttachmentDto = new AddImageCitizenAttachmentDTO()
                     {
-                        citizenAttachmentName = model.fileName,
-                        citizenAttachmentPath = model.filePath,
                         fkCitizen = newCitizen.citizen_id.ToString()
                     };
-                    var resposneOfattachment = await attachmentService.AddCitizenAttachment(newAttachmentDto);
+                    var resposneOfattachment = await attachmentService.AddFkCitizenToAttachment(newAttachmentDto);
 
-                    var newthumbPrintDto = new AddCitizenThumbPrintDTO()
+                    var newthumbPrintDto = new AddImageCitizenThumbPrintDTO()
                     {
-                        citizenThumbPrintName = model.fileName,
-                        citizenThumbPrintPath = model.filePath,
                         fkCitizen = newCitizen.citizen_id.ToString()
                     };
-                    var responseOfThumbPrint = await thumbprintService.AddCitizenThumbPrint(newthumbPrintDto);
+                    var responseOfThumbPrint = await thumbprintService.AddFkCitizentoImage(newthumbPrintDto);
                     return new ResponseModel<EnrollmentResponseDTO>()
                     {
                         success = true,
@@ -203,21 +202,17 @@ namespace BISPAPIORA.Repositories.CitizenServicesRepo
                     await db.SaveChangesAsync();
                     //model.citizenCnic = existingCitizen.citizen_cnic;
                     //await UpdateEnrolledDBFCitizen(model);
-                    var newAttachmentDto = new AddCitizenAttachmentDTO()
-                    {
-                        citizenAttachmentName = model.fileName,
-                        citizenAttachmentPath = model.filePath,
+                    var newAttachmentDto = new AddImageCitizenAttachmentDTO()
+                    {                      
                         fkCitizen = existingCitizen.citizen_id.ToString()
                     };
-                    var resposneOfattachment = await attachmentService.AddCitizenAttachment(newAttachmentDto);
+                    var resposneOfattachment = await attachmentService.AddFkCitizenToAttachment(newAttachmentDto);
 
-                    var newthumbPrintDto = new AddCitizenThumbPrintDTO()
+                    var newthumbPrintDto = new AddImageCitizenThumbPrintDTO()
                     {
-                        citizenThumbPrintName = model.fileName,
-                        citizenThumbPrintPath = model.filePath,
                         fkCitizen = existingCitizen.citizen_id.ToString()
                     };
-                    var responseOfThumbPrint = await thumbprintService.AddCitizenThumbPrint(newthumbPrintDto);
+                    var responseOfThumbPrint = await thumbprintService.AddFkCitizentoImage(newthumbPrintDto);
                     return new ResponseModel<EnrollmentResponseDTO>()
                     {
                         remarks = $"Citizen: {model.citizenName} has been updated",

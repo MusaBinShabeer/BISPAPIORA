@@ -55,6 +55,39 @@ namespace BISPAPIORA.Repositories.ImageCitizenAttachmentServicesRepo
                 };
             }
         }
+        public async Task<ResponseModel<ImageCitizenAttachmentResponseDTO>> AddFkCitizenToAttachment(AddImageCitizenAttachmentDTO model)
+        {
+            try
+            {
+                var imageCitizenAttachment = await db.tbl_image_citizen_attachments.Where(x => x.cnic.ToLower().Equals(model.imageCitizenAttachmentCnic.ToLower())).FirstOrDefaultAsync(); 
+                if (imageCitizenAttachment == null)
+                {
+                    imageCitizenAttachment.fk_citizen = Guid.Parse(model.fkCitizen);
+                    await db.SaveChangesAsync();
+                    return new ResponseModel<ImageCitizenAttachmentResponseDTO>()
+                    {
+                        success = true,
+                        remarks = $"Succuss",
+                    };
+                }
+                else
+                {
+                    return new ResponseModel<ImageCitizenAttachmentResponseDTO>()
+                    {
+                        success = false,
+                        remarks = $"Image Citizen Attachment with name {model.imageCitizenAttachmentName} already exists"
+                    };
+                }
+            }
+            catch (Exception ex)
+            {
+                return new ResponseModel<ImageCitizenAttachmentResponseDTO>()
+                {
+                    success = false,
+                    remarks = $"There Was Fatal Error {ex.Message.ToString()}"
+                };
+            }
+        }
         public async Task<ResponseModel<ImageCitizenAttachmentResponseDTO>> DeleteImageCitizenAttachment(string imageCitizenAttachmentId)
         {
             try

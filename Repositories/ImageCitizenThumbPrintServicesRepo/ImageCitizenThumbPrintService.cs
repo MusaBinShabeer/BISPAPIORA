@@ -54,6 +54,39 @@ namespace BISPAPIORA.Repositories.ImageCitizenThumbPrintServicesRepo
                 };
             }
         }
+        public async Task<ResponseModel<ImageCitizenThumbPrintResponseDTO>> AddFkCitizentoImage(AddImageCitizenThumbPrintDTO model)
+        {
+            try
+            {
+                var imageCitizenThumbPrint = await db.tbl_image_citizen_thumb_prints.Where(x => x.cnic.ToLower().Equals(model.imageCitizenThumbPrintCnic.ToLower())).FirstOrDefaultAsync();
+                if (imageCitizenThumbPrint == null)
+                {
+                    imageCitizenThumbPrint.fk_citizen = Guid.Parse(model.fkCitizen);
+                    await db.SaveChangesAsync();
+                    return new ResponseModel<ImageCitizenThumbPrintResponseDTO>()
+                    {
+                        success = true,
+                        remarks = $"Succuss",                        
+                    };
+                }
+                else
+                {
+                    return new ResponseModel<ImageCitizenThumbPrintResponseDTO>()
+                    {
+                        success = false,
+                        remarks = $"Image Citizen Thumb Print with name {model.imageCitizenThumbPrintName} already exists"
+                    };
+                }
+            }
+            catch (Exception ex)
+            {
+                return new ResponseModel<ImageCitizenThumbPrintResponseDTO>()
+                {
+                    success = false,
+                    remarks = $"There Was Fatal Error {ex.Message.ToString()}"
+                };
+            }
+        }
         public async Task<ResponseModel<ImageCitizenThumbPrintResponseDTO>> DeleteImageCitizenThumbPrint(string imageCitizenThumbPrintId)
         {
             try
