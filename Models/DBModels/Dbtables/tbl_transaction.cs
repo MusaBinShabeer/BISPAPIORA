@@ -6,6 +6,7 @@ namespace BISPAPIORA.Models.DBModels.Dbtables;
 public partial class tbl_transaction
 {
     public Guid transaction_id { get; set; } = Guid.NewGuid();
+    public decimal? code { get; set; } = 0;
 
     public DateTime? transaction_date { get; set; } = default(DateTime?);
 

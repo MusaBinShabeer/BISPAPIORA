@@ -6,7 +6,6 @@ using BISPAPIORA.Models.DTOS.ResponseDTO;
 using Microsoft.AspNetCore.Http.Features;
 using Microsoft.EntityFrameworkCore;
 using System.Security.Claims;
-using BISPAPIORA.Repositories.EmploymentServicesRepo;
 
 namespace BISPAPIORA.Repositories.EmploymentOtherSpecificationServicesRepo
 {

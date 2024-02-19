@@ -30,5 +30,6 @@ namespace BISPAPIORA.Models.DTOS.CitizenComplianceDTO
         public string citizenComplianceId { get; set; } = string.Empty;
         public string citizenComplianceStartingMonth { get; set; } = string.Empty;
         public double citizenComplianceCommittedSavingAmount { get; set; } = 0.0;
+        public int citizenComplianceCode { get; set; } = default!;
     }
 }

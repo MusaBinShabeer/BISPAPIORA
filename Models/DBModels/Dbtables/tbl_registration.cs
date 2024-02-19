@@ -10,4 +10,5 @@ public partial class tbl_registration
     public Guid? fk_citizen { get; set; } = default(Guid?);
 
     public virtual tbl_citizen? tbl_citizen { get; set; }
+    public decimal? citizen_code { get; set; } = 0;
 }

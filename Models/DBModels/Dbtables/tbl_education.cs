@@ -7,6 +7,8 @@ public partial class tbl_education
 {
     public Guid education_id { get; set; } = Guid.NewGuid();
 
+    public decimal code { get; set; } = 0;
+
     public string? education_name { get; set; } = string.Empty;
 
     public bool? is_active { get; set; } = true;

@@ -6,7 +6,7 @@ namespace BISPAPIORA.Models.DBModels.Dbtables;
 public partial class tbl_citizen_thumb_print
 {
     public Guid citizen_thumb_print_id { get; set; } = Guid.NewGuid();
-
+    public decimal? code { get; set; } = 0;
     public string citizen_thumb_print_name { get; set; } = null!;
 
     public string citizen_thumb_print_path { get; set; } = null!;

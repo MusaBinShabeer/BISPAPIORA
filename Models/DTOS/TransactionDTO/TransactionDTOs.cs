@@ -28,5 +28,6 @@ namespace BISPAPIORA.Models.DTOS.TransactionDTO
     public class TransactionResponseDTO : TransactionDTO
     {
         public string transactionId { get; set; } = string.Empty;
+        public int transactionCode { get; set; } = default!;
     }
 }

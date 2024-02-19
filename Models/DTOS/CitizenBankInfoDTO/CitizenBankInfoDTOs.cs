@@ -64,5 +64,6 @@ namespace BISPAPIORA.Models.DTOS.CitizenBankInfoDTO
         public string accountHolderName { get; set; } = string.Empty;
         public double aIOA { get; set; } = 0.0;                         //Average Income Of Account
         public bool familySavingAccount { get; set; } = false;
+        public int citizenBankInfoCode { get; set; } = default!;
     }
 }
