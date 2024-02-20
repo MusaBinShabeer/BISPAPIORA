@@ -16,5 +16,6 @@ namespace BISPAPIORA.Repositories.ImageCitizenThumbPrintServicesRepo
         public Task<ResponseModel<ImageCitizenThumbPrintResponseDTO>> GetImageCitizenThumbPrint(string bankId);
         public Task<ResponseModel<ImageCitizenThumbPrintResponseDTO>> UpdateImageCitizenThumbPrint(UpdateImageCitizenThumbPrintDTO model);
         public Task<ResponseModel<List<ImageCitizenThumbPrintResponseDTO>>> GetImageCitizenThumbPrintByCitizenId(string citizenId);
+        public Task<ResponseModel<ImageCitizenThumbPrintResponseDTO>> GetImageCitizenThumbPrintByCitizenCnic(string citizenCnic);
     }
 }

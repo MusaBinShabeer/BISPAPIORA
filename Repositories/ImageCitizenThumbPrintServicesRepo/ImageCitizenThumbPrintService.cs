@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Http.Features;
 using Microsoft.EntityFrameworkCore;
 using System.Security.Claims;
 using BISPAPIORA.Models.DTOS.ImageCitizenThumbPrintDTO;
+using BISPAPIORA.Models.DTOS.ImageCitizenAttachmentDTO;
 
 namespace BISPAPIORA.Repositories.ImageCitizenThumbPrintServicesRepo
 {
@@ -157,6 +158,38 @@ namespace BISPAPIORA.Repositories.ImageCitizenThumbPrintServicesRepo
             try
             {
                 var existingImageCitizenThumbPrint = await db.tbl_image_citizen_thumb_prints/*.Include(x => x.tbl_citizen)*/.Where(x => x.id == Guid.Parse(imageCitizenThumbPrintId)).FirstOrDefaultAsync();
+                if (existingImageCitizenThumbPrint != null)
+                {
+                    return new ResponseModel<ImageCitizenThumbPrintResponseDTO>()
+                    {
+                        data = _mapper.Map<ImageCitizenThumbPrintResponseDTO>(existingImageCitizenThumbPrint),
+                        remarks = "Image Citizen Thumb Print found successfully",
+                        success = true,
+                    };
+                }
+                else
+                {
+                    return new ResponseModel<ImageCitizenThumbPrintResponseDTO>()
+                    {
+                        success = false,
+                        remarks = "No Record"
+                    };
+                }
+            }
+            catch (Exception ex)
+            {
+                return new ResponseModel<ImageCitizenThumbPrintResponseDTO>()
+                {
+                    success = false,
+                    remarks = $"There Was Fatal Error {ex.Message.ToString()}"
+                };
+            }
+        }
+        public async Task<ResponseModel<ImageCitizenThumbPrintResponseDTO>> GetImageCitizenThumbPrintByCitizenCnic(string citizenCnic)
+        {
+            try
+            {
+                var existingImageCitizenThumbPrint = await db.tbl_image_citizen_thumb_prints/*.Include(x => x.tbl_citizen)*/.Where(x => x.cnic == citizenCnic).FirstOrDefaultAsync();
                 if (existingImageCitizenThumbPrint != null)
                 {
                     return new ResponseModel<ImageCitizenThumbPrintResponseDTO>()

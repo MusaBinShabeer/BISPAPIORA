@@ -27,13 +27,13 @@ namespace BISPAPIORA.Controllers
         private static readonly FormOptions _defaultFormOptions = new FormOptions();
         private readonly IFileManagerService fileManagerService;
         private readonly IImageCitizenAttachmentService imageCitizenAttachmentService;
-        private readonly IImageCitizenThumbPrintService citizenThumbPrintService;
+        private readonly IImageCitizenThumbPrintService imageCitizenThumbPrintService;
 
         public FileManagerController(IFileManagerService fileManagerService, IImageCitizenAttachmentService imageCitizenAttachmentService, IImageCitizenThumbPrintService citizenThumbPrintService) 
         {
             this.fileManagerService = fileManagerService;
             this.imageCitizenAttachmentService = imageCitizenAttachmentService;
-            this.citizenThumbPrintService = citizenThumbPrintService;
+            this.imageCitizenThumbPrintService = citizenThumbPrintService;
         }
         [HttpPost("UploadAttachmentFile"), DisableRequestSizeLimit]
         [DisableFormValueModelBinding]
@@ -293,7 +293,7 @@ namespace BISPAPIORA.Controllers
                     imageCitizenThumbPrintContentType = section.ContentType,
                     imageCitizenThumbPrintCnic = citizenCnic
                 };
-                var imageResponse = citizenThumbPrintService.AddImageCitizenThumbPrint(image);
+                var imageResponse = imageCitizenThumbPrintService.AddImageCitizenThumbPrint(image);
                 section = await reader.ReadNextSectionAsync();
 
             }
@@ -328,6 +328,26 @@ namespace BISPAPIORA.Controllers
                 return new FileContentResult(imageCitizenAttachment.data.imageCitizenAttachmentData, imageCitizenAttachment.data.imageCitizenAttachmentContentType)
                 {
                     FileDownloadName = imageCitizenAttachment.data.imageCitizenAttachmentName
+                };
+            }
+            catch (FileNotFoundException ex)
+            {
+                return NotFound(ex.Message);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, ex.Message);
+            }
+        }
+        [HttpGet("DownloadImageCitizenThumbPrintByCNIC")]
+        public async Task<IActionResult> DownloadImageCitizenThumbPrintByCNIC(string cnic)
+        {
+            try
+            {
+                var imageCitizenThumbPrint = await imageCitizenThumbPrintService.GetImageCitizenThumbPrintByCitizenCnic(cnic);
+                return new FileContentResult(imageCitizenThumbPrint.data.imageCitizenThumbPrintData, imageCitizenThumbPrint.data.imageCitizenThumbPrintContentType)
+                {
+                    FileDownloadName = imageCitizenThumbPrint.data.imageCitizenThumbPrintName
                 };
             }
             catch (FileNotFoundException ex)
