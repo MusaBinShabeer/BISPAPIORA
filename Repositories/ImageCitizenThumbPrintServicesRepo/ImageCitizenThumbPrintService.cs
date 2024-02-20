@@ -23,7 +23,7 @@ namespace BISPAPIORA.Repositories.ImageCitizenThumbPrintServicesRepo
         {
             try
             {
-                var imageCitizenThumbPrint = await db.tbl_image_citizen_thumb_prints.Where(x => x.cnic.ToLower().Equals(model.imageCitizenThumbPrintCnic.ToLower())).FirstOrDefaultAsync();
+                var imageCitizenThumbPrint = await db.tbl_image_citizen_thumb_prints.Where(x => x.name.ToLower().Equals(model.imageCitizenThumbPrintName.ToLower())).FirstOrDefaultAsync();
                 if (imageCitizenThumbPrint == null)
                 {
                     var newImageCitizenThumbPrint = new tbl_image_citizen_thumb_print();
@@ -189,7 +189,7 @@ namespace BISPAPIORA.Repositories.ImageCitizenThumbPrintServicesRepo
         {
             try
             {
-                var existingImageCitizenThumbPrint = await db.tbl_image_citizen_thumb_prints/*.Include(x => x.tbl_citizen)*/.Where(x => x.cnic == citizenCnic).FirstOrDefaultAsync();
+                var existingImageCitizenThumbPrint = await db.tbl_image_citizen_thumb_prints/*.Include(x => x.tbl_citizen)*/.Where(x => x.name == citizenCnic).FirstOrDefaultAsync();
                 if (existingImageCitizenThumbPrint != null)
                 {
                     return new ResponseModel<ImageCitizenThumbPrintResponseDTO>()
