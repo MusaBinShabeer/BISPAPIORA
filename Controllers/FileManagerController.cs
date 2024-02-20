@@ -35,7 +35,7 @@ namespace BISPAPIORA.Controllers
             this.imageCitizenAttachmentService = imageCitizenAttachmentService;
             this.citizenThumbPrintService = citizenThumbPrintService;
         }
-        [HttpPost, DisableRequestSizeLimit]
+        [HttpPost("UploadAttachmentFile"), DisableRequestSizeLimit]
         [DisableFormValueModelBinding]
         public async Task<ActionResult<ResponseModel<FileManagerResponseDTO>>> UploadAttachmentFile(string citizenCnic)
         {
@@ -152,7 +152,7 @@ namespace BISPAPIORA.Controllers
                     imageCitizenAttachmentCnic = citizenCnic
                 };
                 var imageResponse = imageCitizenAttachmentService.AddImageCitizenAttachment(image);
-                section = await reader.ReadNextSectionAsync();               
+                section = await reader.ReadNextSectionAsync();
 
             }
             return Ok(new ResponseModel<FileManagerResponseDTO>() { remarks = "Success", success = true });
@@ -177,6 +177,8 @@ namespace BISPAPIORA.Controllers
             //}
             ////var response = await fileManagerService.UploadFileAsync(streamedFileContent, fileNameWithoutExtension,fileExtension);
         }
+        [HttpPost("UploadthumbPrint"), DisableRequestSizeLimit]
+        [DisableFormValueModelBinding]
         public async Task<ActionResult<ResponseModel<FileManagerResponseDTO>>> UploadthumbPrint(string citizenCnic)
         {
             string fileNameWithoutExtension = "";

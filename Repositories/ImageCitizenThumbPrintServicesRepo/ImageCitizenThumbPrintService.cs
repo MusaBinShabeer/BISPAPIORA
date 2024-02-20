@@ -22,7 +22,7 @@ namespace BISPAPIORA.Repositories.ImageCitizenThumbPrintServicesRepo
         {
             try
             {
-                var imageCitizenThumbPrint = await db.tbl_image_citizen_thumb_prints.Where(x => x.name.ToLower().Equals(model.imageCitizenThumbPrintName.ToLower())).FirstOrDefaultAsync();
+                var imageCitizenThumbPrint = await db.tbl_image_citizen_thumb_prints.Where(x => x.cnic.ToLower().Equals(model.imageCitizenThumbPrintCnic.ToLower())).FirstOrDefaultAsync();
                 if (imageCitizenThumbPrint == null)
                 {
                     var newImageCitizenThumbPrint = new tbl_image_citizen_thumb_print();
@@ -41,7 +41,7 @@ namespace BISPAPIORA.Repositories.ImageCitizenThumbPrintServicesRepo
                     return new ResponseModel<ImageCitizenThumbPrintResponseDTO>()
                     {
                         success = false,
-                        remarks = $"Image Citizen Thumb Print with name {model.imageCitizenThumbPrintName} already exists"
+                        remarks = $"Image Citizen Thumb Print with cnic {model.imageCitizenThumbPrintCnic} already exists"
                     };
                 }
             }
@@ -59,7 +59,7 @@ namespace BISPAPIORA.Repositories.ImageCitizenThumbPrintServicesRepo
             try
             {
                 var imageCitizenThumbPrint = await db.tbl_image_citizen_thumb_prints.Where(x => x.cnic.ToLower().Equals(model.imageCitizenThumbPrintCnic.ToLower())).FirstOrDefaultAsync();
-                if (imageCitizenThumbPrint == null)
+                if (imageCitizenThumbPrint != null)
                 {
                     imageCitizenThumbPrint.fk_citizen = Guid.Parse(model.fkCitizen);
                     await db.SaveChangesAsync();
@@ -74,7 +74,7 @@ namespace BISPAPIORA.Repositories.ImageCitizenThumbPrintServicesRepo
                     return new ResponseModel<ImageCitizenThumbPrintResponseDTO>()
                     {
                         success = false,
-                        remarks = $"Image Citizen Thumb Print with name {model.imageCitizenThumbPrintName} already exists"
+                        remarks = $"Image Citizen Thumb Print with cnic {model.imageCitizenThumbPrintCnic} does not exists"
                     };
                 }
             }

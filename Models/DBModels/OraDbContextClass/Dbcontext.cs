@@ -57,12 +57,12 @@ public partial class Dbcontext : DbContext
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
-        //modelBuilder
-        //    .HasDefaultSchema("ADMIN")
-        //    .UseCollation("USING_NLS_COMP");
         modelBuilder
-            .HasDefaultSchema("SAVINGS")
+            .HasDefaultSchema("ADMIN")
             .UseCollation("USING_NLS_COMP");
+        //modelBuilder
+        //    .HasDefaultSchema("SAVINGS")
+        //    .UseCollation("USING_NLS_COMP");
 
 
 
@@ -122,7 +122,7 @@ public partial class Dbcontext : DbContext
                 .HasMaxLength(255)
                 .IsUnicode(false)
                 .HasDefaultValueSql("''")
-                .HasColumnName("CITIZEN_FATHER_SPOUCE_NAME");
+                .HasColumnName("CITIZEN_FATHER_SPOUSE_NAME");
             entity.Property(e => e.citizen_gender)
                 .HasMaxLength(255)
                 .IsUnicode(false)
@@ -132,7 +132,7 @@ public partial class Dbcontext : DbContext
                 .HasMaxLength(255)
                 .IsUnicode(false)
                 .HasDefaultValueSql("''")
-                .HasColumnName("CITIZEN_MARTIAL_STATUS");
+                .HasColumnName("CITIZEN_MARITAL_STATUS");
             entity.Property(e => e.citizen_name)
                 .HasMaxLength(255)
                 .IsUnicode(false)
