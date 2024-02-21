@@ -27,13 +27,13 @@ namespace BISPAPIORA.Controllers
         private static readonly FormOptions _defaultFormOptions = new FormOptions();
         private readonly IFileManagerService fileManagerService;
         private readonly IImageCitizenAttachmentService imageCitizenAttachmentService;
-        private readonly IImageCitizenFingerPrintService imageCitizenThumbPrintService;
+        private readonly IImageCitizenFingerPrintService imageCitizenFingerPrintService;
 
-        public FileManagerController(IFileManagerService fileManagerService, IImageCitizenAttachmentService imageCitizenAttachmentService, IImageCitizenFingerPrintService citizenThumbPrintService) 
+        public FileManagerController(IFileManagerService fileManagerService, IImageCitizenAttachmentService imageCitizenAttachmentService, IImageCitizenFingerPrintService imageCitizenFingerPrintService) 
         {
             this.fileManagerService = fileManagerService;
             this.imageCitizenAttachmentService = imageCitizenAttachmentService;
-            this.imageCitizenThumbPrintService = citizenThumbPrintService;
+            this.imageCitizenFingerPrintService = imageCitizenFingerPrintService;
         }
         [HttpPost("UploadAttachmentFile"), DisableRequestSizeLimit]
         [DisableFormValueModelBinding]
@@ -310,7 +310,7 @@ namespace BISPAPIORA.Controllers
                 imageCitizenFingerPrintContentType = images[1].imageCitizenThumbPrintContentType,
                 imageCitizenFingerPrintCnic = citizenCnic
             };           
-            var imageResponse = imageCitizenThumbPrintService.AddImageCitizenFingerPrint(image);
+            var imageResponse = imageCitizenFingerPrintService.AddImageCitizenFingerPrint(image);
             return Ok(new ResponseModel<FileManagerResponseDTO>() { remarks = "Success", success = true });
             #endregion
 
@@ -358,10 +358,30 @@ namespace BISPAPIORA.Controllers
         {
             try
             {
-                var imageCitizenThumbPrint = await imageCitizenThumbPrintService.GetImageCitizenFingerPrintByCitizenCnic(cnic);
+                var imageCitizenThumbPrint = await imageCitizenFingerPrintService.GetImageCitizenFingerPrintByCitizenCnic(cnic);
                 return new FileContentResult(imageCitizenThumbPrint.data.imageCitizenThumbPrintData, imageCitizenThumbPrint.data.imageCitizenThumbPrintContentType)
                 {
                     FileDownloadName = imageCitizenThumbPrint.data.imageCitizenThumbPrintName
+                };
+            }
+            catch (FileNotFoundException ex)
+            {
+                return NotFound(ex.Message);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, ex.Message);
+            }
+        }
+        [HttpGet("DownloadImageCitizenFingerPrintByCNIC")]
+        public async Task<IActionResult> DownloadImageCitizenFingerPrintByCNIC(string cnic)
+        {
+            try
+            {
+                var imageCitizenFingerPrint = await imageCitizenFingerPrintService.GetImageCitizenFingerPrintByCitizenCnic(cnic);
+                return new FileContentResult(imageCitizenFingerPrint.data.imageCitizenFingerPrintData, imageCitizenFingerPrint.data.imageCitizenFingerPrintContentType)
+                {
+                    FileDownloadName = imageCitizenFingerPrint.data.imageCitizenFingerPrintName
                 };
             }
             catch (FileNotFoundException ex)
