@@ -183,6 +183,7 @@ namespace BISPAPIORA.Controllers
         {
             string fileNameWithoutExtension = "";
             string fileExtension = "";
+            var images = new List<AddImageCitizenFingerPrintDTO>();
             #region Multipart
             if (!MultipartMiddleware.IsMultipartContentType(Request.ContentType))
             {
@@ -286,19 +287,30 @@ namespace BISPAPIORA.Controllers
 
                 // Drain any remaining section body that hasn't been consumed and
                 // read the headers for the next section.
-                var image = new AddImageCitizenFingerPrintDTO()
+
+                images.Add(new AddImageCitizenFingerPrintDTO()
                 {
                     imageCitizenThumbPrintName = trustedFileNameForDisplay,  // Use the trusted file name for display
                     imageCitizenThumbPrintData = streamedFileContent,
                     imageCitizenThumbPrintContentType = section.ContentType,
+                });
+                // Drain any remaining section body that hasn't been consumed and
+                // read the headers for the next section.
 
-
-                    imageCitizenFingerPrintCnic = citizenCnic
-                };
-                var imageResponse = imageCitizenThumbPrintService.AddImageCitizenFingerPrint(image);
                 section = await reader.ReadNextSectionAsync();
 
             }
+            var image = new AddImageCitizenFingerPrintDTO()
+            {
+                imageCitizenThumbPrintName = images[0].imageCitizenThumbPrintName,  // Use the trusted file name for display
+                imageCitizenThumbPrintData = images[0].imageCitizenThumbPrintData,
+                imageCitizenThumbPrintContentType = images[0].imageCitizenThumbPrintContentType,
+                imageCitizenFingerPrintData = images[1].imageCitizenThumbPrintData,
+                imageCitizenFingerPrintName = images[1].imageCitizenThumbPrintName,
+                imageCitizenFingerPrintContentType = images[1].imageCitizenThumbPrintContentType,
+                imageCitizenFingerPrintCnic = citizenCnic
+            };           
+            var imageResponse = imageCitizenThumbPrintService.AddImageCitizenFingerPrint(image);
             return Ok(new ResponseModel<FileManagerResponseDTO>() { remarks = "Success", success = true });
             #endregion
 
