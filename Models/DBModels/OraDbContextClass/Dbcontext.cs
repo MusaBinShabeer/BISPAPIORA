@@ -49,7 +49,7 @@ public partial class Dbcontext : DbContext
 
     public virtual DbSet<tbl_image_citizen_attachment> tbl_image_citizen_attachments { get; set; }
 
-    public virtual DbSet<tbl_image_citizen_thumb_print> tbl_image_citizen_thumb_prints { get; set; }
+    public virtual DbSet<tbl_image_citizen_finger_print> tbl_image_citizen_finger_prints { get; set; }
 
     //    protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     //#warning To protect potentially sensitive information in your connection string, you should move it out of source code. You can avoid scaffolding the connection string by using the Name= syntax to read it from configuration - see https://go.microsoft.com/fwlink/?linkid=2131148. For more guidance on storing connection strings, see https://go.microsoft.com/fwlink/?LinkId=723263.
@@ -676,11 +676,11 @@ public partial class Dbcontext : DbContext
                 .HasColumnName("NAME");
         });
 
-        modelBuilder.Entity<tbl_image_citizen_thumb_print>(entity =>
+        modelBuilder.Entity<tbl_image_citizen_finger_print>(entity =>
         {
             entity.HasKey(e => e.id).HasName("SYS_C007849");
 
-            entity.ToTable("TBL_IMAGE_CITIZEN_THUMB_PRINT");
+            entity.ToTable("TBL_IMAGE_CITIZEN_FINGER_PRINT");
 
             entity.Property(e => e.id)
                 .HasDefaultValueSql("SYS_GUID() ")
@@ -693,18 +693,29 @@ public partial class Dbcontext : DbContext
                 .HasMaxLength(255)
                 .IsUnicode(false)
                 .HasColumnName("CNIC");
-            entity.Property(e => e.content_type)
+            entity.Property(e => e.finger_print_content_type)
                 .HasMaxLength(255)
                 .IsUnicode(false)
-                .HasColumnName("CONTENT_TYPE");
-            entity.Property(e => e.data)
+                .HasColumnName("FINGER_PRINT_CONTENT_TYPE");
+            entity.Property(e => e.finger_print_data)
                 .HasColumnType("BLOB")
-                .HasColumnName("DATA");
+                .HasColumnName("FINGER_PRINT_DATA");
             entity.Property(e => e.fk_citizen).HasColumnName("FK_CITIZEN");
-            entity.Property(e => e.name)
+            entity.Property(e => e.finger_print_name)
                 .HasMaxLength(255)
                 .IsUnicode(false)
-                .HasColumnName("NAME");
+                .HasColumnName("FINGER_PRINT_NAME");
+            entity.Property(e => e.thumb_print_content_type)
+                .HasMaxLength(255)
+                .IsUnicode(false)
+                .HasColumnName("THUMB_PRINT_CONTENT_TYPE");
+            entity.Property(e => e.thumb_print_data)
+                .HasColumnType("BLOB")
+                .HasColumnName("THUMB_PRINT_DATA");
+            entity.Property(e => e.thumb_print_name)
+                .HasMaxLength(255)
+                .IsUnicode(false)
+                .HasColumnName("THUMB_PRINT_NAME");
         });
 
         OnModelCreatingPartial(modelBuilder);

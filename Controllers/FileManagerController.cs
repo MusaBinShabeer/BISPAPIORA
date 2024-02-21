@@ -2,12 +2,12 @@
 using BISPAPIORA.Models.DTOS.CitizenThumbPrintDTO;
 using BISPAPIORA.Models.DTOS.FileManagerDTO;
 using BISPAPIORA.Models.DTOS.ImageCitizenAttachmentDTO;
-using BISPAPIORA.Models.DTOS.ImageCitizenThumbPrintDTO;
+using BISPAPIORA.Models.DTOS.ImageCitizenFingerPrintDTO;
 using BISPAPIORA.Models.DTOS.ResponseDTO;
 using BISPAPIORA.Repositories.CitizenThumbPrintServicesRepo;
 using BISPAPIORA.Repositories.FileManagerServicesRepo;
 using BISPAPIORA.Repositories.ImageCitizenAttachmentServicesRepo;
-using BISPAPIORA.Repositories.ImageCitizenThumbPrintServicesRepo;
+using BISPAPIORA.Repositories.ImageCitizenFingePrintServicesRepo;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.Features;
 using Microsoft.AspNetCore.Mvc;
@@ -27,9 +27,9 @@ namespace BISPAPIORA.Controllers
         private static readonly FormOptions _defaultFormOptions = new FormOptions();
         private readonly IFileManagerService fileManagerService;
         private readonly IImageCitizenAttachmentService imageCitizenAttachmentService;
-        private readonly IImageCitizenThumbPrintService imageCitizenThumbPrintService;
+        private readonly IImageCitizenFingerPrintService imageCitizenThumbPrintService;
 
-        public FileManagerController(IFileManagerService fileManagerService, IImageCitizenAttachmentService imageCitizenAttachmentService, IImageCitizenThumbPrintService citizenThumbPrintService) 
+        public FileManagerController(IFileManagerService fileManagerService, IImageCitizenAttachmentService imageCitizenAttachmentService, IImageCitizenFingerPrintService citizenThumbPrintService) 
         {
             this.fileManagerService = fileManagerService;
             this.imageCitizenAttachmentService = imageCitizenAttachmentService;
@@ -177,9 +177,9 @@ namespace BISPAPIORA.Controllers
             //}
             ////var response = await fileManagerService.UploadFileAsync(streamedFileContent, fileNameWithoutExtension,fileExtension);
         }
-        [HttpPost("UploadthumbPrint"), DisableRequestSizeLimit]
+        [HttpPost("UploadFingerPrint"), DisableRequestSizeLimit]
         [DisableFormValueModelBinding]
-        public async Task<ActionResult<ResponseModel<FileManagerResponseDTO>>> UploadthumbPrint(string citizenCnic)
+        public async Task<ActionResult<ResponseModel<FileManagerResponseDTO>>> UploadFingerPrint(string citizenCnic)
         {
             string fileNameWithoutExtension = "";
             string fileExtension = "";
@@ -286,14 +286,16 @@ namespace BISPAPIORA.Controllers
 
                 // Drain any remaining section body that hasn't been consumed and
                 // read the headers for the next section.
-                var image = new AddImageCitizenThumbPrintDTO()
+                var image = new AddImageCitizenFingerPrintDTO()
                 {
                     imageCitizenThumbPrintName = trustedFileNameForDisplay,  // Use the trusted file name for display
                     imageCitizenThumbPrintData = streamedFileContent,
                     imageCitizenThumbPrintContentType = section.ContentType,
-                    imageCitizenThumbPrintCnic = citizenCnic
+
+
+                    imageCitizenFingerPrintCnic = citizenCnic
                 };
-                var imageResponse = imageCitizenThumbPrintService.AddImageCitizenThumbPrint(image);
+                var imageResponse = imageCitizenThumbPrintService.AddImageCitizenFingerPrint(image);
                 section = await reader.ReadNextSectionAsync();
 
             }
@@ -344,7 +346,7 @@ namespace BISPAPIORA.Controllers
         {
             try
             {
-                var imageCitizenThumbPrint = await imageCitizenThumbPrintService.GetImageCitizenThumbPrintByCitizenCnic(cnic);
+                var imageCitizenThumbPrint = await imageCitizenThumbPrintService.GetImageCitizenFingerPrintByCitizenCnic(cnic);
                 return new FileContentResult(imageCitizenThumbPrint.data.imageCitizenThumbPrintData, imageCitizenThumbPrint.data.imageCitizenThumbPrintContentType)
                 {
                     FileDownloadName = imageCitizenThumbPrint.data.imageCitizenThumbPrintName
