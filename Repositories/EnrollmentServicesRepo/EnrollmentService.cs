@@ -31,17 +31,17 @@ namespace BISPAPIORA.Repositories.EnrollmentServicesRepo
         {
             try
             {
-                var Citizen = await db.tbl_citizens.Where(x => x.citizen_cnic.ToLower().Equals(model.citizenCnic.ToLower())).Include(x=>x.tbl_enrollment).FirstOrDefaultAsync();
-                if (Citizen == null)
+                var citizen = await db.tbl_citizens.Where(x => x.citizen_cnic.ToLower().Equals(model.citizenCnic.ToLower())).Include(x=>x.tbl_enrollment).FirstOrDefaultAsync();
+                if (citizen == null)
                 {
                     var newCitizen = await citizenService.AddEnrolledCitizen(model);
                     if (newCitizen.success)
                     {
                         if (newCitizen.data != null)
                         {
-                            model.fkCitizen = newCitizen.data.citizenId;
+                            model.fkCitizen = newCitizen.data.citizenId;                          
                             var newEnrollment = new tbl_enrollment();
-                            newEnrollment = _mapper.Map<tbl_enrollment>(model);
+                            newEnrollment = _mapper.Map<tbl_enrollment>((model,newCitizen.data.citizenCode));
                             await db.tbl_enrollments.AddAsync(newEnrollment);
                             await db.SaveChangesAsync();
                             var newRequest = new AddEnrolledCitizenBankInfoDTO();
@@ -79,12 +79,12 @@ namespace BISPAPIORA.Repositories.EnrollmentServicesRepo
                 }
                 else
                 {
-                    if (Citizen.tbl_enrollment == null)
+                    if (citizen.tbl_enrollment == null)
                     {
-                        model.fkCitizen = Citizen.citizen_id.ToString();
+                        model.fkCitizen = citizen.citizen_id.ToString();
                         var updateModel = _mapper.Map<UpdateEnrollmentDTO>(model);
-                        var newEnrollment = new tbl_enrollment();
-                        newEnrollment = _mapper.Map<tbl_enrollment>(model);
+                        var newEnrollment = new tbl_enrollment(); 
+                        newEnrollment = _mapper.Map<tbl_enrollment>((model, citizen.code));
                         await db.tbl_enrollments.AddAsync(newEnrollment);
                         await db.SaveChangesAsync();
                         updateModel.enrollmentId = newEnrollment.enrollment_id.ToString();
