@@ -36,7 +36,6 @@ namespace BISPAPIORA.Extensions
                        //options.UseOracle(("User Id=savings;Password=Oracle_123;Data Source=exadata.bisp.gov.pk:1521/bispsc;")), ServiceLifetime.Transient);
             //services.AddDbContext<Dbcontext>(options =>
             //options.UseOracle((configuration.GetConnectionString("BISP"))), ServiceLifetime.Transient);
-
             services.AddCors(options =>
             {
                 options.AddPolicy(name: "AllowedOrigins",
