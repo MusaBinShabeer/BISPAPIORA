@@ -19,8 +19,6 @@ using BISPAPIORA.Repositories.TransactionServicesRepo;
 using BISPAPIORA.Repositories.BankOtherSpecificationServicesRepo;
 using BISPAPIORA.Repositories.EmploymentOtherSpecificationServicesRepo;
 using BISPAPIORA.Repositories.ImageCitizenAttachmentServicesRepo;
-using BISPAPIORA.Repositories.ImageCitizenFingePrintServicesRepo;
-using BISPAPIORA.Repositories.ReportResponseServicesRepo;
 
 namespace BISPAPIORA.Extensions
 {
