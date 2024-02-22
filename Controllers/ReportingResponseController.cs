@@ -1,6 +1,6 @@
 ﻿using BISPAPIORA.Models.DTOS.ReportingResponseDTO;
 using BISPAPIORA.Models.DTOS.ResponseDTO;
-using BISPAPIORA.Repositories.TehsilStatusResponseServicesRepo;
+using BISPAPIORA.Repositories.ReportingResponseServicesRepo;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;

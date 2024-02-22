@@ -6,6 +6,6 @@ namespace BISPAPIORA.Repositories.TehsilStatusResponseServicesRepo
 {
     public interface ITehsilStatusResponseService
     {
-        public Task<ResponseModel<TehsilStatusResponseDTO>> GetTehsilStatusResponses();
+        public Task<ResponseModel<List<TehsilStatusResponseDTO>>> GetTehsilStatusResponses();
     }
 }

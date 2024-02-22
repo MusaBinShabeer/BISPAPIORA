@@ -20,8 +20,8 @@ using BISPAPIORA.Repositories.BankOtherSpecificationServicesRepo;
 using BISPAPIORA.Repositories.EmploymentOtherSpecificationServicesRepo;
 using BISPAPIORA.Repositories.ImageCitizenAttachmentServicesRepo;
 using BISPAPIORA.Repositories.ImageCitizenFingePrintServicesRepo;
-using BISPAPIORA.Repositories.ReportResponseServicesRepo;
-using BISPAPIORA.Repositories.ReportResponseServicesRepo;
+using BISPAPIORA.Repositories.ReportingResponseServicesRepo;
+using BISPAPIORA.Repositories.TehsilStatusResponseServicesRepo;
 
 
 
@@ -78,6 +78,8 @@ namespace BISPAPIORA.Extensions
             services.AddTransient<IEmploymentOtherSpecificationService, EmploymentOtherSpecificationService>();
             services.AddTransient<IImageCitizenAttachmentService, ImageCitizenAttachmentService>();
             services.AddTransient<IImageCitizenFingerPrintService, ImageCitizenFingerPrintService>();
+            services.AddTransient<IReportingResponseService, ReportingResponseService>();
+            services.AddTransient<ITehsilStatusResponseService, TehsilStatusResponseService>();
 
         }
     }
