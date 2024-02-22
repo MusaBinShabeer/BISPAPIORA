@@ -13,8 +13,8 @@ using BISPAPIORA.Models.DTOS.CitizenBankInfoDTO;
 using BISPAPIORA.Repositories.CitizenBankInfoServicesRepo;
 using BISPAPIORA.Models.DTOS.ImageCitizenAttachmentDTO;
 using BISPAPIORA.Repositories.ImageCitizenAttachmentServicesRepo;
-using BISPAPIORA.Repositories.ImageCitizenThumbPrintServicesRepo;
-using BISPAPIORA.Models.DTOS.ImageCitizenThumbPrintDTO;
+using BISPAPIORA.Models.DTOS.ImageCitizenFingerPrintDTO;
+using BISPAPIORA.Repositories.ImageCitizenFingePrintServicesRepo;
 
 namespace BISPAPIORA.Repositories.CitizenServicesRepo
 {
@@ -24,8 +24,8 @@ namespace BISPAPIORA.Repositories.CitizenServicesRepo
         private readonly Dbcontext db;
         private readonly IImageCitizenAttachmentService attachmentService;
         private readonly ICitizenBankInfoService citizenBankInfoService;
-        private readonly IImageCitizenThumbPrintService thumbprintService;
-        public CitizenService(IMapper mapper, Dbcontext db,ICitizenBankInfoService citizenBankInfoService, IImageCitizenThumbPrintService thumbPrintService, IImageCitizenAttachmentService citizenAttachmentService)
+        private readonly IImageCitizenFingerPrintService thumbprintService;
+        public CitizenService(IMapper mapper, Dbcontext db,ICitizenBankInfoService citizenBankInfoService, IImageCitizenFingerPrintService thumbPrintService, IImageCitizenAttachmentService citizenAttachmentService)
         {
             _mapper = mapper;
             this.db = db;
@@ -160,7 +160,7 @@ namespace BISPAPIORA.Repositories.CitizenServicesRepo
                     };
                     var resposneOfattachment = await attachmentService.AddFkCitizenToAttachment(newAttachmentDto);
 
-                    var newthumbPrintDto = new AddImageCitizenThumbPrintDTO()
+                    var newthumbPrintDto = new AddImageCitizenFingerPrintDTO()
                     {
                         fkCitizen = newCitizen.citizen_id.ToString()
                     };
@@ -208,7 +208,7 @@ namespace BISPAPIORA.Repositories.CitizenServicesRepo
                     };
                     var resposneOfattachment = await attachmentService.AddFkCitizenToAttachment(newAttachmentDto);
 
-                    var newthumbPrintDto = new AddImageCitizenThumbPrintDTO()
+                    var newthumbPrintDto = new AddImageCitizenFingerPrintDTO()
                     {
                         fkCitizen = existingCitizen.citizen_id.ToString()
                     };

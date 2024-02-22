@@ -23,7 +23,7 @@ namespace BISPAPIORA.Repositories.ImageCitizenAttachmentServicesRepo
         {
             try
             {
-                var imageCitizenAttachment = await db.tbl_image_citizen_attachments.Where(x => x.name.ToLower().Equals(model.imageCitizenAttachmentName.ToLower())).FirstOrDefaultAsync();
+                var imageCitizenAttachment = await db.tbl_image_citizen_attachments.Where(x => x.cnic.ToLower().Equals(model.imageCitizenAttachmentCnic.ToLower())).FirstOrDefaultAsync();
                 if (imageCitizenAttachment == null)
                 {
                     var newImageCitizenAttachment = new tbl_image_citizen_attachment();
@@ -42,7 +42,7 @@ namespace BISPAPIORA.Repositories.ImageCitizenAttachmentServicesRepo
                     return new ResponseModel<ImageCitizenAttachmentResponseDTO>()
                     {
                         success = false,
-                        remarks = $"Image Citizen Attachment with name {model.imageCitizenAttachmentName} already exists"
+                        remarks = $"Image Citizen Attachment with Cnic {model.imageCitizenAttachmentCnic} already exists"
                     };
                 }
             }
@@ -60,7 +60,7 @@ namespace BISPAPIORA.Repositories.ImageCitizenAttachmentServicesRepo
             try
             {
                 var imageCitizenAttachment = await db.tbl_image_citizen_attachments.Where(x => x.cnic.ToLower().Equals(model.imageCitizenAttachmentCnic.ToLower())).FirstOrDefaultAsync(); 
-                if (imageCitizenAttachment == null)
+                if (imageCitizenAttachment != null)
                 {
                     imageCitizenAttachment.fk_citizen = Guid.Parse(model.fkCitizen);
                     await db.SaveChangesAsync();
@@ -75,7 +75,7 @@ namespace BISPAPIORA.Repositories.ImageCitizenAttachmentServicesRepo
                     return new ResponseModel<ImageCitizenAttachmentResponseDTO>()
                     {
                         success = false,
-                        remarks = $"Image Citizen Attachment with name {model.imageCitizenAttachmentName} already exists"
+                        remarks = $"Image Citizen Attachment with Cnic {model.imageCitizenAttachmentCnic} does not exists"
                     };
                 }
             }
