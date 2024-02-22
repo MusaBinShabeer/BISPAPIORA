@@ -18,7 +18,7 @@ using BISPAPIORA.Repositories.CitizenComplianceServicesRepo;
 using BISPAPIORA.Repositories.TransactionServicesRepo;
 using BISPAPIORA.Repositories.BankOtherSpecificationServicesRepo;
 using BISPAPIORA.Repositories.EmploymentOtherSpecificationServicesRepo;
-using BISPAPIORA.Repositories.ImageCitizenAttachmentServicesRepo;
+using BISPAPIORA.Repositories.ImageCitizenAttachmentServicesRepo;new 
 using BISPAPIORA.Repositories.ImageCitizenFingePrintServicesRepo;
 using BISPAPIORA.Repositories.ReportingResponseServicesRepo;
 using BISPAPIORA.Repositories.TehsilStatusResponseServicesRepo;
@@ -34,7 +34,7 @@ namespace BISPAPIORA.Extensions
         {
             services.AddHttpContextAccessor();
             services.AddDbContext<Dbcontext>(options =>
-            options.UseOracle(("User Id=admin;Password=vNrGBdITbyvVQtTspIx1;Data Source=oracle-database.cfgeu0k04wh6.us-east-1.rds.amazonaws.com:1521/bispdb;")), ServiceLifetime.Transient);
+            options.UseOracle(("User Id=savings;Password=savings;Data Source=localhost.com:1521/savings;")), ServiceLifetime.Transient);
             //services.AddDbContext<Dbcontext>(options =>
 
 
