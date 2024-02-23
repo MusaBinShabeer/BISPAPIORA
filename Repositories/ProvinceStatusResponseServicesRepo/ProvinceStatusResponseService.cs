@@ -1,24 +1,24 @@
 ﻿using AutoMapper;
 using BISPAPIORA.Models.DBModels.OraDbContextClass;
 using BISPAPIORA.Models.DBModels.Dbtables;
-using BISPAPIORA.Models.DTOS.TehsilStatusResponseDTO;
+using BISPAPIORA.Models.DTOS.ProvinceStatusResponseDTO;
 using BISPAPIORA.Models.DTOS.ResponseDTO;
 using Microsoft.AspNetCore.Http.Features;
 using Microsoft.EntityFrameworkCore;
 using System.Security.Claims;
 
-namespace BISPAPIORA.Repositories.TehsilStatusResponseServicesRepo
+namespace BISPAPIORA.Repositories.ProvinceStatusResponseServicesRepo
 {
-    public class TehsilStatusResponseService : ITehsilStatusResponseService
+    public class ProvinceStatusResponseService : IProvinceStatusResponseService
     {
         private readonly IMapper _mapper;
         private readonly Dbcontext db;
-        public TehsilStatusResponseService(IMapper mapper, Dbcontext db)
+        public ProvinceStatusResponseService(IMapper mapper, Dbcontext db)
         {
             _mapper = mapper;
             this.db = db;
         }
-        public async Task<ResponseModel<List<TehsilStatusResponseDTO>>> GetTehsilStatusResponses()
+        public async Task<ResponseModel<List<ProvinceStatusResponseDTO>>> GetProvinceStatusResponses()
         {
             try
             {
@@ -26,24 +26,24 @@ namespace BISPAPIORA.Repositories.TehsilStatusResponseServicesRepo
                 var totalCitizensCount = totalCitizens.Count();
                 if (totalCitizensCount > 0)
                 {
-                    var tehsils = await db.tbl_tehsils.ToListAsync();
-                    var tehsilStatusResponseDTOs = tehsils.Select(tehsil => new TehsilStatusResponseDTO
+                    var provinces = await db.tbl_provinces.ToListAsync();
+                    var provinceStatusResponseDTOs = provinces.Select(province => new ProvinceStatusResponseDTO
                     {
-                        tehsilName = tehsil.tehsil_name,
-                        applicantCount = totalCitizens.Count(citizen => citizen.fk_tehsil == tehsil.tehsil_id)
+                        provinceName = province.province_name,
+                        applicantCount = totalCitizens.Count(citizen => citizen.tbl_citizen_tehsil.tbl_district.fk_province == province.province_id)
                     }).ToList();
 
-                    return new ResponseModel<List<TehsilStatusResponseDTO>>()
+                    return new ResponseModel<List<ProvinceStatusResponseDTO>>()
                     {
                         success = true,
-                        remarks = "Citizen counts based on tehsil retrieved successfully.",
-                        data = tehsilStatusResponseDTOs
+                        remarks = "Citizen counts based on Province retrieved successfully.",
+                        data = provinceStatusResponseDTOs
                     };
 
                 }
                 else
                 {
-                    return new ResponseModel<List<TehsilStatusResponseDTO>>()
+                    return new ResponseModel<List<ProvinceStatusResponseDTO>>()
                     {
                         success = false,
                         remarks = "There is no citizen."
@@ -52,7 +52,7 @@ namespace BISPAPIORA.Repositories.TehsilStatusResponseServicesRepo
             }
             catch (Exception ex)
             {
-                return new ResponseModel<List<TehsilStatusResponseDTO>>()
+                return new ResponseModel<List<ProvinceStatusResponseDTO>>()
                 {
                     success = false,
                     remarks = $"There Was Fatal Error {ex.Message.ToString()}"

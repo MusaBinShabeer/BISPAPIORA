@@ -1,24 +1,24 @@
 ﻿using AutoMapper;
 using BISPAPIORA.Models.DBModels.OraDbContextClass;
 using BISPAPIORA.Models.DBModels.Dbtables;
-using BISPAPIORA.Models.DTOS.TehsilStatusResponseDTO;
+using BISPAPIORA.Models.DTOS.DistrictStatusResponseDTO;
 using BISPAPIORA.Models.DTOS.ResponseDTO;
 using Microsoft.AspNetCore.Http.Features;
 using Microsoft.EntityFrameworkCore;
 using System.Security.Claims;
 
-namespace BISPAPIORA.Repositories.TehsilStatusResponseServicesRepo
+namespace BISPAPIORA.Repositories.DistrictStatusResponseServicesRepo
 {
-    public class TehsilStatusResponseService : ITehsilStatusResponseService
+    public class DistrictStatusResponseService : IDistrictStatusResponseService
     {
         private readonly IMapper _mapper;
         private readonly Dbcontext db;
-        public TehsilStatusResponseService(IMapper mapper, Dbcontext db)
+        public DistrictStatusResponseService(IMapper mapper, Dbcontext db)
         {
             _mapper = mapper;
             this.db = db;
         }
-        public async Task<ResponseModel<List<TehsilStatusResponseDTO>>> GetTehsilStatusResponses()
+        public async Task<ResponseModel<List<DistrictStatusResponseDTO>>> GetDistrictStatusResponses()
         {
             try
             {
@@ -26,24 +26,24 @@ namespace BISPAPIORA.Repositories.TehsilStatusResponseServicesRepo
                 var totalCitizensCount = totalCitizens.Count();
                 if (totalCitizensCount > 0)
                 {
-                    var tehsils = await db.tbl_tehsils.ToListAsync();
-                    var tehsilStatusResponseDTOs = tehsils.Select(tehsil => new TehsilStatusResponseDTO
+                    var districts = await db.tbl_districts.ToListAsync();
+                    var districtStatusResponseDTOs = districts.Select(district => new DistrictStatusResponseDTO
                     {
-                        tehsilName = tehsil.tehsil_name,
-                        applicantCount = totalCitizens.Count(citizen => citizen.fk_tehsil == tehsil.tehsil_id)
+                        districtName = district.district_name,
+                        applicantCount = totalCitizens.Count(citizen => citizen.tbl_citizen_tehsil.fk_district == district.district_id)
                     }).ToList();
 
-                    return new ResponseModel<List<TehsilStatusResponseDTO>>()
+                    return new ResponseModel<List<DistrictStatusResponseDTO>>()
                     {
                         success = true,
-                        remarks = "Citizen counts based on tehsil retrieved successfully.",
-                        data = tehsilStatusResponseDTOs
+                        remarks = "Citizen counts based on District retrieved successfully.",
+                        data = districtStatusResponseDTOs
                     };
 
                 }
                 else
                 {
-                    return new ResponseModel<List<TehsilStatusResponseDTO>>()
+                    return new ResponseModel<List<DistrictStatusResponseDTO>>()
                     {
                         success = false,
                         remarks = "There is no citizen."
@@ -52,7 +52,7 @@ namespace BISPAPIORA.Repositories.TehsilStatusResponseServicesRepo
             }
             catch (Exception ex)
             {
-                return new ResponseModel<List<TehsilStatusResponseDTO>>()
+                return new ResponseModel<List<DistrictStatusResponseDTO>>()
                 {
                     success = false,
                     remarks = $"There Was Fatal Error {ex.Message.ToString()}"

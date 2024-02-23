@@ -18,7 +18,7 @@ using BISPAPIORA.Repositories.CitizenComplianceServicesRepo;
 using BISPAPIORA.Repositories.TransactionServicesRepo;
 using BISPAPIORA.Repositories.BankOtherSpecificationServicesRepo;
 using BISPAPIORA.Repositories.EmploymentOtherSpecificationServicesRepo;
-using BISPAPIORA.Repositories.ImageCitizenAttachmentServicesRepo;new 
+using BISPAPIORA.Repositories.ImageCitizenAttachmentServicesRepo;
 using BISPAPIORA.Repositories.ImageCitizenFingePrintServicesRepo;
 using BISPAPIORA.Repositories.ReportingResponseServicesRepo;
 using BISPAPIORA.Repositories.TehsilStatusResponseServicesRepo;
