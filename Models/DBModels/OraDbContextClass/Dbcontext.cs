@@ -51,18 +51,22 @@ public partial class Dbcontext : DbContext
 
     public virtual DbSet<tbl_image_citizen_finger_print> tbl_image_citizen_finger_prints { get; set; }
 
+    public virtual DbSet<tbl_user> tbl_users { get; set; }
+
+    public virtual DbSet<tbl_user_type> tbl_user_types { get; set; }
+
     //    protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     //#warning To protect potentially sensitive information in your connection string, you should move it out of source code. You can avoid scaffolding the connection string by using the Name= syntax to read it from configuration - see https://go.microsoft.com/fwlink/?linkid=2131148. For more guidance on storing connection strings, see https://go.microsoft.com/fwlink/?LinkId=723263.
     //        => optionsBuilder.UseOracle("User Id=admin;Password=vNrGBdITbyvVQtTspIx1;Data Source=oracle-database.cfgeu0k04wh6.us-east-1.rds.amazonaws.com:1521/bispdb;");
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
-        modelBuilder
-            .HasDefaultSchema("ADMIN")
-            .UseCollation("USING_NLS_COMP");
         //modelBuilder
-        //    .HasDefaultSchema("SAVINGS")
+        //    .HasDefaultSchema("ADMIN")
         //    .UseCollation("USING_NLS_COMP");
+        modelBuilder
+            .HasDefaultSchema("SAVINGS")
+            .UseCollation("USING_NLS_COMP");
 
 
 
@@ -716,6 +720,67 @@ public partial class Dbcontext : DbContext
                 .HasMaxLength(255)
                 .IsUnicode(false)
                 .HasColumnName("THUMB_PRINT_NAME");
+        });
+
+        modelBuilder.Entity<tbl_user>(entity =>
+        {
+            entity.HasKey(e => e.user_id).HasName("SYS_C008199");
+
+            entity.ToTable("TBL_USER");
+
+            entity.Property(e => e.user_id)
+                .HasDefaultValueSql("SYS_GUID() ")
+                .HasColumnName("USER_ID");
+            entity.Property(e => e.fk_user_type).HasColumnName("FK_USER_TYPE");
+            entity.Property(e => e.is_active)
+                .IsRequired()
+                .HasPrecision(1)
+                .HasDefaultValueSql("1 ")
+                .HasColumnName("IS_ACTIVE");
+            entity.Property(e => e.user_email)
+                .HasMaxLength(255)
+                .IsUnicode(false)
+                .HasDefaultValueSql("''")
+                .HasColumnName("USER_EMAIL");
+            entity.Property(e => e.user_name)
+                .HasMaxLength(255)
+                .IsUnicode(false)
+                .HasDefaultValueSql("''")
+                .HasColumnName("USER_NAME");
+            entity.Property(e => e.user_otp)
+                .HasColumnType("NUMBER")
+                .HasColumnName("USER_OTP");
+            entity.Property(e => e.user_token)
+                .HasMaxLength(255)
+                .IsUnicode(false)
+                .HasDefaultValueSql("''")
+                .HasColumnName("USER_TOKEN");
+
+            entity.HasOne(d => d.tbl_user_type).WithMany(p => p.tbl_users)
+                .HasForeignKey(d => d.fk_user_type)
+                .OnDelete(DeleteBehavior.Cascade)
+                .HasConstraintName("FK_USER_USER_TYPE");
+        });
+
+        modelBuilder.Entity<tbl_user_type>(entity =>
+        {
+            entity.HasKey(e => e.user_type_id).HasName("SYS_C008196");
+
+            entity.ToTable("TBL_USER_TYPE");
+
+            entity.Property(e => e.user_type_id)
+                .HasDefaultValueSql("SYS_GUID() ")
+                .HasColumnName("USER_TYPE_ID");
+            entity.Property(e => e.is_active)
+                .IsRequired()
+                .HasPrecision(1)
+                .HasDefaultValueSql("1 ")
+                .HasColumnName("IS_ACTIVE");
+            entity.Property(e => e.user_type_name)
+                .HasMaxLength(255)
+                .IsUnicode(false)
+                .HasDefaultValueSql("''")
+                .HasColumnName("USER_TYPE_NAME");
         });
 
         OnModelCreatingPartial(modelBuilder);
