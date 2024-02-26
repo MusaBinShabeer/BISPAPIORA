@@ -164,6 +164,9 @@ public partial class Dbcontext : DbContext
             entity.Property(e => e.registered_date)
                 .HasColumnType("DATE")
                 .HasColumnName("REGISTERED_DATE");
+            entity.Property(e => e.enrolled_date)
+                .HasColumnType("DATE")
+                .HasColumnName("ENROLLED_DATE");
             entity.Property(e => e.unique_hh_id)
                 .HasColumnType("NUMBER")
                 .HasColumnName("UNIQUE_HH_ID");
