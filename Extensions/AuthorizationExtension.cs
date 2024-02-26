@@ -56,8 +56,10 @@ namespace BISPAPIORA.Extensions
                  {
                      ValidateIssuer = true,
                      ValidateAudience = false,
-                     ValidIssuer = configuration["JWT:ValidIssuer"],
-                     IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(configuration["JWT:Key"]))
+                     //ValidIssuer = configuration["JWT:ValidIssuer"],
+                     ValidIssuer = "BISP",
+                     //IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(configuration["JWT:Key"]))
+                     IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes("5A7234753778217A25432A462D4b614f645267556B58703273357638792F423F4428472B4B6250655368566D597133743677397A244326462948404D63516654"))
                  };
                  options.Events = new JwtBearerEvents
                  {
