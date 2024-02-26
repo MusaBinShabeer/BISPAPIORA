@@ -11,6 +11,8 @@ public partial class tbl_user
 
     public string? user_email { get; set; } = string.Empty;
 
+    public string? user_password { get; set; } = string.Empty;
+
     public decimal? user_otp { get; set; } = 0;
 
     public bool? is_active { get; set; } = true;
