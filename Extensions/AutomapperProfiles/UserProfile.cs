@@ -1,7 +1,8 @@
 ﻿using AutoMapper;
 using BISPAPIORA.Extensions;
 using BISPAPIORA.Models.DBModels.Dbtables;
-using BISPAPIORA.Models.DTOS.UserDTO;
+using BISPAPIORA.Models.DTOS.AuthDTO;
+using BISPAPIORA.Models.DTOS.UserDTOs;
 
 namespace BISPAPIORA.Extensions.AutomapperProfiles
 {
@@ -34,12 +35,19 @@ namespace BISPAPIORA.Extensions.AutomapperProfiles
              .ForMember(d => d.userName, opt => opt.MapFrom((src) => src.user_name))
              .ForMember(d => d.userEmail, opt => opt.MapFrom((src) => src.user_email))
              .ForMember(d => d.userPassword, opt => opt.MapFrom(src => src.user_password))
-             .ForMember(d => d.userOtp, opt => opt.MapFrom(src => src.user_otp))
-             .ForMember(d => d.userToken, opt => opt.MapFrom(src => src.user_token))
              .ForMember(d => d.fkUserType, opt => opt.MapFrom(src => src.fk_user_type))
              .ForMember(d => d.userTypeName, opt => opt.MapFrom(src => src.tbl_user_type.user_type_name))
              .ForMember(d => d.isFtpSet, opt => opt.MapFrom(src => src.is_ftp_set))
              .ForMember(d => d.isActive, opt => opt.MapFrom(src => src.is_active));
+            CreateMap<tbl_user, LoginResponseDTO>()
+               .ForMember(d => d.userId, opt => opt.MapFrom(src => src.user_id))
+               .ForMember(d => d.userName, opt => opt.MapFrom(src => src.user_name))
+               .ForMember(d => d.userEmail, opt => opt.MapFrom(src => src.user_email))
+               .ForMember(d => d.userPassword, opt => opt.MapFrom(src => src.fk_user_type))
+               .ForMember(d => d.fkUserType, opt => opt.MapFrom(src => src.tbl_user_type.user_type_name))
+               .ForMember(d => d.userTypeName, opt => opt.MapFrom(src => src.tbl_user_type.user_type_name))
+               .ForMember(d => d.isFtpSet, opt => opt.MapFrom(src => src.is_ftp_set))
+               .ForMember(d => d.isActive, opt => opt.MapFrom(src => src.user_email));
         }
     }
 }

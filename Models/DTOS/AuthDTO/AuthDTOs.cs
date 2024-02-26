@@ -15,5 +15,6 @@ namespace BISPAPIORA.Models.DTOS.AuthDTO
     public class LoginResponseDTO: UserDTO
     {
         public string userId { get; set; } = string.Empty;
+        public string userTypeName { get; set; } = string.Empty;
     }
 }

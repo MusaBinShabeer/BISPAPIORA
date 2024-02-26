@@ -6,6 +6,7 @@ using BISPAPIORA.Models.DTOS.ResponseDTO;
 using Microsoft.AspNetCore.Http.Features;
 using Microsoft.EntityFrameworkCore;
 using System.Security.Claims;
+using BISPAPIORA.Extensions;
 
 namespace BISPAPIORA.Repositories.UserServicesRepo
 {
@@ -13,6 +14,7 @@ namespace BISPAPIORA.Repositories.UserServicesRepo
     {
         private readonly IMapper _mapper;
         private readonly Dbcontext db;
+        private readonly OtherServices otherServices= new OtherServices();
         public UserService(IMapper mapper, Dbcontext db)
         {
             _mapper = mapper;
@@ -185,20 +187,28 @@ namespace BISPAPIORA.Repositories.UserServicesRepo
                 };
             }
         }
-        public async Task<ResponseModel<UserResponseDTO>> UpdateFTP(UpdateUserDTO model)
+        public async Task<ResponseModel<UserResponseDTO>> UpdateFTP(UpdateUserFtpDTO model)
         {
             try
             {
                 var existingUser = await db.tbl_users.Where(x => x.user_id == Guid.Parse(model.userId)).FirstOrDefaultAsync();
                 if (existingUser != null)
                 {
-                    await db.SaveChangesAsync();
-                    return new ResponseModel<UserResponseDTO>()
+                    if (existingUser.user_password == otherServices.encodePassword(model.currentPassword))
                     {
-                        remarks = $"User: {model.userName} has been updated",
-                        data = _mapper.Map<UserResponseDTO>(existingUser),
-                        success = true,
-                    };
+                        existingUser.user_password = otherServices.encodePassword(model.userPassword);
+                        await db.SaveChangesAsync();
+                        return new ResponseModel<UserResponseDTO>()
+                        {
+                            remarks = $"User: {model.userName} password has been updated",
+                            data = _mapper.Map<UserResponseDTO>(existingUser),
+                            success = true,
+                        };
+                    }
+                    else
+                    {
+                        return new ResponseModel<UserResponseDTO>() { remarks = "Password Incorrect", success = false };
+                    }
                 }
                 else
                 {

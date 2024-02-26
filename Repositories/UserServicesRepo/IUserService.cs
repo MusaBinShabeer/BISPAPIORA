@@ -11,5 +11,6 @@ namespace BISPAPIORA.Repositories.UserServicesRepo
         public Task<ResponseModel<List<UserResponseDTO>>> GetUsersList();
         public Task<ResponseModel<UserResponseDTO>> GetUser(string userId);
         public Task<ResponseModel<UserResponseDTO>> UpdateUser(UpdateUserDTO model);
+        public Task<ResponseModel<UserResponseDTO>> UpdateFTP(UpdateUserFtpDTO model);
     }
 }
