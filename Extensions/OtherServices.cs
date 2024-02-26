@@ -1,4 +1,7 @@
-﻿namespace BISPAPIORA.Extensions
+﻿using System.Text;
+using System.Security.Cryptography;
+
+namespace BISPAPIORA.Extensions
 {
     public class OtherServices
     {
@@ -32,5 +35,17 @@
                 return false;
             }
         }
+        public string encodePassword(string password)
+        {
+            string currentPassword = "";
+            using (SHA256 mySHA256 = SHA256.Create())
+            {
+                byte[] hashValue =
+                mySHA256.ComputeHash(Encoding.UTF8.GetBytes(password));
+                currentPassword = Convert.ToBase64String(hashValue);
+            }
+            return currentPassword;
+        }
+
     }
 }
