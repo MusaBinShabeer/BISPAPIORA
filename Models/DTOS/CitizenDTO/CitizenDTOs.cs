@@ -11,6 +11,5 @@ namespace BISPAPIORA.Models.DTOS.CitizenDTO
         public string citizenAddress { get; set; } = string.Empty;
         public string citizenBankOtherSpecification { get; set; } = string.Empty;
         public string citizenEmploymentOtherSpecification { get; set; } = string.Empty;
-        public string citizenRegistrationDate { get; set; } = string.Empty;
     }
 }
