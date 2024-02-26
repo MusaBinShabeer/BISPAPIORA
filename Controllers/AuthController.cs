@@ -28,7 +28,10 @@ namespace BISPAPIORA.Controllers
                 {
                     return Ok(response);
                 }
-                return BadRequest(response);
+                else
+                {
+                    return Ok(response);
+                }
             }
             else
             {
