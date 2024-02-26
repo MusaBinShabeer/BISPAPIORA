@@ -1,4 +1,5 @@
-﻿using BISPAPIORA.Models.DTOS.EmploymentDTO;
+﻿using BISPAPIORA.Extensions.Middleware;
+using BISPAPIORA.Models.DTOS.EmploymentDTO;
 using BISPAPIORA.Models.DTOS.ResponseDTO;
 using BISPAPIORA.Repositories.EmploymentServicesRepo;
 using Microsoft.AspNetCore.Authorization;
@@ -7,6 +8,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace BISPAPIORA.Controllers
 {
+    [UserAuthorize]
     [Route("api/[controller]")]
     [ApiController]
     public class EmploymentController : ControllerBase

@@ -10,7 +10,6 @@ namespace BISPAPIORA.Models.DTOS.UserDTOs
         public decimal userOtp { get; set; } = 0;
         public string userToken { get; set; } = string.Empty;
         public string fkUserType { get; set; } = string.Empty;
-        public bool isFtpSet { get; set; } = false;             //FTP => First-TIme Password
         public bool isActive { get; set; } = true;
     }
     public class AddUserDTO : UserDTO
@@ -38,5 +37,6 @@ namespace BISPAPIORA.Models.DTOS.UserDTOs
     {
         public string userId { get; set; } = string.Empty;
         public string userTypeName { get; set; } = string.Empty;
+        public bool isFtpSet { get; set; } = false;             //FTP => First-TIme Password
     }
 }

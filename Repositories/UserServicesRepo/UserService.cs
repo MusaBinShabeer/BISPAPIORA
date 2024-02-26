@@ -194,20 +194,28 @@ namespace BISPAPIORA.Repositories.UserServicesRepo
                 var existingUser = await db.tbl_users.Where(x => x.user_id == Guid.Parse(model.userId)).FirstOrDefaultAsync();
                 if (existingUser != null)
                 {
-                    if (existingUser.user_password == otherServices.encodePassword(model.currentPassword))
+                    if (existingUser.is_ftp_set == false)
                     {
-                        existingUser.user_password = otherServices.encodePassword(model.userPassword);
-                        await db.SaveChangesAsync();
-                        return new ResponseModel<UserResponseDTO>()
+                        if (existingUser.user_password == otherServices.encodePassword(model.currentPassword))
                         {
-                            remarks = $"User: {model.userName} password has been updated",
-                            data = _mapper.Map<UserResponseDTO>(existingUser),
-                            success = true,
-                        };
+                            existingUser.user_password = otherServices.encodePassword(model.userPassword);
+                            existingUser.is_ftp_set = true;
+                            await db.SaveChangesAsync();
+                            return new ResponseModel<UserResponseDTO>()
+                            {
+                                remarks = $"User: {model.userName} password has been updated",
+                                data = _mapper.Map<UserResponseDTO>(existingUser),
+                                success = true,
+                            };
+                        }
+                        else
+                        {
+                            return new ResponseModel<UserResponseDTO>() { remarks = "Password Incorrect", success = false };
+                        }
                     }
                     else
                     {
-                        return new ResponseModel<UserResponseDTO>() { remarks = "Password Incorrect", success = false };
+                        return new ResponseModel<UserResponseDTO>() { remarks = "Password Already Changed For the First Time", success = false };
                     }
                 }
                 else
