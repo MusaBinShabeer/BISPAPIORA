@@ -61,12 +61,12 @@ public partial class Dbcontext : DbContext
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
-        //modelBuilder
-        //    .HasDefaultSchema("ADMIN")
-        //    .UseCollation("USING_NLS_COMP");
         modelBuilder
-            .HasDefaultSchema("SAVINGS")
+            .HasDefaultSchema("ADMIN")
             .UseCollation("USING_NLS_COMP");
+        //modelBuilder
+        //    .HasDefaultSchema("SAVINGS")
+        //    .UseCollation("USING_NLS_COMP");
 
 
 
