@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace BISPAPIORA.Models.DTOS.UserDTO
+namespace BISPAPIORA.Models.DTOS.UserDTOs
 {
     public class UserDTO
     {

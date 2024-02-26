@@ -1,11 +1,12 @@
 ﻿using AutoMapper;
 using BISPAPIORA.Models.DBModels.OraDbContextClass;
 using BISPAPIORA.Models.DBModels.Dbtables;
-using BISPAPIORA.Models.DTOS.UserDTO;
+using BISPAPIORA.Models.DTOS.UserDTOs;
 using BISPAPIORA.Models.DTOS.ResponseDTO;
 using Microsoft.AspNetCore.Http.Features;
 using Microsoft.EntityFrameworkCore;
 using System.Security.Claims;
+using BISPAPIORA.Extensions;
 
 namespace BISPAPIORA.Repositories.UserServicesRepo
 {
@@ -13,6 +14,7 @@ namespace BISPAPIORA.Repositories.UserServicesRepo
     {
         private readonly IMapper _mapper;
         private readonly Dbcontext db;
+        private readonly OtherServices otherServices= new OtherServices();
         public UserService(IMapper mapper, Dbcontext db)
         {
             _mapper = mapper;
@@ -91,7 +93,7 @@ namespace BISPAPIORA.Repositories.UserServicesRepo
         {
             try
             {
-                var users = await db.tbl_users.Include(x => x.tbl_user_type).ToListAsync();
+                var users = await db.tbl_users.Include(x=>x.tbl_user_type).ToListAsync();
                 if (users.Count() > 0)
                 {
                     return new ResponseModel<List<UserResponseDTO>>()
@@ -166,6 +168,47 @@ namespace BISPAPIORA.Repositories.UserServicesRepo
                         data = _mapper.Map<UserResponseDTO>(existingUser),
                         success = true,
                     };
+                }
+                else
+                {
+                    return new ResponseModel<UserResponseDTO>()
+                    {
+                        success = false,
+                        remarks = "No Record"
+                    };
+                }
+            }
+            catch (Exception ex)
+            {
+                return new ResponseModel<UserResponseDTO>()
+                {
+                    success = false,
+                    remarks = $"There Was Fatal Error {ex.Message.ToString()}"
+                };
+            }
+        }
+        public async Task<ResponseModel<UserResponseDTO>> UpdateFTP(UpdateUserFtpDTO model)
+        {
+            try
+            {
+                var existingUser = await db.tbl_users.Where(x => x.user_id == Guid.Parse(model.userId)).FirstOrDefaultAsync();
+                if (existingUser != null)
+                {
+                    if (existingUser.user_password == otherServices.encodePassword(model.currentPassword))
+                    {
+                        existingUser.user_password = otherServices.encodePassword(model.userPassword);
+                        await db.SaveChangesAsync();
+                        return new ResponseModel<UserResponseDTO>()
+                        {
+                            remarks = $"User: {model.userName} password has been updated",
+                            data = _mapper.Map<UserResponseDTO>(existingUser),
+                            success = true,
+                        };
+                    }
+                    else
+                    {
+                        return new ResponseModel<UserResponseDTO>() { remarks = "Password Incorrect", success = false };
+                    }
                 }
                 else
                 {

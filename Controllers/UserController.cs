@@ -1,4 +1,4 @@
-﻿using BISPAPIORA.Models.DTOS.UserDTO;
+﻿using BISPAPIORA.Models.DTOS.UserDTOs;
 using BISPAPIORA.Models.DTOS.ResponseDTO;
 using BISPAPIORA.Repositories.UserServicesRepo;
 using Microsoft.AspNetCore.Authorization;
@@ -40,6 +40,24 @@ namespace BISPAPIORA.Controllers
             if (ModelState.IsValid)
             {
                 var response = userService.UpdateUser(model);
+                return Ok(await response);
+            }
+            else
+            {
+                var response = new ResponseModel<UserResponseDTO>()
+                {
+                    remarks = "Model Not Verified",
+                    success = false
+                };
+                return BadRequest(response);
+            }
+        }
+        [HttpPut("UpdateUserFTP")]
+        public async Task<ActionResult<ResponseModel<UserResponseDTO>>> UpdateUserFTP(UpdateUserFtpDTO model)
+        {
+            if (ModelState.IsValid)
+            {
+                var response = userService.UpdateFTP(model);
                 return Ok(await response);
             }
             else
