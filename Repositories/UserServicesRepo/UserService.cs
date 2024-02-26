@@ -91,7 +91,7 @@ namespace BISPAPIORA.Repositories.UserServicesRepo
         {
             try
             {
-                var users = await db.tbl_users.ToListAsync();
+                var users = await db.tbl_users.Include(x => x.tbl_user_type).ToListAsync();
                 if (users.Count() > 0)
                 {
                     return new ResponseModel<List<UserResponseDTO>>()
@@ -123,7 +123,7 @@ namespace BISPAPIORA.Repositories.UserServicesRepo
         {
             try
             {
-                var existingUser = await db.tbl_users.Where(x => x.user_id == Guid.Parse(userId)).FirstOrDefaultAsync();
+                var existingUser = await db.tbl_users.Include(x => x.tbl_user_type).Where(x => x.user_id == Guid.Parse(userId)).FirstOrDefaultAsync();
                 if (existingUser != null)
                 {
                     return new ResponseModel<UserResponseDTO>()
@@ -155,7 +155,7 @@ namespace BISPAPIORA.Repositories.UserServicesRepo
         {
             try
             {
-                var existingUser = await db.tbl_users.Where(x => x.user_id == Guid.Parse(model.userId)).FirstOrDefaultAsync();
+                var existingUser = await db.tbl_users.Include(x => x.tbl_user_type).Where(x => x.user_id == Guid.Parse(model.userId)).FirstOrDefaultAsync();
                 if (existingUser != null)
                 {
                     existingUser = _mapper.Map(model, existingUser);

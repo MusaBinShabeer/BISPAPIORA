@@ -120,7 +120,7 @@ public partial class Dbcontext : DbContext
                 .HasDefaultValueSql("'' ")
                 .HasColumnName("CITIZEN_CNIC");
             entity.Property(e => e.citizen_date_of_birth)
-                .HasPrecision(6)
+                .HasColumnType("DATE")
                 .HasColumnName("CITIZEN_DATE_OF_BIRTH");
             entity.Property(e => e.citizen_father_spouce_name)
                 .HasMaxLength(255)
@@ -159,8 +159,11 @@ public partial class Dbcontext : DbContext
                 .IsUnicode(false)
                 .HasColumnName("PMT");
             entity.Property(e => e.submission_date)
-                .HasPrecision(6)
+                .HasColumnType("DATE")
                 .HasColumnName("SUBMISSION_DATE");
+            entity.Property(e => e.registered_date)
+                .HasColumnType("DATE")
+                .HasColumnName("REGISTERED_DATE");
             entity.Property(e => e.unique_hh_id)
                 .HasColumnType("NUMBER")
                 .HasColumnName("UNIQUE_HH_ID");
@@ -737,11 +740,21 @@ public partial class Dbcontext : DbContext
                 .HasPrecision(1)
                 .HasDefaultValueSql("1 ")
                 .HasColumnName("IS_ACTIVE");
+            entity.Property(e => e.is_ftp_set)
+                .IsRequired()
+                .HasPrecision(1)
+                .HasDefaultValueSql("0 ")
+                .HasColumnName("IS_FTP_SET");
             entity.Property(e => e.user_email)
                 .HasMaxLength(255)
                 .IsUnicode(false)
                 .HasDefaultValueSql("''")
                 .HasColumnName("USER_EMAIL");
+            entity.Property(e => e.user_password)
+                .HasMaxLength(255)
+                .IsUnicode(false)
+                .HasDefaultValueSql("'12345'")
+                .HasColumnName("USER_PASSWORD");
             entity.Property(e => e.user_name)
                 .HasMaxLength(255)
                 .IsUnicode(false)

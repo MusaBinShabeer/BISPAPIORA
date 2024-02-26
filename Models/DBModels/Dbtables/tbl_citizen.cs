@@ -54,5 +54,7 @@ public partial class tbl_citizen
 
     public DateTime? submission_date { get; set; } // through form submission date
 
+    public DateTime? registered_date { get; set; } // through form registration date
+
     public string? pmt { get; set; } // poverty score 40 =< eligible
 }
