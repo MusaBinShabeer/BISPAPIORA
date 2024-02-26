@@ -69,7 +69,7 @@ namespace BISPAPIORA.Repositories.AuthServicesRepo
                         };
             authClaims.Add(new Claim(ClaimTypes.Role, userRole));
             var token = jwtUtils.GetToken(authClaims);
-            user.user_token = new JwtSecurityTokenHandler().WriteToken(token);
+            //user.user_token = new JwtSecurityTokenHandler().WriteToken(token);
             await db.SaveChangesAsync();
             var responseUser = new LoginResponseDTO();
             responseUser = mapper.Map<LoginResponseDTO>(user);
