@@ -22,6 +22,12 @@ using BISPAPIORA.Repositories.ImageCitizenAttachmentServicesRepo;
 using BISPAPIORA.Repositories.ImageCitizenFingePrintServicesRepo;
 using BISPAPIORA.Repositories.UserTypeServicesRepo;
 using BISPAPIORA.Repositories.UserServicesRepo;
+using BISPAPIORA.Extensions.Middleware;
+using BISPAPIORA.Repositories.JWTServicesRepo;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.IdentityModel.Tokens;
+using Microsoft.OpenApi.Models;
+using System.Text;
 
 
 
@@ -79,7 +85,11 @@ namespace BISPAPIORA.Extensions
             services.AddTransient<IImageCitizenAttachmentService, ImageCitizenAttachmentService>();
             services.AddTransient<IImageCitizenFingerPrintService, ImageCitizenFingerPrintService>();
             services.AddTransient<IUserTypeService, UserTypeService>();
+            services.AddTransient<IJwtUtils, JWTUtils>();
+            services.AddSingleton<UserAuthorizeAttribute>();
             services.AddTransient<IUserService, UserService>();
+           
+
         }
     }
 }

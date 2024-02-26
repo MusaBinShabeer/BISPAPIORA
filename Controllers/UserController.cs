@@ -1,4 +1,4 @@
-﻿using BISPAPIORA.Models.DTOS.UserDTO;
+﻿using BISPAPIORA.Models.DTOS.UserDTOs;
 using BISPAPIORA.Models.DTOS.ResponseDTO;
 using BISPAPIORA.Repositories.UserServicesRepo;
 using Microsoft.AspNetCore.Authorization;

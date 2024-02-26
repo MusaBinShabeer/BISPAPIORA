@@ -1,7 +1,7 @@
 ﻿using AutoMapper;
 using BISPAPIORA.Models.DBModels.OraDbContextClass;
 using BISPAPIORA.Models.DBModels.Dbtables;
-using BISPAPIORA.Models.DTOS.UserDTO;
+using BISPAPIORA.Models.DTOS.UserDTOs;
 using BISPAPIORA.Models.DTOS.ResponseDTO;
 using Microsoft.AspNetCore.Http.Features;
 using Microsoft.EntityFrameworkCore;
@@ -91,7 +91,7 @@ namespace BISPAPIORA.Repositories.UserServicesRepo
         {
             try
             {
-                var users = await db.tbl_users.ToListAsync();
+                var users = await db.tbl_users.Include(x=>x.tbl_user_type).ToListAsync();
                 if (users.Count() > 0)
                 {
                     return new ResponseModel<List<UserResponseDTO>>()
@@ -123,7 +123,7 @@ namespace BISPAPIORA.Repositories.UserServicesRepo
         {
             try
             {
-                var existingUser = await db.tbl_users.Where(x => x.user_id == Guid.Parse(userId)).FirstOrDefaultAsync();
+                var existingUser = await db.tbl_users.Include(x => x.tbl_user_type).Where(x => x.user_id == Guid.Parse(userId)).FirstOrDefaultAsync();
                 if (existingUser != null)
                 {
                     return new ResponseModel<UserResponseDTO>()
@@ -159,6 +159,39 @@ namespace BISPAPIORA.Repositories.UserServicesRepo
                 if (existingUser != null)
                 {
                     existingUser = _mapper.Map(model, existingUser);
+                    await db.SaveChangesAsync();
+                    return new ResponseModel<UserResponseDTO>()
+                    {
+                        remarks = $"User: {model.userName} has been updated",
+                        data = _mapper.Map<UserResponseDTO>(existingUser),
+                        success = true,
+                    };
+                }
+                else
+                {
+                    return new ResponseModel<UserResponseDTO>()
+                    {
+                        success = false,
+                        remarks = "No Record"
+                    };
+                }
+            }
+            catch (Exception ex)
+            {
+                return new ResponseModel<UserResponseDTO>()
+                {
+                    success = false,
+                    remarks = $"There Was Fatal Error {ex.Message.ToString()}"
+                };
+            }
+        }
+        public async Task<ResponseModel<UserResponseDTO>> UpdateFTP(UpdateUserDTO model)
+        {
+            try
+            {
+                var existingUser = await db.tbl_users.Where(x => x.user_id == Guid.Parse(model.userId)).FirstOrDefaultAsync();
+                if (existingUser != null)
+                {
                     await db.SaveChangesAsync();
                     return new ResponseModel<UserResponseDTO>()
                     {
