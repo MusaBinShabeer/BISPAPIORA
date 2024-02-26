@@ -1,4 +1,5 @@
-﻿using BISPAPIORA.Models.DTOS.DistrictDTO;
+﻿using BISPAPIORA.Extensions.Middleware;
+using BISPAPIORA.Models.DTOS.DistrictDTO;
 using BISPAPIORA.Models.DTOS.ResponseDTO;
 using BISPAPIORA.Models.DTOS.TehsilDTO;
 using BISPAPIORA.Repositories.DistrictServicesRepo;
@@ -8,6 +9,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace BISPAPIORA.Controllers
 {
+    [UserAuthorize]
     [Route("api/[controller]")]
     [ApiController]
     public class DistrictController : ControllerBase

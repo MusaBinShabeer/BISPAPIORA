@@ -28,6 +28,7 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using System.Text;
+using BISPAPIORA.Repositories.AuthServicesRepo;
 
 
 
@@ -87,8 +88,9 @@ namespace BISPAPIORA.Extensions
             services.AddTransient<IUserTypeService, UserTypeService>();
             services.AddTransient<IJwtUtils, JWTUtils>();
             services.AddSingleton<UserAuthorizeAttribute>();
-            services.AddTransient<IUserService, UserService>();
-           
+            services.AddTransient<IUserService, UserService>(); 
+            services.AddTransient<IAuthServices, AuthServices>();
+
 
         }
     }

@@ -11,7 +11,7 @@ using System.Security.Claims;
 
 namespace BISPAPIORA.Repositories.AuthServicesRepo
 {
-    public class AuthServices
+    public class AuthServices: IAuthServices
     {
         private readonly IConfiguration _configuration;
         private readonly Dbcontext db;
