@@ -62,15 +62,15 @@ namespace BISPAPIORA.Repositories.AuthServicesRepo
         private async Task<ResponseModel<LoginResponseDTO>> Login(tbl_user user)
         {
             var userRole = user.tbl_user_type.user_type_name;
-            var authClaims = new List<Claim>
-                        {
-                            new Claim(ClaimTypes.Email, user.user_email),
-                            new Claim(JwtRegisteredClaimNames.Jti,Guid.NewGuid().ToString())
-                        };
-            authClaims.Add(new Claim(ClaimTypes.Role, userRole));
-            var token = jwtUtils.GetToken(authClaims);
-            user.user_token = new JwtSecurityTokenHandler().WriteToken(token);
-            await db.SaveChangesAsync();
+            //////var authClaims = new List<Claim>
+            //////            {
+            //////                new Claim(ClaimTypes.Email, user.user_email),
+            //////                new Claim(JwtRegisteredClaimNames.Jti,Guid.NewGuid().ToString())
+            //////            };
+            //////authClaims.Add(new Claim(ClaimTypes.Role, userRole));
+            //////var token = jwtUtils.GetToken(authClaims);
+            //////user.user_token = new JwtSecurityTokenHandler().WriteToken(token);
+            //await db.SaveChangesAsync();
             var responseUser = new LoginResponseDTO();
             responseUser = mapper.Map<LoginResponseDTO>(user);
             responseUser.userToken = user.user_token;
