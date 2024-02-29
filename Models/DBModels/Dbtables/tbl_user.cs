@@ -25,4 +25,6 @@ public partial class tbl_user
     public Guid? fk_user_type { get; set; } = default!;
 
     public virtual tbl_user_type? tbl_user_type { get; set; }
+    public ICollection<tbl_citizen>? tbl_registered_citizens { get; set; }
+    public ICollection<tbl_citizen>? tbl_enrolled_citizens { get; set; }
 }

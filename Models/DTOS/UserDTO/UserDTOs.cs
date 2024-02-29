@@ -7,8 +7,6 @@ namespace BISPAPIORA.Models.DTOS.UserDTOs
         public string userName { get; set; } = string.Empty;
         public string userEmail { get; set; } = string.Empty;
         public string userPassword { get; set; } = string.Empty;
-        public decimal userOtp { get; set; } = 0;
-        public string userToken { get; set; } = string.Empty;
         public string fkUserType { get; set; } = string.Empty;
         public bool isActive { get; set; } = true;
     }

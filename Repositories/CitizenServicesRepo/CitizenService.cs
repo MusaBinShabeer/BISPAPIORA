@@ -15,6 +15,7 @@ using BISPAPIORA.Models.DTOS.ImageCitizenAttachmentDTO;
 using BISPAPIORA.Repositories.ImageCitizenAttachmentServicesRepo;
 using BISPAPIORA.Models.DTOS.ImageCitizenFingerPrintDTO;
 using BISPAPIORA.Repositories.ImageCitizenFingePrintServicesRepo;
+using BISPAPIORA.Repositories.InnerServicesRepo;
 
 namespace BISPAPIORA.Repositories.CitizenServicesRepo
 {
@@ -25,13 +26,15 @@ namespace BISPAPIORA.Repositories.CitizenServicesRepo
         private readonly IImageCitizenAttachmentService attachmentService;
         private readonly ICitizenBankInfoService citizenBankInfoService;
         private readonly IImageCitizenFingerPrintService thumbprintService;
-        public CitizenService(IMapper mapper, Dbcontext db,ICitizenBankInfoService citizenBankInfoService, IImageCitizenFingerPrintService thumbPrintService, IImageCitizenAttachmentService citizenAttachmentService)
+        private readonly IInnerServices innerServices;
+        public CitizenService(IInnerServices innerServices, IMapper mapper, Dbcontext db,ICitizenBankInfoService citizenBankInfoService, IImageCitizenFingerPrintService thumbPrintService, IImageCitizenAttachmentService citizenAttachmentService)
         {
             _mapper = mapper;
             this.db = db;
             this.attachmentService = citizenAttachmentService;
             this.thumbprintService = thumbPrintService;
             this.citizenBankInfoService = citizenBankInfoService;
+            this.innerServices = innerServices;
         }
         #region Registered Citizen
         public async Task<ResponseModel<RegistrationResponseDTO>> AddRegisteredCitizen(AddRegistrationDTO model)
@@ -113,7 +116,13 @@ namespace BISPAPIORA.Repositories.CitizenServicesRepo
         {
             try
             {
-                var registerdCitizens = await db.tbl_registrations.Include(x => x.tbl_citizen).ThenInclude(x => x.tbl_citizen_tehsil).ThenInclude(x => x.tbl_district).ThenInclude(x => x.tbl_province).Include(x => x.tbl_citizen).ThenInclude(x => x.tbl_citizen_employment).Include(x => x.tbl_citizen).ThenInclude(x => x.tbl_citizen_education).Include(x=>x.tbl_citizen.tbl_citizen_bank_info).ThenInclude(x=>x.tbl_bank).Include(x=>x.tbl_citizen.tbl_bank_other_specification).Include(x=>x.tbl_citizen.tbl_citizen_registration).Select(x => x.tbl_citizen).ToListAsync();
+                var registerdCitizens = await db.tbl_registrations
+                    .Include(x => x.tbl_citizen).ThenInclude(x => x.tbl_citizen_tehsil).ThenInclude(x => x.tbl_district).ThenInclude(x => x.tbl_province)
+                    .Include(x => x.tbl_citizen).ThenInclude(x => x.tbl_citizen_employment)
+                    .Include(x => x.tbl_citizen).ThenInclude(x => x.tbl_citizen_education)
+                    .Include(x=>x.tbl_citizen.tbl_citizen_family_bank_info).ThenInclude(x=>x.tbl_bank)
+                    .Include(x=>x.tbl_citizen.tbl_citizen_family_bank_info.tbl_bank_other_specification)
+                    .Include(x=>x.tbl_citizen.tbl_citizen_registration).Select(x => x.tbl_citizen).ToListAsync();
                 if (registerdCitizens.Count() > 0)
                 {
                     return new ResponseModel<List<RegistrationResponseDTO>>()
@@ -247,7 +256,9 @@ namespace BISPAPIORA.Repositories.CitizenServicesRepo
                     .Include(x => x.tbl_citizen).ThenInclude(x => x.tbl_citizen_employment)
                     .Include(x => x.tbl_citizen).ThenInclude(x => x.tbl_citizen_education)
                     .Include(x=>x.tbl_citizen).ThenInclude(x=>x.tbl_citizen_scheme)
-                    .Include(x => x.tbl_citizen).ThenInclude(x => x.tbl_citizen_bank_info).ThenInclude(x=>x.tbl_bank).ToListAsync();
+                    .Include(x => x.tbl_citizen).ThenInclude(x => x.tbl_citizen_bank_info).ThenInclude(x=>x.tbl_bank)
+                    .Include(x=>x.tbl_citizen.tbl_citizen_bank_info.tbl_bank_other_specification)
+                    .ToListAsync();
                 if (enrolledCitizens.Count() > 0)
                 {
                     var resposne = _mapper.Map<List<EnrollmentResponseDTO>>(enrolledCitizens);
@@ -355,32 +366,57 @@ namespace BISPAPIORA.Repositories.CitizenServicesRepo
                 .Include(x=>x.tbl_citizen_registration)
                 .Include(x=>x.tbl_enrollment)
                 .Include(x => x.tbl_citizen_bank_info).ThenInclude(x => x.tbl_bank).FirstOrDefaultAsync();
+                var verifyCitizen = await innerServices.VerifyCitzen(citizenCnic);
                 if (existingCitizen != null)
                 {
-                    var response = _mapper.Map<RegistrationResponseDTO>(existingCitizen);
-                    if (existingCitizen.tbl_enrollment != null)
+                    //var verifyCitizen = await innerServices.VerifyCitzen(citizenCnic);
+                    if (verifyCitizen.success)
                     {
-                        response.isEnrolled = true;
+                        existingCitizen = _mapper.Map((verifyCitizen.data,true), existingCitizen);
+                        await db.SaveChangesAsync();
+                        var response = _mapper.Map<RegistrationResponseDTO>(existingCitizen);
+                        if (existingCitizen.tbl_enrollment != null)
+                        {
+                            response.isEnrolled = true;
+                        }
+                        if (existingCitizen.tbl_citizen_registration != null)
+                        {
+                            response.isRegisteered = true;
+                        }
+                        return new ResponseModel<RegistrationResponseDTO>()
+                        {
+                            data = response,
+                            remarks = "Citizen found successfully",
+                            success = true,
+                        };
                     }
-                    if (existingCitizen.tbl_citizen_registration != null)
+                    else
                     {
-                        response.isRegisteered = true;
+                        var response = new ResponseModel<RegistrationResponseDTO>();
+                        response.data = _mapper.Map<RegistrationResponseDTO>(existingCitizen);
+                        response.success = false;
+                        response.data =verifyCitizen.data != null ? 
+                            _mapper.Map((verifyCitizen.data, false),response.data)
+                            : response.data;
+                        response.data.isValidBeneficiary = false;
+                        return response;
                     }
-                    return new ResponseModel<RegistrationResponseDTO>()
-                    {
-                        data = response,
-                        remarks = "Citizen found successfully",
-                        success = true,
-                    };
+
                 }
                 else
                 {
-                    return new ResponseModel<RegistrationResponseDTO>()
+                    var response = new ResponseModel<RegistrationResponseDTO>();
+                    if (verifyCitizen.success)
                     {
-                            
-                        remarks = "No Record",
-                        success = true,
-                    };
+                        response.data = _mapper.Map<RegistrationResponseDTO>((verifyCitizen.data, true));
+                    }
+                    else
+                    {
+                        response.data = verifyCitizen.data != null ? _mapper.Map<RegistrationResponseDTO>((verifyCitizen.data, false)) : null;
+                    }
+                    response.remarks = "Applicant Not Registered";
+                    response.success = false;
+                    return response;
                 }
                 
             }
@@ -404,7 +440,9 @@ namespace BISPAPIORA.Repositories.CitizenServicesRepo
                 .Include(x => x.tbl_citizen_scheme)
                 .Include(x => x.tbl_citizen_registration)
                 .Include(x => x.tbl_enrollment)
-                .Include(x => x.tbl_citizen_bank_info).ThenInclude(x => x.tbl_bank).FirstOrDefaultAsync();
+                .Include(x => x.tbl_citizen_family_bank_info).ThenInclude(x => x.tbl_bank)
+                .Include(x => x.tbl_citizen_family_bank_info).ThenInclude(x => x.tbl_bank_other_specification)
+                .FirstOrDefaultAsync();
                 if (existingCitizen != null)
                 {
                     var response = _mapper.Map<RegistrationResponseDTO>(existingCitizen);
@@ -446,10 +484,15 @@ namespace BISPAPIORA.Repositories.CitizenServicesRepo
         {
             try
             {
-                var existingRPFCitizen = await db.tbl_citizens.Where(x => x.citizen_cnic == (citizenCnic)).FirstOrDefaultAsync();
-                if (existingRPFCitizen != null)
-                {
-                    var existingCitizen = await db.tbl_citizens.Where(x => x.citizen_cnic == citizenCnic).FirstOrDefaultAsync();
+                
+                    var existingCitizen = await db.tbl_enrollments
+                     .Include(x => x.tbl_citizen).ThenInclude(x => x.tbl_citizen_tehsil).ThenInclude(x => x.tbl_district).ThenInclude(x => x.tbl_province)
+                    .Include(x => x.tbl_citizen).ThenInclude(x => x.tbl_citizen_employment)
+                    .Include(x => x.tbl_citizen).ThenInclude(x => x.tbl_citizen_education)
+                    .Include(x => x.tbl_citizen).ThenInclude(x => x.tbl_citizen_scheme)
+                    .Include(x => x.tbl_citizen).ThenInclude(x => x.tbl_citizen_bank_info).ThenInclude(x => x.tbl_bank)
+                    .Include(x => x.tbl_citizen.tbl_citizen_bank_info.tbl_bank_other_specification)
+                    .Where(x => x.tbl_citizen.citizen_cnic == citizenCnic).FirstOrDefaultAsync();
                     if (existingCitizen != null)
                     {
                         return new ResponseModel<EnrollmentResponseDTO>()
@@ -463,20 +506,11 @@ namespace BISPAPIORA.Repositories.CitizenServicesRepo
                     {
                         return new ResponseModel<EnrollmentResponseDTO>()
                         {
-                            data = _mapper.Map<EnrollmentResponseDTO>(existingRPFCitizen),
-                            remarks = "Citizen found successfully",
-                            success = true,
+                          remarks="Not Found",
+                            success = false,
                         };
                     }
-                }
-                else
-                {
-                    return new ResponseModel<EnrollmentResponseDTO>()
-                    {
-                        success = false,
-                        remarks = "No Record"
-                    };
-                }
+               
             }
             catch (Exception ex)
             {

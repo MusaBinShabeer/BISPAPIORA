@@ -9,6 +9,8 @@ using BISPAPIORA.Repositories.CitizenBankInfoServicesRepo;
 using BISPAPIORA.Models.DTOS.CitizenBankInfoDTO;
 using BISPAPIORA.Repositories.CitizenSchemeServicesRepo;
 using BISPAPIORA.Models.DTOS.CitizenSchemeDTO;
+using BISPAPIORA.Models.DTOS.BankOtherSpecificationDTO;
+using BISPAPIORA.Repositories.BankOtherSpecificationServicesRepo;
 
 namespace BISPAPIORA.Repositories.EnrollmentServicesRepo
 {
@@ -19,13 +21,16 @@ namespace BISPAPIORA.Repositories.EnrollmentServicesRepo
         private readonly Dbcontext db;
         private readonly ICitizenBankInfoService citizenBankInfoService;
         private readonly ICitizenSchemeService citizenSchemeService;
-        public EnrollmentService(IMapper mapper, Dbcontext db, ICitizenService citizenService,ICitizenBankInfoService citizenBankInfoService,ICitizenSchemeService citizenSchemeService)
+        private readonly IBankOtherSpecificationService bankOtherSpecificationService;
+
+        public EnrollmentService(IMapper mapper, IBankOtherSpecificationService bankOtherSpecificationService, Dbcontext db, ICitizenService citizenService,ICitizenBankInfoService citizenBankInfoService,ICitizenSchemeService citizenSchemeService)
         {
             _mapper = mapper;
             this.db = db;
             this.citizenService = citizenService;
             this.citizenBankInfoService= citizenBankInfoService;
             this.citizenSchemeService = citizenSchemeService;
+            this.bankOtherSpecificationService= bankOtherSpecificationService;
         }
         public async Task<ResponseModel<EnrollmentResponseDTO>> AddEnrolledCitizen(AddEnrollmentDTO model)
         {
@@ -47,6 +52,12 @@ namespace BISPAPIORA.Repositories.EnrollmentServicesRepo
                             var newRequest = new AddEnrolledCitizenBankInfoDTO();
                             newRequest= _mapper.Map<AddEnrolledCitizenBankInfoDTO>(model);
                             var resposne= citizenBankInfoService.AddEnrolledCitizenBankInfo(newRequest);
+                            if (!string.IsNullOrEmpty(model.citizenBankOtherSpecification))
+                            {
+                                var addBankOtherSpecification = new AddEnrolledBankOtherSpecificationDTO();
+                                addBankOtherSpecification = _mapper.Map<AddEnrolledBankOtherSpecificationDTO>((model, resposne));
+                                var responseBankOtherSpecification = await bankOtherSpecificationService.AddEnrolledBankOtherSpecification(addBankOtherSpecification);
+                            }
                             var newSchemeReq= new AddCitizenSchemeDTO();
                             newSchemeReq = _mapper.Map<AddCitizenSchemeDTO>(model);
                             var schemeResp = citizenSchemeService.AddCitizenScheme(newSchemeReq);
@@ -96,12 +107,18 @@ namespace BISPAPIORA.Repositories.EnrollmentServicesRepo
                                 model.fkCitizen = newCitizen.data.citizenId;                                
                                 var newRequest = new AddEnrolledCitizenBankInfoDTO();
                                 newRequest = _mapper.Map<AddEnrolledCitizenBankInfoDTO>(model);
-                                var resposne = citizenBankInfoService.AddEnrolledCitizenBankInfo(newRequest);
+                                var bankResposne = citizenBankInfoService.AddEnrolledCitizenBankInfo(newRequest);
                                 var newSchemeReq = new AddCitizenSchemeDTO();
                                 newSchemeReq = _mapper.Map<AddCitizenSchemeDTO>(model);
                                 var schemeResp = citizenSchemeService.AddCitizenScheme(newSchemeReq);
                                 var response = _mapper.Map<EnrollmentResponseDTO>(newCitizen.data);
                                 response.enrollmentId = newEnrollment.enrollment_id.ToString();
+                                if (!string.IsNullOrEmpty(model.citizenBankOtherSpecification))
+                                {
+                                    var addBankOtherSpecification = new AddEnrolledBankOtherSpecificationDTO();
+                                    addBankOtherSpecification = _mapper.Map<AddEnrolledBankOtherSpecificationDTO>((model, bankResposne));
+                                    var responseBankOtherSpecification = await bankOtherSpecificationService.AddEnrolledBankOtherSpecification(addBankOtherSpecification);
+                                }
                                 return new ResponseModel<EnrollmentResponseDTO>()
                                 {
                                     success = true,

@@ -22,12 +22,12 @@ namespace BISPAPIORA.Repositories.CitizenBankInfoServicesRepo
         {
             try
             {
-                var citizenBankInfo = await db.tbl_citizen_bank_infos.Where(x => x.fk_citizen.Equals(Guid.Parse(model.fkCitizen)) && x.fk_bank.Equals(Guid.Parse(model.fkBank))).FirstOrDefaultAsync();
+                var citizenBankInfo = await db.tbl_citizen_family_bank_infos.Where(x => x.fk_citizen.Equals(Guid.Parse(model.fkCitizen)) && x.fk_bank.Equals(Guid.Parse(model.fkBank))).FirstOrDefaultAsync();
                 if (citizenBankInfo == null)
                 {
-                    var newCitizenBankInfo = new tbl_citizen_bank_info();
-                    newCitizenBankInfo = _mapper.Map<tbl_citizen_bank_info>(model);
-                    db.tbl_citizen_bank_infos.Add(newCitizenBankInfo);
+                    var newCitizenBankInfo = new tbl_citizen_family_bank_info();
+                    newCitizenBankInfo = _mapper.Map<tbl_citizen_family_bank_info>(model);
+                    db.tbl_citizen_family_bank_infos.Add(newCitizenBankInfo);
                     await db.SaveChangesAsync();
                     return new ResponseModel<RegisteredCitizenBankInfoResponseDTO>()
                     {
@@ -61,10 +61,10 @@ namespace BISPAPIORA.Repositories.CitizenBankInfoServicesRepo
         {
             try
             {
-                var existingCitizenBankInfo = await db.tbl_citizen_bank_infos.Where(x => x.citizen_bank_info_id == Guid.Parse(CitizenBankInfoId)).FirstOrDefaultAsync();
+                var existingCitizenBankInfo = await db.tbl_citizen_family_bank_infos.Where(x => x.citizen_bank_info_id == Guid.Parse(CitizenBankInfoId)).FirstOrDefaultAsync();
                 if (existingCitizenBankInfo != null)
                 {
-                    db.tbl_citizen_bank_infos.Remove(existingCitizenBankInfo);
+                    db.tbl_citizen_family_bank_infos.Remove(existingCitizenBankInfo);
                     await db.SaveChangesAsync();
                     return new ResponseModel<RegisteredCitizenBankInfoResponseDTO>()
                     {
@@ -94,7 +94,7 @@ namespace BISPAPIORA.Repositories.CitizenBankInfoServicesRepo
         {
             try
             {
-                var citizenBankInfos = await db.tbl_citizen_bank_infos.Include(x => x.tbl_citizen).Include(x => x.tbl_bank).ToListAsync();
+                var citizenBankInfos = await db.tbl_citizen_family_bank_infos.Include(x => x.tbl_citizen).Include(x => x.tbl_bank).ToListAsync();
                 if (citizenBankInfos.Count() > 0)
                 {
                     return new ResponseModel<List<RegisteredCitizenBankInfoResponseDTO>>()
@@ -126,7 +126,7 @@ namespace BISPAPIORA.Repositories.CitizenBankInfoServicesRepo
         {
             try
             {
-                var existingCitizenBankInfo = await db.tbl_citizen_bank_infos.Include(x => x.tbl_citizen).Include(x => x.tbl_bank).Where(x => x.citizen_bank_info_id == Guid.Parse(citizenBankInfoId)).FirstOrDefaultAsync();
+                var existingCitizenBankInfo = await db.tbl_citizen_family_bank_infos.Include(x => x.tbl_citizen).Include(x => x.tbl_bank).Where(x => x.citizen_bank_info_id == Guid.Parse(citizenBankInfoId)).FirstOrDefaultAsync();
                 if (existingCitizenBankInfo != null)
                 {
                     return new ResponseModel<RegisteredCitizenBankInfoResponseDTO>()
@@ -158,7 +158,7 @@ namespace BISPAPIORA.Repositories.CitizenBankInfoServicesRepo
         {
             try
             {
-                var existingCitizenBankInfo = await db.tbl_citizen_bank_infos.Where(x => x.citizen_bank_info_id == Guid.Parse(model.CitizenBankInfoId)).FirstOrDefaultAsync();
+                var existingCitizenBankInfo = await db.tbl_citizen_family_bank_infos.Where(x => x.citizen_bank_info_id == Guid.Parse(model.CitizenBankInfoId)).FirstOrDefaultAsync();
                 if (existingCitizenBankInfo != null)
                 {
                     existingCitizenBankInfo = _mapper.Map(model, existingCitizenBankInfo);

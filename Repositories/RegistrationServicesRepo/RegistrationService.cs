@@ -57,9 +57,9 @@ namespace BISPAPIORA.Repositories.RegistrationServicesRepo
                             #region Citizen Bank Other Specification
                             if (!string.IsNullOrEmpty(model.citizenBankOtherSpecification))
                             {
-                                var addBankOtherSpecification = new AddBankOtherSpecificationDTO();
-                                addBankOtherSpecification = _mapper.Map<AddBankOtherSpecificationDTO>(model);
-                                var responseBankOtherSpecification= await bankOtherSpecificationService.AddBankOtherSpecification(addBankOtherSpecification);
+                                var addBankOtherSpecification = new AddRegisteredBankOtherSpecificationDTO();
+                                addBankOtherSpecification = _mapper.Map<AddRegisteredBankOtherSpecificationDTO>((model,newRegisteredBankInfo.data));
+                                var responseBankOtherSpecification= await bankOtherSpecificationService.AddRegisteredBankOtherSpecification(addBankOtherSpecification);
                             }
                             #endregion
                             #region Citizen Employment Other Specifcation

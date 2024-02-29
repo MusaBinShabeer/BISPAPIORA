@@ -23,6 +23,7 @@ public partial class tbl_citizen_bank_info
     public Guid? fk_citizen { get; set; } = default!;
 
     public virtual tbl_bank? tbl_bank { get; set; } = default!;
+    public virtual tbl_bank_other_specification? tbl_bank_other_specification { get; set; } = default!;
 
     public virtual tbl_citizen? tbl_citizen { get; set; }=default!;
 }

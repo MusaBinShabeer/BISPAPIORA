@@ -54,6 +54,7 @@ public partial class Dbcontext : DbContext
     public virtual DbSet<tbl_user> tbl_users { get; set; }
 
     public virtual DbSet<tbl_user_type> tbl_user_types { get; set; }
+    public virtual DbSet<tbl_citizen_family_bank_info> tbl_citizen_family_bank_infos { get; set; }
 
     //    protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     //#warning To protect potentially sensitive information in your connection string, you should move it out of source code. You can avoid scaffolding the connection string by using the Name= syntax to read it from configuration - see https://go.microsoft.com/fwlink/?linkid=2131148. For more guidance on storing connection strings, see https://go.microsoft.com/fwlink/?LinkId=723263.
@@ -61,12 +62,12 @@ public partial class Dbcontext : DbContext
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
-        modelBuilder
-            .HasDefaultSchema("ADMIN")
-            .UseCollation("USING_NLS_COMP");
         //modelBuilder
-        //    .HasDefaultSchema("SAVINGS")
+        //    .HasDefaultSchema("ADMIN")
         //    .UseCollation("USING_NLS_COMP");
+        modelBuilder
+            .HasDefaultSchema("SAVINGS")
+            .UseCollation("USING_NLS_COMP");
 
 
 
@@ -173,11 +174,21 @@ public partial class Dbcontext : DbContext
             entity.Property(e => e.fk_citizen_education).HasColumnName("FK_CITIZEN_EDUCATION");
             entity.Property(e => e.fk_citizen_employment).HasColumnName("FK_CITIZEN_EMPLOYMENT");
             entity.Property(e => e.fk_tehsil).HasColumnName("FK_TEHSIL");
+            entity.Property(e => e.fk_registered_by).HasColumnName("FK_REGISTERED_BY");
+            entity.Property(e => e.fk_enrolled_by).HasColumnName("FK_ENROLLED_BY");
 
             entity.HasOne(d => d.tbl_citizen_education).WithMany(p => p.tbl_citizens)
                 .HasForeignKey(d => d.fk_citizen_education)
                 .OnDelete(DeleteBehavior.Cascade)
                 .HasConstraintName("FK_CITIZEN_EDUCATION");
+            entity.HasOne(d => d.registerd_by).WithMany(p => p.tbl_registered_citizens)
+              .HasForeignKey(d => d.fk_registered_by)
+              .OnDelete(DeleteBehavior.Cascade)
+              .HasConstraintName("FK_REGISTERED_BY_USER");   
+            entity.HasOne(d => d.enrolled_by).WithMany(p => p.tbl_enrolled_citizens)
+              .HasForeignKey(d => d.fk_enrolled_by)
+              .OnDelete(DeleteBehavior.Cascade)
+              .HasConstraintName("FK_ENROLLED_BY_USER");
 
             entity.HasOne(d => d.tbl_citizen_employment).WithMany(p => p.tbl_citizens)
                 .HasForeignKey(d => d.fk_citizen_employment)
@@ -240,6 +251,49 @@ public partial class Dbcontext : DbContext
                 .HasForeignKey<tbl_citizen_bank_info>(d => d.fk_citizen)
                 .OnDelete(DeleteBehavior.Cascade)
                 .HasConstraintName("FK_CITIZEN_CITIZEN_BANK_INFO");
+        });
+        modelBuilder.Entity<tbl_citizen_family_bank_info>(entity =>
+        {
+            entity.HasKey(e => e.citizen_bank_info_id).HasName("SYS_C006043");
+
+            entity.ToTable("TBL_CITIZEN_FAMILY_BANK_INFO");
+
+            entity.HasIndex(e => e.fk_citizen, "SYS_C006044").IsUnique();
+
+            entity.Property(e => e.citizen_bank_info_id)
+                .HasDefaultValueSql("SYS_GUID() ")
+                .HasColumnName("CITIZEN_BANK_INFO_ID");
+            entity.Property(e => e.a_i_o_f)
+                .HasDefaultValueSql("0.0")
+                .HasColumnType("NUMBER(10,2)")
+                .HasColumnName("A_I_O_F");
+            entity.Property(e => e.account_holder_name)
+                .HasMaxLength(255)
+                .IsUnicode(false)
+                .HasDefaultValueSql("''")
+                .HasColumnName("ACCOUNT_HOLDER_NAME");
+            entity.Property(e => e.account_type)
+                .HasMaxLength(255)
+                .IsUnicode(false)
+                .HasDefaultValueSql("''")
+                .HasColumnName("ACCOUNT_TYPE");           
+            entity.Property(e => e.fk_bank).HasColumnName("FK_BANK");
+            entity.Property(e => e.fk_citizen).HasColumnName("FK_CITIZEN");
+            entity.Property(e => e.iban_no)
+                .HasMaxLength(255)
+                .IsUnicode(false)
+                .HasDefaultValueSql("''")
+                .HasColumnName("IBAN_NO");
+
+            entity.HasOne(d => d.tbl_bank).WithMany(p => p.tbl_citizen_family_bank_infos)
+                .HasForeignKey(d => d.fk_bank)
+                .OnDelete(DeleteBehavior.Cascade)
+                .HasConstraintName("FK_BANK_CITIZEN_FAMILY_BANK_INFO");
+
+            entity.HasOne(d => d.tbl_citizen).WithOne(p => p.tbl_citizen_family_bank_info)
+                .HasForeignKey<tbl_citizen_family_bank_info>(d => d.fk_citizen)
+                .OnDelete(DeleteBehavior.Cascade)
+                .HasConstraintName("FK_CITIZEN_CITIZEN_FAMILY_BANK_INFO");
         });
 
         modelBuilder.Entity<tbl_citizen_scheme>(entity =>
@@ -384,9 +438,6 @@ public partial class Dbcontext : DbContext
             entity.Property(e => e.enrollment_id)
                 .HasDefaultValueSql("SYS_GUID() ")
                 .HasColumnName("ENROLLMENT_ID");
-            entity.Property(e => e.citizen_code)
-                .HasColumnType("NUMBER")
-                .HasColumnName("CITIZEN_CODE");
             entity.Property(e => e.fk_citizen).HasColumnName("FK_CITIZEN");
 
             entity.HasOne(d => d.tbl_citizen).WithOne(p => p.tbl_enrollment)
@@ -431,9 +482,7 @@ public partial class Dbcontext : DbContext
             entity.Property(e => e.registration_id)
                 .HasDefaultValueSql("SYS_GUID() ")
                 .HasColumnName("REGISTRATION_ID");
-            entity.Property(e => e.citizen_code)
-                .HasColumnType("NUMBER")
-                .HasColumnName("CITIZEN_CODE");
+           
             entity.Property(e => e.fk_citizen).HasColumnName("FK_CITIZEN");
 
             entity.HasOne(d => d.tbl_citizen).WithOne(p => p.tbl_citizen_registration)
@@ -554,16 +603,17 @@ public partial class Dbcontext : DbContext
                 .HasMaxLength(255)
                 .IsUnicode(false)
                 .HasDefaultValueSql("''")
-                .HasColumnName("BANK_OTHER_SPECIFICATION");
-            entity.Property(e => e.code)
-                .ValueGeneratedOnAdd()
-                .HasColumnType("NUMBER")
-                .HasColumnName("CODE");
-            entity.Property(e => e.fk_citizen).HasColumnName("FK_CITIZEN");
-            entity.HasOne(d => d.tbl_citizen).WithOne(p => p.tbl_bank_other_specification)
-               .HasForeignKey<tbl_bank_other_specification>(d => d.fk_citizen)
+                .HasColumnName("BANK_OTHER_SPECIFICATION");            
+            entity.Property(e => e.fk_citizen_bank_info).HasColumnName("FK_CITIZEN_BANK_INFO");
+            entity.HasOne(d => d.tbl_citizen_bank_info).WithOne(p => p.tbl_bank_other_specification)
+               .HasForeignKey<tbl_bank_other_specification>(d => d.fk_citizen_bank_info)
                .OnDelete(DeleteBehavior.Cascade)
-               .HasConstraintName("FK_BANK_OTHER_SPECIFICATION_CITIZEN");
+               .HasConstraintName("FK_BANK_OTHER_SPECIFICATION_CITIZEN_BANK_INFO");
+            entity.Property(e => e.fk_citizen_family_bank_info).HasColumnName("FK_CITIZEN_FAMILY_BANK_INFO");
+            entity.HasOne(d => d.tbl_citizen_family_bank_info).WithOne(p => p.tbl_bank_other_specification)
+               .HasForeignKey<tbl_bank_other_specification>(d => d.fk_citizen_family_bank_info)
+               .OnDelete(DeleteBehavior.Cascade)
+               .HasConstraintName("FK_BANK_OTHER_SPECIFICATION_CITIZEN_FAMILY_BANK_INFO"); ;
         });
 
         modelBuilder.Entity<tbl_citizen_compliance>(entity =>

@@ -16,6 +16,7 @@ namespace BISPAPIORA.Models.DTOS.AuthDTO
     {
         public string userId { get; set; } = string.Empty;
         public string userTypeName { get; set; } = string.Empty;
+        public string userToken { get; set; } = string.Empty;
         public bool isFtpSet { get; set; } = false;             //FTP => First-TIme Password
     }
 }
