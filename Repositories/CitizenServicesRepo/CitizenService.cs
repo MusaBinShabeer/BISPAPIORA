@@ -16,6 +16,7 @@ using BISPAPIORA.Repositories.ImageCitizenAttachmentServicesRepo;
 using BISPAPIORA.Models.DTOS.ImageCitizenFingerPrintDTO;
 using BISPAPIORA.Repositories.ImageCitizenFingePrintServicesRepo;
 using BISPAPIORA.Repositories.InnerServicesRepo;
+using BISPAPIORA.Models.DTOS.VerificationResponseDTO;
 
 namespace BISPAPIORA.Repositories.CitizenServicesRepo
 {
@@ -366,7 +367,7 @@ namespace BISPAPIORA.Repositories.CitizenServicesRepo
                 .Include(x=>x.tbl_citizen_registration)
                 .Include(x=>x.tbl_enrollment)
                 .Include(x => x.tbl_citizen_bank_info).ThenInclude(x => x.tbl_bank).FirstOrDefaultAsync();
-                var verifyCitizen = await innerServices.VerifyCitzen(citizenCnic);
+                var verifyCitizen = new ResponseModel<SurvayResponseDTO> { success = false }; /*await innerServices.VerifyCitzen(citizenCnic);*/
                 if (existingCitizen != null)
                 {
                     //var verifyCitizen = await innerServices.VerifyCitzen(citizenCnic);
@@ -415,7 +416,7 @@ namespace BISPAPIORA.Repositories.CitizenServicesRepo
                         response.data = verifyCitizen.data != null ? _mapper.Map<RegistrationResponseDTO>((verifyCitizen.data, false)) : null;
                     }
                     response.remarks = "Applicant Not Registered";
-                    response.success = false;
+                    response.success = true;
                     return response;
                 }
                 
