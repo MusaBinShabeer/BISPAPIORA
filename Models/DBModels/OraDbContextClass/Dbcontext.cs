@@ -62,12 +62,12 @@ public partial class Dbcontext : DbContext
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
-        //modelBuilder
-        //    .HasDefaultSchema("ADMIN")
-        //    .UseCollation("USING_NLS_COMP");
         modelBuilder
-            .HasDefaultSchema("SAVINGS")
+            .HasDefaultSchema("ADMIN")
             .UseCollation("USING_NLS_COMP");
+        //modelBuilder
+        //    .HasDefaultSchema("SAVINGS")
+        //    .UseCollation("USING_NLS_COMP");
 
 
 
@@ -216,10 +216,6 @@ public partial class Dbcontext : DbContext
                 .HasDefaultValueSql("0.0")
                 .HasColumnType("NUMBER(10,2)")
                 .HasColumnName("A_I_O_F");
-            entity.Property(e => e.code)
-                .ValueGeneratedOnAdd()
-                .HasColumnType("NUMBER")
-                .HasColumnName("CODE");
             entity.Property(e => e.account_holder_name)
                 .HasMaxLength(255)
                 .IsUnicode(false)
@@ -252,6 +248,7 @@ public partial class Dbcontext : DbContext
                 .OnDelete(DeleteBehavior.Cascade)
                 .HasConstraintName("FK_CITIZEN_CITIZEN_BANK_INFO");
         });
+
         modelBuilder.Entity<tbl_citizen_family_bank_info>(entity =>
         {
             entity.HasKey(e => e.citizen_bank_info_id).HasName("SYS_C006043");
