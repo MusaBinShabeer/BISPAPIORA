@@ -194,13 +194,14 @@ namespace BISPAPIORA.Repositories.CitizenBankInfoServicesRepo
         {
             try
             {
-                var citizenBankInfo = await db.tbl_citizen_bank_infos.Where(x => x.fk_citizen.Equals(Guid.Parse(model.fkCitizen)) && x.fk_bank.Equals(Guid.Parse(model.fkBank))).FirstOrDefaultAsync();
+                var citizenBankInfo = await db.tbl_citizen_bank_infos.Where(x => x.fk_citizen.Equals(Guid.Parse(model.fkCitizen))).FirstOrDefaultAsync();
                 if (citizenBankInfo == null)
                 {
                     var newCitizenBankInfo = new tbl_citizen_bank_info();
                     newCitizenBankInfo = _mapper.Map<tbl_citizen_bank_info>(model);
-                    db.tbl_citizen_bank_infos.Add(newCitizenBankInfo);
+                    await db.tbl_citizen_bank_infos.AddAsync(newCitizenBankInfo);
                     await db.SaveChangesAsync();
+                    newCitizenBankInfo = await db.tbl_citizen_bank_infos.Where(x=>x.fk_citizen == newCitizenBankInfo.fk_citizen).FirstOrDefaultAsync();
                     return new ResponseModel<EnrolledCitizenBankInfoResponseDTO>()
                     {
                         success = true,

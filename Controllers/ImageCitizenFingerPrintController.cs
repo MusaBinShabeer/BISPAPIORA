@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace BISPAPIORA.Controllers
 {
+    [UserAuthorize]
     [Route("api/[controller]")]
     [ApiController]
     public class ImageCitizenFingerPrintController : ControllerBase

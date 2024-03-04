@@ -87,7 +87,7 @@ namespace BISPAPIORA.Extensions.AutomapperProfiles
              .ForMember(d => d.fkBank, opt => opt.MapFrom(src => (src.tbl_citizen.tbl_citizen_family_bank_info.fk_bank)))
              .ForMember(d => d.fkRegisteredBy, opt => opt.MapFrom(src => (src.tbl_citizen.fk_registered_by)))
              .ForMember(d => d.registeredByUser, opt => opt.MapFrom(src => (src.tbl_citizen.registerd_by.user_name)))
-             .ForMember(d => d.bankName, opt => opt.MapFrom((src) =>src.tbl_citizen.tbl_citizen_family_bank_info.tbl_bank_other_specification!=null?src.tbl_citizen.tbl_citizen_family_bank_info.tbl_bank_other_specification.bank_other_specification :src.tbl_citizen.tbl_citizen_bank_info.tbl_bank.bank_name));
+             .ForMember(d => d.bankName, opt => opt.MapFrom((src) =>src.tbl_citizen.tbl_citizen_family_bank_info.tbl_bank_other_specification!=null?src.tbl_citizen.tbl_citizen_family_bank_info.tbl_bank_other_specification.bank_other_specification :src.tbl_citizen.tbl_citizen_family_bank_info.tbl_bank.bank_name));
             CreateMap<tbl_citizen, RegistrationResponseDTO>()
               .ForMember(d => d.enrollmentId, opt => opt.MapFrom(src => src.tbl_enrollment != null ? src.tbl_enrollment.enrollment_id.ToString() : ""))
               .ForMember(d => d.registrationId, opt => opt.MapFrom(src => src.tbl_citizen_registration != null ? src.tbl_citizen_registration.registration_id.ToString() : ""))
@@ -114,7 +114,7 @@ namespace BISPAPIORA.Extensions.AutomapperProfiles
             .ForMember(d => d.accountHolderName, opt => opt.MapFrom((src) => src.tbl_citizen_family_bank_info.account_holder_name))
             .ForMember(d => d.aIOA, opt => opt.MapFrom((src) => src.tbl_citizen_family_bank_info.a_i_o_f))
             .ForMember(d => d.fkBank, opt => opt.MapFrom(src => (src.tbl_citizen_family_bank_info.fk_bank)))
-            .ForMember(d => d.bankName, opt => opt.MapFrom((src) => src.tbl_citizen_family_bank_info.tbl_bank_other_specification != null ? src.tbl_citizen_family_bank_info.tbl_bank_other_specification.bank_other_specification : src.tbl_citizen_bank_info.tbl_bank.bank_name))
+            .ForMember(d => d.bankName, opt => opt.MapFrom((src) => src.tbl_citizen_family_bank_info.tbl_bank_other_specification != null ? src.tbl_citizen_family_bank_info.tbl_bank_other_specification.bank_other_specification : src.tbl_citizen_family_bank_info.tbl_bank.bank_name))
             .ForMember(d => d.uniHHId, opt => opt.MapFrom(src => (src.unique_hh_id).ToString()))
              .ForMember(d => d.pmt, opt => opt.MapFrom(src => (src.pmt)))
              .ForMember(d => d.submissionDate, opt => opt.MapFrom(src => (src.submission_date).ToString()))

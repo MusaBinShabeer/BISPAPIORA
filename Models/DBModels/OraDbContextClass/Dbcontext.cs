@@ -62,12 +62,12 @@ public partial class Dbcontext : DbContext
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
-        modelBuilder
-            .HasDefaultSchema("ADMIN")
-            .UseCollation("USING_NLS_COMP");
         //modelBuilder
-        //    .HasDefaultSchema("SAVINGS")
+        //    .HasDefaultSchema("ADMIN")
         //    .UseCollation("USING_NLS_COMP");
+        modelBuilder
+            .HasDefaultSchema("SAVINGS")
+            .UseCollation("USING_NLS_COMP");
 
 
 
@@ -710,11 +710,7 @@ public partial class Dbcontext : DbContext
 
             entity.Property(e => e.id)
                 .HasDefaultValueSql("SYS_GUID() ")
-                .HasColumnName("ID");
-            entity.Property(e => e.code)
-                .ValueGeneratedOnAdd()
-                .HasColumnType("NUMBER")
-                .HasColumnName("CODE");
+                .HasColumnName("ID");          
             entity.Property(e => e.cnic)
                 .HasMaxLength(255)
                 .IsUnicode(false)

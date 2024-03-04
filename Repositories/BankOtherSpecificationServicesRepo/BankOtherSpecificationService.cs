@@ -24,7 +24,8 @@ namespace BISPAPIORA.Repositories.BankOtherSpecificationServicesRepo
         {
             try
             {
-                var bankOtherSpecification = await db.tbl_bank_other_specifications.Where(x => x.bank_other_specification.ToLower().Equals(model.bankOtherSpecification.ToLower())).FirstOrDefaultAsync();
+                var fkBankinfo = Guid.Parse(model.fkCitizenFamilyBankInfo);
+                var bankOtherSpecification = await db.tbl_bank_other_specifications.Where(x => x.fk_citizen_family_bank_info==fkBankinfo ).FirstOrDefaultAsync();
                 if (bankOtherSpecification == null)
                 {
                     var newBankOtherSpecification = new tbl_bank_other_specification();
@@ -97,7 +98,8 @@ namespace BISPAPIORA.Repositories.BankOtherSpecificationServicesRepo
         {
             try
             {
-                var bankOtherSpecification = await db.tbl_bank_other_specifications.Where(x => x.bank_other_specification.ToLower().Equals(model.bankOtherSpecification.ToLower())).FirstOrDefaultAsync();
+                var fkBankinfo = Guid.Parse(model.fkCitizenBankInfo);
+                var bankOtherSpecification = await db.tbl_bank_other_specifications.Where(x => x.fk_citizen_bank_info== fkBankinfo).FirstOrDefaultAsync();
                 if (bankOtherSpecification == null)
                 {
                     var newBankOtherSpecification = new tbl_bank_other_specification();

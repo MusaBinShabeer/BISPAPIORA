@@ -28,7 +28,7 @@ namespace BISPAPIORA.Repositories.AuthServicesRepo
         {
             try
             {
-                var user = await db.tbl_users.Include(x => x.tbl_user_type).Where(x => x.user_email == model.userEmail).FirstOrDefaultAsync();
+                var user = await db.tbl_users.Include(x => x.tbl_user_type).Where(x => x.user_email.ToLower() == model.userEmail.ToLower()).FirstOrDefaultAsync();
                 if (user != null)
                 {
                     if (user.user_password == new OtherServices().encodePassword(model.userPassword))
@@ -62,15 +62,15 @@ namespace BISPAPIORA.Repositories.AuthServicesRepo
         private async Task<ResponseModel<LoginResponseDTO>> Login(tbl_user user)
         {
             var userRole = user.tbl_user_type.user_type_name;
-            //////var authClaims = new List<Claim>
-            //////            {
-            //////                new Claim(ClaimTypes.Email, user.user_email),
-            //////                new Claim(JwtRegisteredClaimNames.Jti,Guid.NewGuid().ToString())
-            //////            };
-            //////authClaims.Add(new Claim(ClaimTypes.Role, userRole));
-            //////var token = jwtUtils.GetToken(authClaims);
-            //////user.user_token = new JwtSecurityTokenHandler().WriteToken(token);
-            //await db.SaveChangesAsync();
+            var authClaims = new List<Claim>
+                        {
+                            new Claim(ClaimTypes.Email, user.user_email),
+                            new Claim(JwtRegisteredClaimNames.Jti,Guid.NewGuid().ToString())
+                        };
+            authClaims.Add(new Claim(ClaimTypes.Role, userRole));
+            var token = jwtUtils.GetToken(authClaims);
+            user.user_token = new JwtSecurityTokenHandler().WriteToken(token);
+            await db.SaveChangesAsync();
             var responseUser = new LoginResponseDTO();
             responseUser = mapper.Map<LoginResponseDTO>(user);
             responseUser.userToken = user.user_token;

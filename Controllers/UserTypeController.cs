@@ -4,9 +4,11 @@ using BISPAPIORA.Repositories.UserTypeServicesRepo;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using BISPAPIORA.Extensions.Middleware;
 
 namespace BISPAPIORA.Controllers
 {
+    [UserAuthorize]
     [Route("api/[controller]")]
     [ApiController]
     public class UserTypeController : ControllerBase

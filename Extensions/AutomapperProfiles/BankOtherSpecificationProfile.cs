@@ -3,6 +3,7 @@ using BISPAPIORA.Extensions;
 using BISPAPIORA.Models.DBModels.Dbtables;
 using BISPAPIORA.Models.DTOS.BankOtherSpecificationDTO;
 using BISPAPIORA.Models.DTOS.CitizenBankInfoDTO;
+using BISPAPIORA.Models.DTOS.EnrollmentDTO;
 using BISPAPIORA.Models.DTOS.RegistrationDTO;
 
 namespace BISPAPIORA.Extensions.AutomapperProfiles
@@ -18,7 +19,7 @@ namespace BISPAPIORA.Extensions.AutomapperProfiles
             CreateMap<AddRegisteredBankOtherSpecificationDTO, tbl_bank_other_specification>()
              .ForMember(d => d.bank_other_specification, opt => opt.MapFrom(src => src.bankOtherSpecification))
              .ForMember(d => d.fk_citizen_family_bank_info, opt => opt.MapFrom(src => Guid.Parse(src.fkCitizenFamilyBankInfo)));
-            CreateMap<(AddRegistrationDTO reg, RegisteredCitizenBankInfoResponseDTO dto), AddEnrolledBankOtherSpecificationDTO>()
+            CreateMap<(AddEnrollmentDTO reg, EnrolledCitizenBankInfoResponseDTO dto), AddEnrolledBankOtherSpecificationDTO>()
            .ForMember(d => d.bankOtherSpecification, opt => opt.MapFrom(src => src.reg.citizenBankOtherSpecification))
            .ForMember(d => d.fkCitizenBankInfo, opt => opt.MapFrom(src => (src.dto.CitizenBankInfoId)));
             CreateMap<AddEnrolledBankOtherSpecificationDTO, tbl_bank_other_specification>()

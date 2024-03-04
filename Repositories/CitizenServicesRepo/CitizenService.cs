@@ -367,45 +367,31 @@ namespace BISPAPIORA.Repositories.CitizenServicesRepo
                 .Include(x=>x.tbl_citizen_registration)
                 .Include(x=>x.tbl_enrollment)
                 .Include(x => x.tbl_citizen_bank_info).ThenInclude(x => x.tbl_bank).FirstOrDefaultAsync();
-                var verifyCitizen = new ResponseModel<SurvayResponseDTO> { success = false }; /*await innerServices.VerifyCitzen(citizenCnic);*/
                 if (existingCitizen != null)
                 {
                     //var verifyCitizen = await innerServices.VerifyCitzen(citizenCnic);
-                    if (verifyCitizen.success)
-                    {
-                        existingCitizen = _mapper.Map((verifyCitizen.data,true), existingCitizen);
-                        await db.SaveChangesAsync();
-                        var response = _mapper.Map<RegistrationResponseDTO>(existingCitizen);
-                        if (existingCitizen.tbl_enrollment != null)
-                        {
-                            response.isEnrolled = true;
-                        }
-                        if (existingCitizen.tbl_citizen_registration != null)
-                        {
-                            response.isRegisteered = true;
-                        }
+                    
+                        //existingCitizen = _mapper.Map((verifyCitizen.data,true), existingCitizen);
+                        //await db.SaveChangesAsync();
+                        //if (existingCitizen.tbl_enrollment != null)
+                        //{
+                        //    response.isEnrolled = true;
+                        //}
+                        //if (existingCitizen.tbl_citizen_registration != null)
+                        //{
+                        //    response.isRegisteered = true;
+                        //}
                         return new ResponseModel<RegistrationResponseDTO>()
                         {
-                            data = response,
-                            remarks = "Citizen found successfully",
-                            success = true,
+                            remarks = "Already Registered",
+                            success = false,
                         };
-                    }
-                    else
-                    {
-                        var response = new ResponseModel<RegistrationResponseDTO>();
-                        response.data = _mapper.Map<RegistrationResponseDTO>(existingCitizen);
-                        response.success = false;
-                        response.data =verifyCitizen.data != null ? 
-                            _mapper.Map((verifyCitizen.data, false),response.data)
-                            : response.data;
-                        response.data.isValidBeneficiary = false;
-                        return response;
-                    }
 
                 }
                 else
                 {
+
+                    var verifyCitizen = await innerServices.VerifyCitzen(citizenCnic);
                     var response = new ResponseModel<RegistrationResponseDTO>();
                     if (verifyCitizen.success)
                     {

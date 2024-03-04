@@ -107,7 +107,7 @@ namespace BISPAPIORA.Repositories.EnrollmentServicesRepo
                                 model.fkCitizen = newCitizen.data.citizenId;                                
                                 var newRequest = new AddEnrolledCitizenBankInfoDTO();
                                 newRequest = _mapper.Map<AddEnrolledCitizenBankInfoDTO>(model);
-                                var bankResposne = citizenBankInfoService.AddEnrolledCitizenBankInfo(newRequest);
+                                var bankResposne = await citizenBankInfoService.AddEnrolledCitizenBankInfo(newRequest);
                                 var newSchemeReq = new AddCitizenSchemeDTO();
                                 newSchemeReq = _mapper.Map<AddCitizenSchemeDTO>(model);
                                 var schemeResp = citizenSchemeService.AddCitizenScheme(newSchemeReq);
@@ -116,7 +116,7 @@ namespace BISPAPIORA.Repositories.EnrollmentServicesRepo
                                 if (!string.IsNullOrEmpty(model.citizenBankOtherSpecification))
                                 {
                                     var addBankOtherSpecification = new AddEnrolledBankOtherSpecificationDTO();
-                                    addBankOtherSpecification = _mapper.Map<AddEnrolledBankOtherSpecificationDTO>((model, bankResposne));
+                                    addBankOtherSpecification = _mapper.Map<AddEnrolledBankOtherSpecificationDTO>((model, bankResposne.data));
                                     var responseBankOtherSpecification = await bankOtherSpecificationService.AddEnrolledBankOtherSpecification(addBankOtherSpecification);
                                 }
                                 return new ResponseModel<EnrollmentResponseDTO>()

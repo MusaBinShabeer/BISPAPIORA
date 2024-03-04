@@ -20,6 +20,7 @@ using System.Net;
 
 namespace BISPAPIORA.Controllers
 {
+    [UserAuthorize]
     [Route("api/[controller]")]
     [ApiController]
     public class FileManagerController : ControllerBase
