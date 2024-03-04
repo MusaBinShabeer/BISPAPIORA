@@ -5,9 +5,11 @@ using Microsoft.EntityFrameworkCore.Internal;
 using BISPAPIORA.Repositories.CitizenServicesRepo;
 using BISPAPIORA.Repositories.RegistrationServicesRepo;
 using BISPAPIORA.Models.DTOS.RegistrationDTO;
+using BISPAPIORA.Extensions.Middleware;
 
 namespace BISPAPIORA.Controllers
 {
+    [UserAuthorize]
     [Route("api/[controller]")]
     [ApiController]
     public class RegistrationController : ControllerBase

@@ -14,11 +14,17 @@ namespace BISPAPIORA.Extensions.AutomapperProfiles
         public RegistrationAndEnrollmentProfile()
         {
             CreateMap<AddRegistrationDTO, tbl_registration>()
-            .ForMember(d => d.citizen_code, opt => opt.MapFrom((src, dest) => dest.tbl_citizen.code))
             .ForMember(d => d.fk_citizen, opt => opt.MapFrom(src => Guid.Parse(src.fkCitizen)));
             CreateMap<AddEnrollmentDTO, tbl_enrollment>()
-            .ForMember(d => d.citizen_code, opt => opt.MapFrom((src, dest) => dest.tbl_citizen.code))
             .ForMember(d => d.fk_citizen, opt => opt.MapFrom(src => Guid.Parse(src.fkCitizen)));
+            CreateMap<(AddEnrollmentDTO dto, int code), tbl_enrollment>()
+           .ForMember(d => d.fk_citizen, opt => opt.MapFrom(src => Guid.Parse(src.dto.fkCitizen)));
+            CreateMap<(AddEnrollmentDTO dto, decimal code), tbl_enrollment>()
+           .ForMember(d => d.fk_citizen, opt => opt.MapFrom(src => Guid.Parse(src.dto.fkCitizen)));
+            CreateMap<(AddRegistrationDTO dto, int code), tbl_registration>()
+            .ForMember(d => d.fk_citizen, opt => opt.MapFrom(src => Guid.Parse(src.dto.fkCitizen)));
+            CreateMap<(AddRegistrationDTO dto, decimal code), tbl_registration>()
+            .ForMember(d => d.fk_citizen, opt => opt.MapFrom(src => Guid.Parse(src.dto.fkCitizen)));
             CreateMap<AddEnrollmentDTO, UpdateEnrollmentDTO>()
             .ForMember(d => d.citizenName, opt => opt.MapFrom(src => src.citizenName))
             .ForMember(d => d.citizenPhoneNo, opt => opt.MapFrom(src => src.citizenPhoneNo))

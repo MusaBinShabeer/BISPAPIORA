@@ -36,8 +36,8 @@ namespace BISPAPIORA.Repositories.RegistrationServicesRepo
         {
             try
             {
-                var Citizen = await db.tbl_citizens.Where(x => x.citizen_cnic.ToLower().Equals(model.citizenCnic.ToLower())).FirstOrDefaultAsync();                
-                if (Citizen == null)
+                var citizen = await db.tbl_citizens.Where(x => x.citizen_cnic.ToLower().Equals(model.citizenCnic.ToLower())).FirstOrDefaultAsync();                
+                if (citizen == null)
                 {
                     var newCitizen = await citizenService.AddRegisteredCitizen(model);
                     if (newCitizen.success)
@@ -46,7 +46,7 @@ namespace BISPAPIORA.Repositories.RegistrationServicesRepo
                         {
                             model.fkCitizen = newCitizen.data.citizenId;
                             var newRegistration = new tbl_registration();
-                            newRegistration = _mapper.Map<tbl_registration>(model);
+                            newRegistration = _mapper.Map<tbl_registration>((model, newCitizen.data.citizenCode));
                             await db.tbl_registrations.AddAsync(newRegistration);
                             await db.SaveChangesAsync();
                             #region Bank Info
@@ -57,9 +57,9 @@ namespace BISPAPIORA.Repositories.RegistrationServicesRepo
                             #region Citizen Bank Other Specification
                             if (!string.IsNullOrEmpty(model.citizenBankOtherSpecification))
                             {
-                                var addBankOtherSpecification = new AddBankOtherSpecificationDTO();
-                                addBankOtherSpecification = _mapper.Map<AddBankOtherSpecificationDTO>(model);
-                                var responseBankOtherSpecification= await bankOtherSpecificationService.AddBankOtherSpecification(addBankOtherSpecification);
+                                var addBankOtherSpecification = new AddRegisteredBankOtherSpecificationDTO();
+                                addBankOtherSpecification = _mapper.Map<AddRegisteredBankOtherSpecificationDTO>((model,newRegisteredBankInfo.data));
+                                var responseBankOtherSpecification= await bankOtherSpecificationService.AddRegisteredBankOtherSpecification(addBankOtherSpecification);
                             }
                             #endregion
                             #region Citizen Employment Other Specifcation
@@ -103,7 +103,7 @@ namespace BISPAPIORA.Repositories.RegistrationServicesRepo
                     {
                         success = false,
                         remarks = $"Citizen with name {model.citizenName} already exists",
-                        data = _mapper.Map<RegistrationResponseDTO>(Citizen),
+                        data = _mapper.Map<RegistrationResponseDTO>(citizen),
                     };
                 }
             }

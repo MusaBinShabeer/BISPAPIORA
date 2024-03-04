@@ -1,4 +1,5 @@
-﻿using BISPAPIORA.Models.DTOS.EnrollmentDTO;
+﻿using BISPAPIORA.Extensions.Middleware;
+using BISPAPIORA.Models.DTOS.EnrollmentDTO;
 using BISPAPIORA.Models.DTOS.ResponseDTO;
 using BISPAPIORA.Repositories.CitizenServicesRepo;
 using BISPAPIORA.Repositories.EnrollmentServicesRepo;
@@ -7,6 +8,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace BISPAPIORA.Controllers
 {
+    [UserAuthorize]
     [Route("api/[controller]")]
     [ApiController]
     public class EnrollmentController : ControllerBase

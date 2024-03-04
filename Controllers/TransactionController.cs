@@ -7,9 +7,11 @@ using BISPAPIORA.Repositories.DistrictServicesRepo;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using BISPAPIORA.Extensions.Middleware;
 
 namespace BISPAPIORA.Controllers
 {
+    [UserAuthorize]
     [Route("api/[controller]")]
     [ApiController]
     public class TransactionController : ControllerBase

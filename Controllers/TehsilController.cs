@@ -3,9 +3,11 @@ using BISPAPIORA.Models.DTOS.ResponseDTO;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using BISPAPIORA.Repositories.TehsilServicesRepo;
+using BISPAPIORA.Extensions.Middleware;
 
 namespace BISPAPIORA.Controllers
 {
+    [UserAuthorize]
     [Route("api/[controller]")]
     [ApiController]
     public class TehsilController : ControllerBase
