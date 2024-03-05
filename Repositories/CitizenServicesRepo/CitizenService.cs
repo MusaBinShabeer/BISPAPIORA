@@ -172,6 +172,7 @@ namespace BISPAPIORA.Repositories.CitizenServicesRepo
 
                     var newthumbPrintDto = new AddImageCitizenFingerPrintDTO()
                     {
+                        imageCitizenFingerPrintCnic= newCitizen.citizen_cnic,
                         fkCitizen = newCitizen.citizen_id.ToString()
                     };
                     var responseOfThumbPrint = await thumbprintService.AddFkCitizentoImage(newthumbPrintDto);
