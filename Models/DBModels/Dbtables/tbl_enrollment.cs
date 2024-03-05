@@ -11,5 +11,8 @@ public partial class tbl_enrollment
 
     public DateTime? enrolled_date { get; set; }
 
+    public Guid? fk_enrolled_by { get; set; } = default(Guid?);
+
     public virtual tbl_citizen? tbl_citizen { get; set; }
+    public virtual tbl_user? enrolled_by { get; set; }
 }

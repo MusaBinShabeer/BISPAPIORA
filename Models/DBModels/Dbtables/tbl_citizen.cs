@@ -8,7 +8,7 @@ public partial class tbl_citizen
     public Guid citizen_id { get; set; } = Guid.NewGuid();
 
     public string citizen_cnic { get; set; } = string.Empty;
-    public decimal code { get; set; }
+    public decimal id { get; set; }
 
     public string? citizen_name { get; set; } = string.Empty;
 
@@ -27,8 +27,6 @@ public partial class tbl_citizen
     public Guid? fk_citizen_education { get; set; } = default(Guid?);
 
     public Guid? fk_citizen_employment { get; set; } = default(Guid?);
-    public Guid? fk_registered_by { get; set; } = default(Guid?);
-    public Guid? fk_enrolled_by { get; set; } = default(Guid?);
 
     public Guid? fk_tehsil { get; set; } = default(Guid?);
     public virtual tbl_education? tbl_citizen_education { get; set; }
@@ -48,8 +46,6 @@ public partial class tbl_citizen
     public virtual tbl_registration? tbl_citizen_registration { get; set; }
     //public virtual tbl_citizen_attachment? tbl_citizen_attachment { get; set; }
     //public virtual tbl_citizen_thumb_print? tbl_citizen_thumb_print { get; set; }
-    public virtual tbl_user? registerd_by { get; set; }
-    public virtual tbl_user? enrolled_by { get; set; }
     public virtual tbl_employment_other_specification? tbl_employment_other_specification { get; set; }
     public virtual ICollection<tbl_transaction> tbl_transactions { get; set; } = new List<tbl_transaction>();
     public  bool? is_valid_beneficiary { get; set; }

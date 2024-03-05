@@ -15,8 +15,8 @@ public partial class tbl_tehsil
 
     public virtual tbl_district? tbl_district { get; set; }
 
-    public int? tehsil_code { get; set; } = default(int?);
-    public int? district_code { get; set; } = default(int?);
+    public int? id { get; set; } = default(int?);
+    public int? district_id { get; set; } = default(int?);
 
     public virtual ICollection<tbl_citizen> tbl_citizens { get; set; } = new List<tbl_citizen>();
 }

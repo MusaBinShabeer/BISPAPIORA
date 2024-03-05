@@ -6,7 +6,6 @@ namespace BISPAPIORA.Models.DBModels.Dbtables;
 public partial class tbl_citizen_scheme
 {
     public Guid citizen_scheme_id { get; set; } = Guid.NewGuid();
-    public decimal code { get; set; } = 0;
 
     public string? citizen_scheme_year { get; set; } = string.Empty;
 

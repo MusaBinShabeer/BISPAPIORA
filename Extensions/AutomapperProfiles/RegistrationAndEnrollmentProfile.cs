@@ -15,21 +15,27 @@ namespace BISPAPIORA.Extensions.AutomapperProfiles
         {
             CreateMap<AddRegistrationDTO, tbl_registration>()
                .ForMember(d => d.fk_citizen, opt => opt.MapFrom(src => Guid.Parse(src.fkCitizen)))
+               .ForMember(d => d.fk_registered_by, opt => opt.MapFrom(src => Guid.Parse(src.fkRegisteredBy)))
                .ForMember(d => d.registered_date, opt => opt.MapFrom((src => DateTime.Now)));
             CreateMap<AddEnrollmentDTO, tbl_enrollment>()
                .ForMember(d => d.fk_citizen, opt => opt.MapFrom(src => Guid.Parse(src.fkCitizen)))
+               .ForMember(d => d.fk_enrolled_by, opt => opt.MapFrom(src => Guid.Parse(src.fkEnrolledBy)))
                .ForMember(d => d.enrolled_date, opt => opt.MapFrom((src => DateTime.Now)));
             CreateMap<(AddEnrollmentDTO dto, int code), tbl_enrollment>()
                .ForMember(d => d.fk_citizen, opt => opt.MapFrom(src => Guid.Parse(src.dto.fkCitizen)))
+               .ForMember(d => d.fk_enrolled_by, opt => opt.MapFrom(src => Guid.Parse(src.dto.fkEnrolledBy)))
                .ForMember(d => d.enrolled_date, opt => opt.MapFrom((src => DateTime.Now)));
             CreateMap<(AddEnrollmentDTO dto, decimal code), tbl_enrollment>()
                .ForMember(d => d.fk_citizen, opt => opt.MapFrom(src => Guid.Parse(src.dto.fkCitizen)))
+               .ForMember(d => d.fk_enrolled_by, opt => opt.MapFrom(src => Guid.Parse(src.dto.fkEnrolledBy)))
                .ForMember(d => d.enrolled_date, opt => opt.MapFrom((src => DateTime.Now)));
             CreateMap<(AddRegistrationDTO dto, int code), tbl_registration>()
                .ForMember(d => d.fk_citizen, opt => opt.MapFrom(src => Guid.Parse(src.dto.fkCitizen)))
+               .ForMember(d => d.fk_registered_by, opt => opt.MapFrom(src => Guid.Parse(src.dto.fkRegisteredBy)))
                .ForMember(d => d.registered_date, opt => opt.MapFrom((src => DateTime.Now)));
             CreateMap<(AddRegistrationDTO dto, decimal code), tbl_registration>()
                .ForMember(d => d.fk_citizen, opt => opt.MapFrom(src => Guid.Parse(src.dto.fkCitizen)))
+               .ForMember(d => d.fk_registered_by, opt => opt.MapFrom(src => Guid.Parse(src.dto.fkRegisteredBy)))
                .ForMember(d => d.registered_date, opt => opt.MapFrom((src => DateTime.Now)));
             CreateMap<AddEnrollmentDTO, UpdateEnrollmentDTO>()
                .ForMember(d => d.citizenName, opt => opt.MapFrom(src => src.citizenName))

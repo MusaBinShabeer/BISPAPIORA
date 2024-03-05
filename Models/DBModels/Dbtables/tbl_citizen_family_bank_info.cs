@@ -6,8 +6,6 @@
 
         public string? iban_no { get; set; } = string.Empty;
 
-        public string? account_type { get; set; } = string.Empty;
-
         public string? account_holder_name { get; set; } = string.Empty;
 
         public decimal? family_income { get; set; } = 0;
