@@ -6,8 +6,8 @@ namespace BISPAPIORA.Models.DTOS.DistrictDTO
     {
         public string districtName { get; set; } = string.Empty;
         public string fkProvince { get; set; } = string.Empty;
-        public int provinceCode { get; set; } = default(int);
-        public int districtCode { get; set; } = default(int);
+        public int provinceId { get; set; } = default(int);
+        public int id { get; set; } = default(int);
         public bool isActive { get; set; } = true;
     }
     public class AddDistrictDTO : DistrictDTO
@@ -17,9 +17,9 @@ namespace BISPAPIORA.Models.DTOS.DistrictDTO
         [Required]
         public new string fkProvince { get; set; } = string.Empty;
         [Required]
-        public new int provinceCode { get; set; } =default(int);  
+        public new int provinceId { get; set; } =default(int);  
         [Required]
-        public new int districtCode { get; set; } =default(int);
+        public new int id { get; set; } =default(int);
     }
     public class UpdateDistrictDTO : DistrictDTO
     {

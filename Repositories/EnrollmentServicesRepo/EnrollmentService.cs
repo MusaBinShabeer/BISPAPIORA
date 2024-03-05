@@ -95,7 +95,7 @@ namespace BISPAPIORA.Repositories.EnrollmentServicesRepo
                         model.fkCitizen = citizen.citizen_id.ToString();
                         var updateModel = _mapper.Map<UpdateEnrollmentDTO>(model);
                         var newEnrollment = new tbl_enrollment(); 
-                        newEnrollment = _mapper.Map<tbl_enrollment>((model, citizen.code));
+                        newEnrollment = _mapper.Map<tbl_enrollment>((model, citizen.id));
                         await db.tbl_enrollments.AddAsync(newEnrollment);
                         await db.SaveChangesAsync();
                         updateModel.enrollmentId = newEnrollment.enrollment_id.ToString();

@@ -102,7 +102,7 @@ namespace BISPAPIORA.Repositories.RegistrationServicesRepo
                     return new ResponseModel<RegistrationResponseDTO>()
                     {
                         success = false,
-                        remarks = $"Citizen with name {model.citizenName} already exists",
+                        remarks = $"Citizen with cnic {model.citizenCnic} already exists",
                         data = _mapper.Map<RegistrationResponseDTO>(citizen),
                     };
                 }

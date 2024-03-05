@@ -26,6 +26,7 @@ namespace BISPAPIORA.Repositories.CitizenBankInfoServicesRepo
                 if (citizenBankInfo == null)
                 {
                     var newCitizenBankInfo = new tbl_citizen_family_bank_info();
+
                     newCitizenBankInfo = _mapper.Map<tbl_citizen_family_bank_info>(model);
                     db.tbl_citizen_family_bank_infos.Add(newCitizenBankInfo);
                     await db.SaveChangesAsync();
