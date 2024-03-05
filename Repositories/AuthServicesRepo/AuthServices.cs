@@ -38,7 +38,7 @@ namespace BISPAPIORA.Repositories.AuthServicesRepo
                     else 
                     {
                         return new ResponseModel<LoginResponseDTO>() 
-                        { remarks="Password Incorrect", success= false };
+                        { remarks="Invalid Email/Password", success= false };
                     }
                 }
                 else
@@ -46,7 +46,7 @@ namespace BISPAPIORA.Repositories.AuthServicesRepo
                     return new ResponseModel<LoginResponseDTO>()
                     {
                         success = false,
-                        remarks = $"Login failed, user not found against email: {model.userEmail}"
+                        remarks = $"Invalid Email/Password"
                     };
                 }
             }

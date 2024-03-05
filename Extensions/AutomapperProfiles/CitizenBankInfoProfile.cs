@@ -17,7 +17,7 @@ namespace BISPAPIORA.Extensions.AutomapperProfiles
             #region Registered Citizen Bank Info DTO
             CreateMap<AddRegistrationDTO, AddRegisteredCitizenBankInfoDTO>()
             .ForMember(d => d.ibanNo, opt => opt.MapFrom(src => (src.ibanNo)))
-            .ForMember(d => d.accountHolderName, opt => opt.MapFrom(src => src.citizenName))
+            .ForMember(d => d.accountHolderName, opt => opt.MapFrom(src => src.accountHolderName))
             .ForMember(d => d.aIOA, opt => opt.MapFrom(src => src.aIOA))
             .ForMember(d => d.familySavingAccount, opt => opt.MapFrom(src => src.familySavingAccount))
             .ForMember(d => d.fkCitizen, opt => opt.MapFrom(src => src.fkCitizen))

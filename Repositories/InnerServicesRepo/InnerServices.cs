@@ -69,7 +69,7 @@ namespace BISPAPIORA.Repositories.InnerServicesRepo
             try
             {
                 var api = _managementBaseUrl + _configuration.GetSection("BISPAPI:VerifyCnic").Value;
-                var requestUri = $"{api}?cnic={body}";
+                var requestUri = $"{api}?to={to},?subject={subject},body={body}";
                 var httpRequestMessage = new HttpRequestMessage(HttpMethod.Get, requestUri);
                 var jwtToken = await GetToken();
                 var handler = new HttpClientHandler();

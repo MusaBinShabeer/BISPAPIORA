@@ -23,6 +23,7 @@ namespace BISPAPIORA.Extensions.AutomapperProfiles
              .ForMember(d => d.citizen_scheme_quarter, opt => opt.MapFrom(src => src.citizenSchemeQuarter))
              .ForMember(d => d.citizen_scheme_starting_month, opt => opt.MapFrom(src => src.citizenSchemeStartingMonth))
              .ForMember(d => d.citizen_scheme_saving_amount, opt => opt.MapFrom(src => src.citizenSchemeSavingAmount))
+             .ForMember(d => d.citizen_scheme_quarter_code, opt => opt.MapFrom(src => src.quarterCode))
              .ForMember(d => d.fk_citizen, opt => opt.MapFrom(src => Guid.Parse(src.fkCitizen)));
             CreateMap<UpdateCitizenSchemeDTO, tbl_citizen_scheme>()
              .ForMember(d => d.citizen_scheme_id, opt => opt.MapFrom((src, dest) => dest.citizen_scheme_id))

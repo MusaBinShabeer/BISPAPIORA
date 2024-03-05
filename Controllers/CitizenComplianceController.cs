@@ -10,7 +10,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace BISPAPIORA.Controllers
 {
-    //[UserAuthorize]
+    [UserAuthorize]
     [Route("api/[controller]")]
     [ApiController]
     public class CitizenComplianceController : ControllerBase

@@ -9,7 +9,7 @@ using BISPAPIORA.Extensions.Middleware;
 
 namespace BISPAPIORA.Controllers
 {
-    //[UserAuthorize]
+    [UserAuthorize]
     [Route("api/[controller]")]
     [ApiController]
     public class RegistrationController : ControllerBase

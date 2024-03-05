@@ -695,11 +695,7 @@ public partial class Dbcontext : DbContext
 
             entity.Property(e => e.id)
                 .HasDefaultValueSql("SYS_GUID() ")
-                .HasColumnName("ID");
-            entity.Property(e => e.code)
-                .ValueGeneratedOnAdd()
-                .HasColumnType("NUMBER")
-                .HasColumnName("CODE");
+                .HasColumnName("ID");           
             entity.Property(e => e.cnic)
                 .HasMaxLength(255)
                 .IsUnicode(false)
