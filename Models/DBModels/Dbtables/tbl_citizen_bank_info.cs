@@ -13,7 +13,7 @@ public partial class tbl_citizen_bank_info
 
     public string? account_holder_name { get; set; } = string.Empty;
 
-    public decimal? a_i_o_f { get; set; } = 0;
+    public decimal? family_income { get; set; } = 0;
 
     public bool? family_saving_account { get; set; } = false;
 

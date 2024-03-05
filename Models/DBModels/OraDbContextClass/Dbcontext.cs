@@ -40,8 +40,8 @@ public partial class Dbcontext : DbContext
     public virtual DbSet<tbl_registration> tbl_registrations { get; set; }
 
     public virtual DbSet<tbl_tehsil> tbl_tehsils { get; set; }
-    public virtual DbSet<tbl_citizen_attachment> tbl_citizen_attachments { get; set; }
-    public virtual DbSet<tbl_citizen_thumb_print> tbl_citizen_thumb_prints { get; set; }
+    //public virtual DbSet<tbl_citizen_attachment> tbl_citizen_attachments { get; set; }
+    //public virtual DbSet<tbl_citizen_thumb_print> tbl_citizen_thumb_prints { get; set; }
     public virtual DbSet<tbl_citizen_compliance> tbl_citizen_compliances { get; set; }
     public virtual DbSet<tbl_transaction> tbl_transactions { get; set; }
     public virtual DbSet<tbl_employment_other_specification> tbl_employment_other_specifications { get; set; }
@@ -162,12 +162,6 @@ public partial class Dbcontext : DbContext
             entity.Property(e => e.submission_date)
                 .HasColumnType("DATE")
                 .HasColumnName("SUBMISSION_DATE");
-            entity.Property(e => e.registered_date)
-                .HasColumnType("DATE")
-                .HasColumnName("REGISTERED_DATE");
-            entity.Property(e => e.enrolled_date)
-                .HasColumnType("DATE")
-                .HasColumnName("ENROLLED_DATE");
             entity.Property(e => e.unique_hh_id)
                 .HasColumnType("NUMBER")
                 .HasColumnName("UNIQUE_HH_ID");
@@ -212,10 +206,10 @@ public partial class Dbcontext : DbContext
             entity.Property(e => e.citizen_bank_info_id)
                 .HasDefaultValueSql("SYS_GUID() ")
                 .HasColumnName("CITIZEN_BANK_INFO_ID");
-            entity.Property(e => e.a_i_o_f)
+            entity.Property(e => e.family_income)
                 .HasDefaultValueSql("0.0")
                 .HasColumnType("NUMBER(10,2)")
-                .HasColumnName("A_I_O_F");
+                .HasColumnName("FAMILY_INCOME");
             entity.Property(e => e.account_holder_name)
                 .HasMaxLength(255)
                 .IsUnicode(false)
@@ -260,10 +254,10 @@ public partial class Dbcontext : DbContext
             entity.Property(e => e.citizen_bank_info_id)
                 .HasDefaultValueSql("SYS_GUID() ")
                 .HasColumnName("CITIZEN_BANK_INFO_ID");
-            entity.Property(e => e.a_i_o_f)
+            entity.Property(e => e.family_income)
                 .HasDefaultValueSql("0.0")
                 .HasColumnType("NUMBER(10,2)")
-                .HasColumnName("A_I_O_F");
+                .HasColumnName("FAMILY_INCOME");
             entity.Property(e => e.account_holder_name)
                 .HasMaxLength(255)
                 .IsUnicode(false)
@@ -441,6 +435,10 @@ public partial class Dbcontext : DbContext
                 .HasForeignKey<tbl_enrollment>(d => d.fk_citizen)
                 .OnDelete(DeleteBehavior.Cascade)
                 .HasConstraintName("FK_ENROLLMENT_CITIZEN");
+
+            entity.Property(e => e.enrolled_date)
+                .HasColumnType("DATE")
+                .HasColumnName("ENROLLED_DATE");
         });
 
         modelBuilder.Entity<tbl_province>(entity =>
@@ -479,13 +477,17 @@ public partial class Dbcontext : DbContext
             entity.Property(e => e.registration_id)
                 .HasDefaultValueSql("SYS_GUID() ")
                 .HasColumnName("REGISTRATION_ID");
-           
+
             entity.Property(e => e.fk_citizen).HasColumnName("FK_CITIZEN");
 
             entity.HasOne(d => d.tbl_citizen).WithOne(p => p.tbl_citizen_registration)
                 .HasForeignKey<tbl_registration>(d => d.fk_citizen)
                 .OnDelete(DeleteBehavior.Cascade)
                 .HasConstraintName("FK_REGISTRATION_CITIZEN");
+
+            entity.Property(e => e.registered_date)
+                .HasColumnType("DATE")
+                .HasColumnName("REGISTERED_DATE");
         });
 
         modelBuilder.Entity<tbl_tehsil>(entity =>
@@ -523,69 +525,69 @@ public partial class Dbcontext : DbContext
                 .HasConstraintName("FK_DISTRICT_TEHSIL");
         });
 
-        modelBuilder.Entity<tbl_citizen_attachment>(entity =>
-        {
-            entity.HasKey(e => e.citizen_attachment_id).HasName("SYS_C006061");
+        //modelBuilder.Entity<tbl_citizen_attachment>(entity =>
+        //{
+        //    entity.HasKey(e => e.citizen_attachment_id).HasName("SYS_C006061");
 
-            entity.ToTable("TBL_CITIZEN_ATTACHMENT");
+        //    entity.ToTable("TBL_CITIZEN_ATTACHMENT");
 
-            entity.HasIndex(e => e.fk_citizen, "SYS_C006062").IsUnique();
+        //    entity.HasIndex(e => e.fk_citizen, "SYS_C006062").IsUnique();
 
-            entity.Property(e => e.citizen_attachment_id)
-                .HasDefaultValueSql("SYS_GUID() ")
-                .HasColumnName("CITIZEN_ATTACHMENT_ID");
-            entity.Property(e => e.attachment_name)
-                .HasMaxLength(255)
-                .IsUnicode(false)
-                .HasDefaultValueSql("'' ")
-                .HasColumnName("CITIZEN_ATTACHMENT_NAME");
-            entity.Property(e => e.attachment_path)
-                .HasMaxLength(255)
-                .IsUnicode(false)
-                .HasDefaultValueSql("'' ")
-                .HasColumnName("CITIZEN_ATTACHMENT_PATH");
-            entity.Property(e => e.code)
-                .ValueGeneratedOnAdd()
-                .HasColumnType("NUMBER")
-                .HasColumnName("CODE");
-            entity.Property(e => e.fk_citizen).HasColumnName("FK_CITIZEN");
-            entity.HasOne(d => d.tbl_citizen).WithOne(p => p.tbl_citizen_attachment)
-               .HasForeignKey<tbl_citizen_attachment>(d => d.fk_citizen)
-               .OnDelete(DeleteBehavior.Cascade)
-               .HasConstraintName("FK_CITIZEN_ATTACHMENT_CITIZEN");
-        });
+        //    entity.Property(e => e.citizen_attachment_id)
+        //        .HasDefaultValueSql("SYS_GUID() ")
+        //        .HasColumnName("CITIZEN_ATTACHMENT_ID");
+        //    entity.Property(e => e.attachment_name)
+        //        .HasMaxLength(255)
+        //        .IsUnicode(false)
+        //        .HasDefaultValueSql("'' ")
+        //        .HasColumnName("CITIZEN_ATTACHMENT_NAME");
+        //    entity.Property(e => e.attachment_path)
+        //        .HasMaxLength(255)
+        //        .IsUnicode(false)
+        //        .HasDefaultValueSql("'' ")
+        //        .HasColumnName("CITIZEN_ATTACHMENT_PATH");
+        //    entity.Property(e => e.code)
+        //        .ValueGeneratedOnAdd()
+        //        .HasColumnType("NUMBER")
+        //        .HasColumnName("CODE");
+        //    entity.Property(e => e.fk_citizen).HasColumnName("FK_CITIZEN");
+        //    entity.HasOne(d => d.tbl_citizen).WithOne(p => p.tbl_citizen_attachment)
+        //       .HasForeignKey<tbl_citizen_attachment>(d => d.fk_citizen)
+        //       .OnDelete(DeleteBehavior.Cascade)
+        //       .HasConstraintName("FK_CITIZEN_ATTACHMENT_CITIZEN");
+        //});
 
-        modelBuilder.Entity<tbl_citizen_thumb_print>(entity =>
-        {
-            entity.HasKey(e => e.citizen_thumb_print_id).HasName("SYS_C006067");
+        //modelBuilder.Entity<tbl_citizen_thumb_print>(entity =>
+        //{
+        //    entity.HasKey(e => e.citizen_thumb_print_id).HasName("SYS_C006067");
 
-            entity.ToTable("TBL_CITIZEN_THUMB_PRINT");
+        //    entity.ToTable("TBL_CITIZEN_THUMB_PRINT");
 
-            entity.HasIndex(e => e.fk_citizen, "SYS_C006068").IsUnique();
+        //    entity.HasIndex(e => e.fk_citizen, "SYS_C006068").IsUnique();
 
-            entity.Property(e => e.citizen_thumb_print_id)
-                .HasDefaultValueSql("SYS_GUID() ")
-                .HasColumnName("CITIZEN_THUMB_PRINT_ID");
-            entity.Property(e => e.code)
-                .ValueGeneratedOnAdd()
-                .HasColumnType("NUMBER")
-                .HasColumnName("CODE");
-            entity.Property(e => e.citizen_thumb_print_name)
-                .HasMaxLength(255)
-                .IsUnicode(false)
-                .HasDefaultValueSql("'' ")
-                .HasColumnName("CITIZEN_THUMB_PRINT_NAME");
-            entity.Property(e => e.citizen_thumb_print_path)
-                .HasMaxLength(255)
-                .IsUnicode(false)
-                .HasDefaultValueSql("'' ")
-                .HasColumnName("CITIZEN_THUMB_PRINT_PATH");
-            entity.Property(e => e.fk_citizen).HasColumnName("FK_CITIZEN");
-            entity.HasOne(d => d.tbl_citizen).WithOne(p => p.tbl_citizen_thumb_print)
-               .HasForeignKey<tbl_citizen_thumb_print>(d => d.fk_citizen)
-               .OnDelete(DeleteBehavior.Cascade)
-               .HasConstraintName("FK_CITIZEN_THUMB_PRINT_CITIZEN");
-        });
+        //    entity.Property(e => e.citizen_thumb_print_id)
+        //        .HasDefaultValueSql("SYS_GUID() ")
+        //        .HasColumnName("CITIZEN_THUMB_PRINT_ID");
+        //    entity.Property(e => e.code)
+        //        .ValueGeneratedOnAdd()
+        //        .HasColumnType("NUMBER")
+        //        .HasColumnName("CODE");
+        //    entity.Property(e => e.citizen_thumb_print_name)
+        //        .HasMaxLength(255)
+        //        .IsUnicode(false)
+        //        .HasDefaultValueSql("'' ")
+        //        .HasColumnName("CITIZEN_THUMB_PRINT_NAME");
+        //    entity.Property(e => e.citizen_thumb_print_path)
+        //        .HasMaxLength(255)
+        //        .IsUnicode(false)
+        //        .HasDefaultValueSql("'' ")
+        //        .HasColumnName("CITIZEN_THUMB_PRINT_PATH");
+        //    entity.Property(e => e.fk_citizen).HasColumnName("FK_CITIZEN");
+        //    entity.HasOne(d => d.tbl_citizen).WithOne(p => p.tbl_citizen_thumb_print)
+        //       .HasForeignKey<tbl_citizen_thumb_print>(d => d.fk_citizen)
+        //       .OnDelete(DeleteBehavior.Cascade)
+        //       .HasConstraintName("FK_CITIZEN_THUMB_PRINT_CITIZEN");
+        //});
 
         modelBuilder.Entity<tbl_bank_other_specification>(entity =>
         {

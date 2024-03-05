@@ -1,11 +1,9 @@
 ﻿using BISPAPIORA.Extensions.Middleware;
 using BISPAPIORA.Models.DBModels.OraDbContextClass;
-using BISPAPIORA.Models.DTOS.CitizenThumbPrintDTO;
 using BISPAPIORA.Models.DTOS.FileManagerDTO;
 using BISPAPIORA.Models.DTOS.ImageCitizenAttachmentDTO;
 using BISPAPIORA.Models.DTOS.ImageCitizenFingerPrintDTO;
 using BISPAPIORA.Models.DTOS.ResponseDTO;
-using BISPAPIORA.Repositories.CitizenThumbPrintServicesRepo;
 using BISPAPIORA.Repositories.FileManagerServicesRepo;
 using BISPAPIORA.Repositories.ImageCitizenAttachmentServicesRepo;
 using BISPAPIORA.Repositories.ImageCitizenFingePrintServicesRepo;

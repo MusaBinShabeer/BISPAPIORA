@@ -1,5 +1,4 @@
 ﻿using BISPAPIORA.Extensions.Middleware;
-using BISPAPIORA.Models.DTOS.CitizenAttachmentDTO;
 using BISPAPIORA.Models.DTOS.CitizenComplianceDTO;
 using BISPAPIORA.Models.DTOS.ResponseDTO;
 using BISPAPIORA.Models.DTOS.TehsilDTO;
@@ -11,7 +10,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace BISPAPIORA.Controllers
 {
-    [UserAuthorize]
+    //[UserAuthorize]
     [Route("api/[controller]")]
     [ApiController]
     public class CitizenComplianceController : ControllerBase

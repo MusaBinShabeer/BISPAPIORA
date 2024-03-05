@@ -46,8 +46,8 @@ public partial class tbl_citizen
     public virtual tbl_enrollment? tbl_enrollment { get; set; }
 
     public virtual tbl_registration? tbl_citizen_registration { get; set; }
-    public virtual tbl_citizen_attachment? tbl_citizen_attachment { get; set; }
-    public virtual tbl_citizen_thumb_print? tbl_citizen_thumb_print { get; set; }
+    //public virtual tbl_citizen_attachment? tbl_citizen_attachment { get; set; }
+    //public virtual tbl_citizen_thumb_print? tbl_citizen_thumb_print { get; set; }
     public virtual tbl_user? registerd_by { get; set; }
     public virtual tbl_user? enrolled_by { get; set; }
     public virtual tbl_employment_other_specification? tbl_employment_other_specification { get; set; }
@@ -57,10 +57,6 @@ public partial class tbl_citizen
     public decimal? unique_hh_id { get; set; } // Unique HouseholdId
 
     public DateTime? submission_date { get; set; } // through form submission date
-
-    public DateTime? registered_date { get; set; } // through form registration date
-
-    public DateTime? enrolled_date { get; set; }
 
     public string? pmt { get; set; } // poverty score 40 =< eligible
 }

@@ -9,5 +9,7 @@ public partial class tbl_enrollment
 
     public Guid? fk_citizen { get; set; } = default(Guid?);
 
+    public DateTime? enrolled_date { get; set; }
+
     public virtual tbl_citizen? tbl_citizen { get; set; }
 }

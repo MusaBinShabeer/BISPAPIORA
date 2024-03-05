@@ -10,7 +10,7 @@
 
         public string? account_holder_name { get; set; } = string.Empty;
 
-        public decimal? a_i_o_f { get; set; } = 0;
+        public decimal? family_income { get; set; } = 0;
 
         public Guid? fk_bank { get; set; } = default!;
 

@@ -1,5 +1,4 @@
-﻿using BISPAPIORA.Models.DTOS.CitizenAttachmentDTO;
-using BISPAPIORA.Models.DTOS.TransactionDTO;
+﻿using BISPAPIORA.Models.DTOS.TransactionDTO;
 using BISPAPIORA.Models.DTOS.ResponseDTO;
 using BISPAPIORA.Models.DTOS.TehsilDTO;
 using BISPAPIORA.Repositories.TransactionServicesRepo;

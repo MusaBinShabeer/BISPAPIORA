@@ -1,5 +1,4 @@
-﻿using BISPAPIORA.Models.DTOS.CitizenAttachmentDTO;
-using BISPAPIORA.Models.DTOS.ResponseDTO;
+﻿using BISPAPIORA.Models.DTOS.ResponseDTO;
 using BISPAPIORA.Models.DBModels.Dbtables;
 using BISPAPIORA.Models.DTOS.ImageCitizenAttachmentDTO;
 
