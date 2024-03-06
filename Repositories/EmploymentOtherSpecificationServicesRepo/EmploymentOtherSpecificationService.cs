@@ -22,7 +22,7 @@ namespace BISPAPIORA.Repositories.EmploymentOtherSpecificationServicesRepo
         {
             try
             {
-                var employmentOtherSpecification = await db.tbl_employment_other_specifications.Where(x => x.employment_other_specification.ToLower().Equals(model.employmentOtherSpecification.ToLower())).FirstOrDefaultAsync();
+                var employmentOtherSpecification = await db.tbl_employment_other_specifications.Where(x => x.fk_citizen == Guid.Parse(model.fkCitizen.ToLower())).FirstOrDefaultAsync();
                 if (employmentOtherSpecification == null)
                 {
                     var newEmploymentOtherSpecification = new tbl_employment_other_specification();

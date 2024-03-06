@@ -166,6 +166,7 @@ namespace BISPAPIORA.Repositories.CitizenServicesRepo
                     await db.SaveChangesAsync();
                     var newAttachmentDto = new AddImageCitizenAttachmentDTO()
                     {
+                        imageCitizenAttachmentCnic = newCitizen.citizen_cnic,
                         fkCitizen = newCitizen.citizen_id.ToString()
                     };
                     var resposneOfattachment = await attachmentService.AddFkCitizenToAttachment(newAttachmentDto);
@@ -215,12 +216,14 @@ namespace BISPAPIORA.Repositories.CitizenServicesRepo
                     //await UpdateEnrolledDBFCitizen(model);
                     var newAttachmentDto = new AddImageCitizenAttachmentDTO()
                     {                      
-                        fkCitizen = existingCitizen.citizen_id.ToString()
+                        fkCitizen = existingCitizen.citizen_id.ToString(),
+                        imageCitizenAttachmentCnic= existingCitizen.citizen_cnic
                     };
                     var resposneOfattachment = await attachmentService.AddFkCitizenToAttachment(newAttachmentDto);
 
                     var newthumbPrintDto = new AddImageCitizenFingerPrintDTO()
                     {
+                        imageCitizenFingerPrintCnic= existingCitizen.citizen_cnic,
                         fkCitizen = existingCitizen.citizen_id.ToString()
                     };
                     var responseOfThumbPrint = await thumbprintService.AddFkCitizentoImage(newthumbPrintDto);

@@ -187,6 +187,83 @@ namespace BISPAPIORA.Repositories.UserServicesRepo
                 };
             }
         }
+        public async Task<ResponseModel<UserResponseDTO>> UpdateUserOtp(string to,string otp)
+        {
+            try
+            {
+                var existingUser = await db.tbl_users.Include(x => x.tbl_user_type).Where(x => x.user_email == to).FirstOrDefaultAsync();
+                if (existingUser != null)
+                {
+                    existingUser.user_otp= decimal.Parse(otp);
+                    await db.SaveChangesAsync();
+                    return new ResponseModel<UserResponseDTO>()
+                    {
+                        remarks = $"User:  has been updated",
+                        data = _mapper.Map<UserResponseDTO>(existingUser),
+                        success = true,
+                    };
+                }
+                else
+                {
+                    return new ResponseModel<UserResponseDTO>()
+                    {
+                        success = false,
+                        remarks = "No Record"
+                    };
+                }
+            }
+            catch (Exception ex)
+            {
+                return new ResponseModel<UserResponseDTO>()
+                {
+                    success = false,
+                    remarks = $"There Was Fatal Error {ex.Message.ToString()}"
+                };
+            }
+        }
+        public async Task<ResponseModel<UserResponseDTO>> VerifyUserOtp(string to, string otp)
+        {
+            try
+            {
+                var existingUser = await db.tbl_users.Include(x => x.tbl_user_type).Where(x => x.user_email == to).FirstOrDefaultAsync();
+                if (existingUser != null)
+                {
+                    if (existingUser.user_otp == decimal.Parse(otp))
+                    {
+                        return new ResponseModel<UserResponseDTO>()
+                        {
+                            remarks = $"Verified",
+                            data = _mapper.Map<UserResponseDTO>(existingUser),
+                            success = true,
+                        };
+                    }
+                    else
+                    {
+                        return new ResponseModel<UserResponseDTO>()
+                        {
+                            remarks = "Not Verified",                            
+                            success = false,
+                        };
+                    }
+                }
+                else
+                {
+                    return new ResponseModel<UserResponseDTO>()
+                    {
+                        success = false,
+                        remarks = "No Record"
+                    };
+                }
+            }
+            catch (Exception ex)
+            {
+                return new ResponseModel<UserResponseDTO>()
+                {
+                    success = false,
+                    remarks = $"There Was Fatal Error {ex.Message.ToString()}"
+                };
+            }
+        }
         public async Task<ResponseModel<UserResponseDTO>> UpdateFTP(UpdateUserFtpDTO model)
         {
             try
