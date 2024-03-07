@@ -46,6 +46,18 @@ namespace BISPAPIORA.Extensions
             }
             return currentPassword;
         }
+       public string GenerateOTP(int length)
+        {
+            // Use a random number generator to create a random OTP
+            Random random = new Random();
+            string otp = string.Empty;
 
+            for (int i = 0; i < length; i++)
+            {
+                otp += random.Next(0, 9).ToString();
+            }
+
+            return otp;
+        }
     }
 }

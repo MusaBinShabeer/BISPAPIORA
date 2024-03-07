@@ -11,7 +11,7 @@ public partial class tbl_citizen_scheme
 
     public string? citizen_scheme_quarter { get; set; } = string.Empty;
 
-    public string? citizen_scheme_starting_month { get; set; } = string.Empty;
+    public decimal? citizen_scheme_starting_month { get; set; } = 0;
 
     public decimal? citizen_scheme_saving_amount { get; set; } = 0;
 

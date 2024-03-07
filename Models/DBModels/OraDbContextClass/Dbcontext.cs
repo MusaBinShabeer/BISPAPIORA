@@ -203,7 +203,11 @@ public partial class Dbcontext : DbContext
                 .IsUnicode(false)
                 .HasDefaultValueSql("''")
                 .HasColumnName("IBAN_NO");
-
+            entity.Property(e => e.account_holder_name)
+               .HasMaxLength(255)
+               .IsUnicode(false)
+               .HasDefaultValueSql("''")
+               .HasColumnName("ACCOUNT_HOLDER_NAME");
             entity.HasOne(d => d.tbl_bank).WithMany(p => p.tbl_citizen_bank_infos)
                 .HasForeignKey(d => d.fk_bank)
                 .OnDelete(DeleteBehavior.Cascade)
@@ -275,9 +279,8 @@ public partial class Dbcontext : DbContext
                 .HasColumnType("NUMBER(10,2)")
                 .HasColumnName("CITIZEN_SCHEME_SAVING_AMOUNT");
             entity.Property(e => e.citizen_scheme_starting_month)
-                .HasMaxLength(255)
-                .IsUnicode(false)
-                .HasDefaultValueSql("''")
+                .HasPrecision(10)
+                .HasDefaultValueSql("0")
                 .HasColumnName("CITIZEN_SCHEME_STARTING_MONTH");
             entity.Property(e => e.citizen_scheme_quarter_code)
               .HasPrecision(10)
@@ -695,11 +698,7 @@ public partial class Dbcontext : DbContext
 
             entity.Property(e => e.id)
                 .HasDefaultValueSql("SYS_GUID() ")
-                .HasColumnName("ID");
-            entity.Property(e => e.code)
-                .ValueGeneratedOnAdd()
-                .HasColumnType("NUMBER")
-                .HasColumnName("CODE");
+                .HasColumnName("ID");           
             entity.Property(e => e.cnic)
                 .HasMaxLength(255)
                 .IsUnicode(false)

@@ -31,7 +31,6 @@ namespace BISPAPIORA.Extensions.AutomapperProfiles
                 .ForMember(d => d.fk_citizen, opt => opt.MapFrom((src, dest) => otherServices.Check(src.fkCitizen) ? Guid.Parse(src.fkCitizen) : dest.fk_citizen));
             CreateMap<tbl_image_citizen_finger_print, ImageCitizenFingerPrintResponseDTO>()
                 .ForMember(d => d.imageCitizenFingerPrintId, opt => opt.MapFrom(src => src.id))
-                .ForMember(d => d.imageCitizenFingerPrintCode, opt => opt.MapFrom(src => src.code))
                 .ForMember(d => d.imageCitizenFingerPrintName, opt => opt.MapFrom((src) => src.finger_print_name))
                 .ForMember(d => d.imageCitizenFingerPrintData, opt => opt.MapFrom((src) => src.finger_print_data))
                 .ForMember(d => d.imageCitizenFingerPrintContentType, opt => opt.MapFrom((src) => src.finger_print_content_type))
