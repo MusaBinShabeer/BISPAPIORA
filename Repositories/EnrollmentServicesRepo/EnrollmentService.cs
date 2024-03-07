@@ -11,6 +11,8 @@ using BISPAPIORA.Repositories.CitizenSchemeServicesRepo;
 using BISPAPIORA.Models.DTOS.CitizenSchemeDTO;
 using BISPAPIORA.Models.DTOS.BankOtherSpecificationDTO;
 using BISPAPIORA.Repositories.BankOtherSpecificationServicesRepo;
+using BISPAPIORA.Models.DTOS.EmploymentOtherSpecificationDTO;
+using BISPAPIORA.Repositories.EmploymentOtherSpecificationServicesRepo;
 
 namespace BISPAPIORA.Repositories.EnrollmentServicesRepo
 {
@@ -22,8 +24,9 @@ namespace BISPAPIORA.Repositories.EnrollmentServicesRepo
         private readonly ICitizenBankInfoService citizenBankInfoService;
         private readonly ICitizenSchemeService citizenSchemeService;
         private readonly IBankOtherSpecificationService bankOtherSpecificationService;
+        private readonly IEmploymentOtherSpecificationService employmentOtherSpecificationService;
 
-        public EnrollmentService(IMapper mapper, IBankOtherSpecificationService bankOtherSpecificationService, Dbcontext db, ICitizenService citizenService,ICitizenBankInfoService citizenBankInfoService,ICitizenSchemeService citizenSchemeService)
+        public EnrollmentService(IMapper mapper,IEmploymentOtherSpecificationService employmentOtherSpecificationService, IBankOtherSpecificationService bankOtherSpecificationService, Dbcontext db, ICitizenService citizenService,ICitizenBankInfoService citizenBankInfoService,ICitizenSchemeService citizenSchemeService)
         {
             _mapper = mapper;
             this.db = db;
@@ -57,6 +60,12 @@ namespace BISPAPIORA.Repositories.EnrollmentServicesRepo
                                 var addBankOtherSpecification = new AddEnrolledBankOtherSpecificationDTO();
                                 addBankOtherSpecification = _mapper.Map<AddEnrolledBankOtherSpecificationDTO>((model, resposne));
                                 var responseBankOtherSpecification = await bankOtherSpecificationService.AddEnrolledBankOtherSpecification(addBankOtherSpecification);
+                            }
+                            if (!string.IsNullOrEmpty(model.citizenEmploymentOtherSpecification))
+                            {
+                                var addEmploymentOtherSpecification = new AddEmploymentOtherSpecificationDTO();
+                                addEmploymentOtherSpecification = _mapper.Map<AddEmploymentOtherSpecificationDTO>(model);
+                                var responseEmploymentOtherSpecification = await employmentOtherSpecificationService.AddEmploymentOtherSpecification(addEmploymentOtherSpecification);
                             }
                             var newSchemeReq= new AddCitizenSchemeDTO();
                             newSchemeReq = _mapper.Map<AddCitizenSchemeDTO>(model);
@@ -118,6 +127,12 @@ namespace BISPAPIORA.Repositories.EnrollmentServicesRepo
                                     var addBankOtherSpecification = new AddEnrolledBankOtherSpecificationDTO();
                                     addBankOtherSpecification = _mapper.Map<AddEnrolledBankOtherSpecificationDTO>((model, bankResposne.data));
                                     var responseBankOtherSpecification = await bankOtherSpecificationService.AddEnrolledBankOtherSpecification(addBankOtherSpecification);
+                                }
+                                if (!string.IsNullOrEmpty(model.citizenEmploymentOtherSpecification))
+                                {
+                                    var addEmploymentOtherSpecification = new AddEmploymentOtherSpecificationDTO();
+                                    addEmploymentOtherSpecification = _mapper.Map<AddEmploymentOtherSpecificationDTO>(model);
+                                    var responseEmploymentOtherSpecification = await employmentOtherSpecificationService.AddEmploymentOtherSpecification(addEmploymentOtherSpecification);
                                 }
                                 return new ResponseModel<EnrollmentResponseDTO>()
                                 {
