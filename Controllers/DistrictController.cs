@@ -19,6 +19,7 @@ namespace BISPAPIORA.Controllers
         {
             this.districtService = districtService;
         }
+        //Add Distirict Method
         [HttpPost]
         public async Task<ActionResult<ResponseModel<DistrictResponseDTO>>> Post(AddDistrictDTO model)
         {
@@ -37,6 +38,7 @@ namespace BISPAPIORA.Controllers
                 return BadRequest(response);
             }
         }
+        //Update Distirict Method
         [HttpPut]
         public async Task<ActionResult<ResponseModel<DistrictResponseDTO>>> Put(UpdateDistrictDTO model)
         {
@@ -55,6 +57,7 @@ namespace BISPAPIORA.Controllers
                 return BadRequest(response);
             }
         }
+        //Delete District Method
         [HttpDelete]
         public async Task<ActionResult<ResponseModel<DistrictResponseDTO>>> Delete(string id)
         {
@@ -73,6 +76,7 @@ namespace BISPAPIORA.Controllers
                 return BadRequest(response);
             }
         }
+        //Get District By Id Method
         [HttpGet("GetById")]
         public async Task<ActionResult<ResponseModel<DistrictResponseDTO>>> GetById(string id)
         {
@@ -91,12 +95,14 @@ namespace BISPAPIORA.Controllers
                 return BadRequest(response);
             }
         }
+        //Get Al District Methods
         [HttpGet]
         public async Task<ActionResult<ResponseModel<List<DistrictResponseDTO>>>> Get()
         {
             var response = districtService.GetDistrictsList();
             return Ok(await response);
         }
+        //Get Distirict By Provicne Method
         [HttpGet("GetByProvinceId")]
         public async Task<ActionResult<ResponseModel<List<TehsilResponseDTO>>>> GetByProvinceId(string id)
         {

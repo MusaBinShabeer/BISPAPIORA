@@ -18,6 +18,7 @@ namespace BISPAPIORA.Controllers
             this.citizenBankInfoService = citizenBankInfoService;
         }
         #region Citizen Family Bank Info
+        //Add Citizen Family Bank Info
         [HttpPost("PostCitizenFamilyBankInfo")]
         public async Task<ActionResult<ResponseModel<EnrolledCitizenBankInfoResponseDTO>>> PostCitizenFamilyBankInfo(AddEnrolledCitizenBankInfoDTO model)
         {
@@ -36,6 +37,7 @@ namespace BISPAPIORA.Controllers
                 return BadRequest(response);
             }
         }
+        //Update Citizen Family Bank Info
         [HttpPut("PutCitizenFamilyBankInfo")]
         public async Task<ActionResult<ResponseModel<EnrolledCitizenBankInfoResponseDTO>>> PutCitizenFamilyBankInfo(UpdateEnrolledCitizenBankInfoDTO model)
         {
@@ -54,6 +56,7 @@ namespace BISPAPIORA.Controllers
                 return BadRequest(response);
             }
         }
+        //Delete Citizen Family Bank Info
         [HttpDelete("DeleteCitizenFamilyBankInfo")]
         public async Task<ActionResult<ResponseModel<EnrolledCitizenBankInfoResponseDTO>>> DeleteCitizenFamilyBankInfo(string id)
         {
@@ -72,6 +75,7 @@ namespace BISPAPIORA.Controllers
                 return BadRequest(response);
             }
         }
+        //Get Citizen Family Bank Info By Id
         [HttpGet("GetByCitizenFamilyBankInfoId")]
         public async Task<ActionResult<ResponseModel<EnrolledCitizenBankInfoResponseDTO>>> GetByCitizenFamilyBankInfoId(string id)
         {
@@ -90,6 +94,7 @@ namespace BISPAPIORA.Controllers
                 return BadRequest(response);
             }
         }
+        //Get All Citizen Family Bank Info
         [HttpGet("GetCitizenFamilyBankInfo")]
         public async Task<ActionResult<ResponseModel<List<EnrolledCitizenBankInfoResponseDTO>>>> GetCitizenFamilyBankInfo()
         {
@@ -97,8 +102,8 @@ namespace BISPAPIORA.Controllers
             return Ok(await response);
         }
         #endregion
-
         #region Citizen Bank Info
+        //Add Citizen Bank Info
         [HttpPost("PostCitizenBankInfo")]
         public async Task<ActionResult<ResponseModel<EnrolledCitizenBankInfoResponseDTO>>> PostCitizenBankInfo(AddEnrolledCitizenBankInfoDTO model)
         {
@@ -117,6 +122,7 @@ namespace BISPAPIORA.Controllers
                 return BadRequest(response);
             }
         }
+        //Update Citizen Bank Info
         [HttpPut("PutCitizenBankInfo")]
         public async Task<ActionResult<ResponseModel<RegisteredCitizenBankInfoResponseDTO>>> PutCitizenBankInfo(UpdateRegisteredCitizenBankInfoDTO model)
         {
@@ -135,6 +141,7 @@ namespace BISPAPIORA.Controllers
                 return BadRequest(response);
             }
         }
+        //Delete Citizen Bank Info
         [HttpDelete("DeleteCitizenBankInfo")]
         public async Task<ActionResult<ResponseModel<RegisteredCitizenBankInfoResponseDTO>>> DeleteCitizenBankInfo(string id)
         {
@@ -153,6 +160,7 @@ namespace BISPAPIORA.Controllers
                 return BadRequest(response);
             }
         }
+        //Get Citizen Bank Info
         [HttpGet("GetByCitizenBankInfoId")]
         public async Task<ActionResult<ResponseModel<RegisteredCitizenBankInfoResponseDTO>>> GetByCitizenBankInfoId(string id)
         {
@@ -171,6 +179,7 @@ namespace BISPAPIORA.Controllers
                 return BadRequest(response);
             }
         }
+        //Get All Citizen Bank Info
         [HttpGet("GetCitizenBankInfo")]
         public async Task<ActionResult<ResponseModel<List<RegisteredCitizenBankInfoResponseDTO>>>> GetCitizenBankInfo()
         {

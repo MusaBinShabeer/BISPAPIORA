@@ -20,18 +20,20 @@ namespace BISPAPIORA.Controllers
         IInnerServices innerServices;
         IUserService userService;
         OtherServices otherServices = new OtherServices();
+        //Constructor
         public AuthController(IAuthServices manager, IInnerServices innerServices, IUserService userService)
         {
             authManager = manager;
             this.innerServices = innerServices;
             this.userService = userService;
         }
+        //Login Method
         [HttpPost]
         [Route("login")]
         public async Task<ActionResult<ResponseModel<LoginResponseDTO>>> Login([FromBody] LoginRequestDTO model)
         {
             if (ModelState.IsValid)
-            {
+            {                
                 var response = await authManager.Login(model);
                 if (response.success == true)
                 {
@@ -51,6 +53,7 @@ namespace BISPAPIORA.Controllers
                 });
             }
         }
+        //Logout Method
         [HttpGet]
         [Route("logout")]
         public async Task<ActionResult<ResponseModel<LoginResponseDTO>>> Logout(string id)
@@ -73,6 +76,7 @@ namespace BISPAPIORA.Controllers
                 });
             }
         }
+        //Send Otp through Email
         [HttpPost]
         [Route("SendOtp")]
         public async Task<ActionResult<ResponseModel<LoginResponseDTO>>> SendOtp(string to)
@@ -100,6 +104,7 @@ namespace BISPAPIORA.Controllers
                 });
             }
         }
+        //Verifing OTP 
         [HttpGet]
         [Route("VerifyOTP")]
         public async Task<ActionResult<ResponseModel<UserResponseDTO>>> VerifyOTP(string to,string otp)

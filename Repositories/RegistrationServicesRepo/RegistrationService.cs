@@ -32,44 +32,61 @@ namespace BISPAPIORA.Repositories.RegistrationServicesRepo
             this.bankOtherSpecificationService = bankOtherSpecificationService;
             this.employmentOtherSpecificationService = employmentOtherSpecificationService;
         }
+        //Add Registeration Service
         public async Task<ResponseModel<RegistrationResponseDTO>> AddRegisteredCitizen(AddRegistrationDTO model)
         {
             try
             {
-                var citizen = await db.tbl_citizens.Where(x => x.citizen_cnic.ToLower().Equals(model.citizenCnic.ToLower())).FirstOrDefaultAsync();                
+                //Get If Citizen Exists
+                var citizen = await db.tbl_citizens.Where(x => x.citizen_cnic.ToLower().Equals(model.citizenCnic.ToLower())).FirstOrDefaultAsync();    
+                //Check For Already registered
                 if (citizen == null)
                 {
+                    //Add New Citizen
                     var newCitizen = await citizenService.AddRegisteredCitizen(model);
                     if (newCitizen.success)
                     {
                         if (newCitizen.data != null)
                         {
+                            //Mapping Citizen id to Request DTO
                             model.fkCitizen = newCitizen.data.citizenId;
+                            #region Add New Registration
+                            //Mapping Required Data To Registration DTO
                             var newRegistration = new tbl_registration();
                             newRegistration = _mapper.Map<tbl_registration>((model, newCitizen.data.citizenCode));
+                            //Add New Registration
                             await db.tbl_registrations.AddAsync(newRegistration);
                             await db.SaveChangesAsync();
-                            #region Bank Info
+                            #endregion
+                            #region Add Bank Info
+                            //Mapping Required Data to Bank Info DTO
                             AddRegisteredCitizenBankInfoDTO newBankInfoRequest = new AddRegisteredCitizenBankInfoDTO();
                             newBankInfoRequest = _mapper.Map<AddRegisteredCitizenBankInfoDTO>(model);
+                            //Add Bank Info
                             var newRegisteredBankInfo = await citizenBankService.AddRegisteredCitizenBankInfo(newBankInfoRequest);
                             #endregion
-                            #region Citizen Bank Other Specification
+                            #region Add Citizen Bank Other Specification
                             if (!string.IsNullOrEmpty(model.citizenBankOtherSpecification))
                             {
+                                //Mapping Required Data to Bank Other Specification
                                 var addBankOtherSpecification = new AddRegisteredBankOtherSpecificationDTO();
                                 addBankOtherSpecification = _mapper.Map<AddRegisteredBankOtherSpecificationDTO>((model,newRegisteredBankInfo.data));
+                                //Add New Bank Other Specification
                                 var responseBankOtherSpecification= await bankOtherSpecificationService.AddRegisteredBankOtherSpecification(addBankOtherSpecification);
                             }
                             #endregion
-                            #region Citizen Employment Other Specifcation
+                            #region Add Citizen Employment Other Specifcation
                             if (!string.IsNullOrEmpty(model.citizenEmploymentOtherSpecification)) 
                             {
+                                //Mapping Employment Other Specification
                                 var addEmploymentOtherSpecification = new AddEmploymentOtherSpecificationDTO();
                                 addEmploymentOtherSpecification = _mapper.Map<AddEmploymentOtherSpecificationDTO>(model);
+                                //Add Employment Other Specification
                                 var responseEmploymentOtherSpecification = await employmentOtherSpecificationService.AddEmploymentOtherSpecification(addEmploymentOtherSpecification);
                             }
                             #endregion
+                            #region Preparing Response and Returning It
+                            //Mapping Citizen to Response DTO
                             var response = _mapper.Map<RegistrationResponseDTO>(newCitizen.data);
                             response.registrationId = newRegistration.registration_id.ToString();
                             return new ResponseModel<RegistrationResponseDTO>()
@@ -78,6 +95,7 @@ namespace BISPAPIORA.Repositories.RegistrationServicesRepo
                                 remarks = $"Citizen {model.citizenName} has been registered successfully",
                                 data = response,
                             };
+                            #endregion
                         }
                         else
                         {

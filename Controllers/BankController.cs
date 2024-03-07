@@ -18,6 +18,7 @@ namespace BISPAPIORA.Controllers
         {
             this.bankService = bankService;
         }
+        // Add New Bank Method
         [HttpPost]
         public async Task<ActionResult<ResponseModel<BankResponseDTO>>> Post(AddBankDTO model)
         {
@@ -36,6 +37,7 @@ namespace BISPAPIORA.Controllers
                 return BadRequest(response);
             }
         }
+        //Update Bank Method
         [HttpPut]
         public async Task<ActionResult<ResponseModel<BankResponseDTO>>> Put(UpdateBankDTO model)
         {
@@ -54,6 +56,7 @@ namespace BISPAPIORA.Controllers
                 return BadRequest(response);
             }
         }
+        //Delete Bank Method
         [HttpDelete]
         public async Task<ActionResult<ResponseModel<BankResponseDTO>>> Delete(string id)
         {
@@ -72,6 +75,7 @@ namespace BISPAPIORA.Controllers
                 return BadRequest(response);
             }
         }
+        //To get Bank By id Method
         [HttpGet("GetById")]
         public async Task<ActionResult<ResponseModel<BankResponseDTO>>> GetById(string id)
         {
@@ -90,6 +94,7 @@ namespace BISPAPIORA.Controllers
                 return BadRequest(response);
             }
         }
+        //To get all Banks Method
         [HttpGet]
         public async Task<ActionResult<ResponseModel<List<BankResponseDTO>>>> Get()
         {

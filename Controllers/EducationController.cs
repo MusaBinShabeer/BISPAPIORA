@@ -17,6 +17,7 @@ namespace BISPAPIORA.Controllers
         {
             this.educationService = educationService;
         }
+        //Add Education Method
         [HttpPost]
         public async Task<ActionResult<ResponseModel<EducationResponseDTO>>> Post(AddEducationDTO model)
         {
@@ -35,6 +36,7 @@ namespace BISPAPIORA.Controllers
                 return BadRequest(response);
             }
         }
+        //Update Education Method
         [HttpPut]
         public async Task<ActionResult<ResponseModel<EducationResponseDTO>>> Put(UpdateEducationDTO model)
         {
@@ -53,6 +55,7 @@ namespace BISPAPIORA.Controllers
                 return BadRequest(response);
             }
         }
+        //Delete Education Method
         [HttpDelete]
         public async Task<ActionResult<ResponseModel<EducationResponseDTO>>> Delete(string id)
         {
@@ -71,6 +74,7 @@ namespace BISPAPIORA.Controllers
                 return BadRequest(response);
             }
         }
+        //Get Education By Id Method
         [HttpGet("GetById")]
         public async Task<ActionResult<ResponseModel<EducationResponseDTO>>> GetById(string id)
         {
@@ -89,6 +93,7 @@ namespace BISPAPIORA.Controllers
                 return BadRequest(response);
             }
         }
+        //Get All Education Methods
         [HttpGet]
         public async Task<ActionResult<ResponseModel<List<EducationResponseDTO>>>> Get()
         {

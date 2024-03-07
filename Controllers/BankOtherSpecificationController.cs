@@ -19,6 +19,7 @@ namespace BISPAPIORA.Controllers
         {
             this.BankOtherSpecificationService = BankOtherSpecificationService;
         }
+        //Add Bank Other Specification For Enrolled Citizen Not Being Used By App But for Testing Purpose. But this Serivce is called by Enrollment Api
         [HttpPost("PostEnrolled")]
         public async Task<ActionResult<ResponseModel<BankRegisteredOtherSpecificationResponseDTO>>> PostEnrolled(AddEnrolledBankOtherSpecificationDTO model)
         {
@@ -37,6 +38,7 @@ namespace BISPAPIORA.Controllers
                 return BadRequest(response);
             }
         }
+        //Add Bank Other Specification For Registered Citizen Not Being Used By App But for Testing Purpose. But this Serivce is called by Registration Api
         [HttpPost("PostRegistered")]
         public async Task<ActionResult<ResponseModel<BankRegisteredOtherSpecificationResponseDTO>>> PostRegistered(AddRegisteredBankOtherSpecificationDTO model)
         {
@@ -55,6 +57,7 @@ namespace BISPAPIORA.Controllers
                 return BadRequest(response);
             }
         }
+        //Update Bank Other Specification For Enrolled Citizen Not Being Used By App But for Testing Purpose. But this Serivce is called by Enrollment Api
         [HttpPut("PutEnrolled")]
         public async Task<ActionResult<ResponseModel<BankRegisteredOtherSpecificationResponseDTO>>> PutEnrolled(UpdateEnrolledCitizenBankInfoDTO model)
         {
@@ -73,6 +76,7 @@ namespace BISPAPIORA.Controllers
                 return BadRequest(response);
             }
         }
+        //Update Bank Other Specification For Registered Citizen Not Being Used By App But for Testing Purpose. But this Serivce is called by Registration Api
         [HttpPut("PutRegistered")]
         public async Task<ActionResult<ResponseModel<BankRegisteredOtherSpecificationResponseDTO>>> PutRegistered(UpdateRegisteredBankOtherSpecificationDTO model)
         {

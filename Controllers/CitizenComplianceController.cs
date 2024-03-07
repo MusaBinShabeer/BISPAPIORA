@@ -20,6 +20,7 @@ namespace BISPAPIORA.Controllers
         {
             this.citizenComplianceService = citizenComplianceService;
         }
+        //Add Citizen Compliance Method
         [HttpPost]
         public async Task<ActionResult<ResponseModel<CitizenComplianceResponseDTO>>> Post(AddCitizenComplianceDTO model)
         {
@@ -38,6 +39,7 @@ namespace BISPAPIORA.Controllers
                 return BadRequest(response);
             }
         }
+        //Update Citizen Compliance Method
         [HttpPut]
         public async Task<ActionResult<ResponseModel<CitizenComplianceResponseDTO>>> Put(UpdateCitizenComplianceDTO model)
         {
@@ -56,6 +58,7 @@ namespace BISPAPIORA.Controllers
                 return BadRequest(response);
             }
         }
+        //Delete Citizen Compliance Method
         [HttpDelete]
         public async Task<ActionResult<ResponseModel<CitizenComplianceResponseDTO>>> Delete(string id)
         {
@@ -74,6 +77,7 @@ namespace BISPAPIORA.Controllers
                 return BadRequest(response);
             }
         }
+        //Get Citizen Compliance By Id Method
         [HttpGet("GetById")]
         public async Task<ActionResult<ResponseModel<CitizenComplianceResponseDTO>>> GetById(string id)
         {
@@ -92,12 +96,14 @@ namespace BISPAPIORA.Controllers
                 return BadRequest(response);
             }
         }
+        //Get All Citizen Compliance Method
         [HttpGet]
         public async Task<ActionResult<ResponseModel<List<CitizenComplianceResponseDTO>>>> Get()
         {
             var response = citizenComplianceService.GetCitizenCompliancesList();
             return Ok(await response);
         }
+        //Get Citizen By Id Method
         [HttpGet("GetByCitizenId")]
         public async Task<ActionResult<ResponseModel<List<CitizenComplianceResponseDTO>>>> GetByCitizenId(string id)
         {
