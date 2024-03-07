@@ -6,6 +6,7 @@ namespace BISPAPIORA.Repositories.FileManagerServicesRepo
 {
     public class FileManagerService : IFileManagerService
     {
+        //uplaoding File
         public async Task<ResponseModel<FileManagerResponseDTO>> UploadFileAsync(byte[] file,string fileName, string extension)
         {
            

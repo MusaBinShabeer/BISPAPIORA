@@ -32,6 +32,7 @@ namespace BISPAPIORA.Repositories.RegistrationServicesRepo
             this.bankOtherSpecificationService = bankOtherSpecificationService;
             this.employmentOtherSpecificationService = employmentOtherSpecificationService;
         }
+
         //Add Registeration Service
         public async Task<ResponseModel<RegistrationResponseDTO>> AddRegisteredCitizen(AddRegistrationDTO model)
         {
@@ -134,15 +135,24 @@ namespace BISPAPIORA.Repositories.RegistrationServicesRepo
                 };
             }
         }
+
+        // Deletes a registration record based on the provided registrationId
+        // Returns a response model indicating the success or failure of the operation
         public async Task<ResponseModel<RegistrationResponseDTO>> DeleteRegistration(string registrationId)
         {
             try
             {
+                // Retrieve the registration record from the database based on the registrationId
                 var registration = await db.tbl_registrations.Where(x => x.registration_id == Guid.Parse(registrationId)).FirstOrDefaultAsync();
+
+                // Check if the registration record exists
                 if (registration != null)
                 {
+                    // Remove the registration record from the database
                     db.tbl_registrations.Remove(registration);
                     await db.SaveChangesAsync();
+
+                    // Return a success response model
                     return new ResponseModel<RegistrationResponseDTO>()
                     {
                         remarks = "Registration Deleted",
@@ -151,6 +161,7 @@ namespace BISPAPIORA.Repositories.RegistrationServicesRepo
                 }
                 else
                 {
+                    // Return a failure response model if no matching record is found
                     return new ResponseModel<RegistrationResponseDTO>()
                     {
                         remarks = "No Record",
@@ -160,29 +171,51 @@ namespace BISPAPIORA.Repositories.RegistrationServicesRepo
             }
             catch (Exception ex)
             {
+                // Return a failure response model with details about the exception if an error occurs
                 return new ResponseModel<RegistrationResponseDTO>()
                 {
                     success = false,
-                    remarks = $"There Was Fatal Error {ex.Message.ToString()}"
+                    remarks = $"There Was a Fatal Error: {ex.Message.ToString()}"
                 };
             }
         }
+
+        // Retrieves registration details based on the provided registrationId
+        // Returns a response model containing the registration details or an error message
         public async Task<ResponseModel<RegistrationResponseDTO>> GetRegistration(string registrationId)
         {
             try
             {
-                var existingCitizen = await db.tbl_registrations.Where(x => x.registration_id == Guid.Parse(registrationId)).Include(x => x.tbl_citizen).ThenInclude(x => x.tbl_citizen_tehsil).ThenInclude(x => x.tbl_district).ThenInclude(x => x.tbl_province).Include(x => x.tbl_citizen).ThenInclude(x => x.tbl_citizen_employment).Include(x => x.tbl_citizen).ThenInclude(x => x.tbl_citizen_education).FirstOrDefaultAsync();
+                // Retrieve the registration record from the database, including related entities for a complete citizen profile
+                var existingCitizen = await db.tbl_registrations
+                    .Where(x => x.registration_id == Guid.Parse(registrationId))
+                    .Include(x => x.tbl_citizen)
+                        .ThenInclude(x => x.tbl_citizen_tehsil)
+                            .ThenInclude(x => x.tbl_district)
+                                .ThenInclude(x => x.tbl_province)
+                    .Include(x => x.tbl_citizen)
+                        .ThenInclude(x => x.tbl_citizen_employment)
+                    .Include(x => x.tbl_citizen)
+                        .ThenInclude(x => x.tbl_citizen_education)
+                    .FirstOrDefaultAsync();
+
+                // Check if the registration record exists
                 if (existingCitizen != null)
                 {
+                    // Map the database entity to the response DTO using AutoMapper
+                    var mappedResponse = _mapper.Map<RegistrationResponseDTO>(existingCitizen);
+
+                    // Return a success response model with the mapped registration details
                     return new ResponseModel<RegistrationResponseDTO>()
                     {
-                        data = _mapper.Map<RegistrationResponseDTO>(existingCitizen),
+                        data = mappedResponse,
                         remarks = "Citizen found successfully",
                         success = true,
                     };
                 }
                 else
                 {
+                    // Return a failure response model if no matching record is found
                     return new ResponseModel<RegistrationResponseDTO>()
                     {
                         success = false,
@@ -192,12 +225,14 @@ namespace BISPAPIORA.Repositories.RegistrationServicesRepo
             }
             catch (Exception ex)
             {
+                // Return a failure response model with details about the exception if an error occurs
                 return new ResponseModel<RegistrationResponseDTO>()
                 {
                     success = false,
-                    remarks = $"There Was Fatal Error {ex.Message.ToString()}"
+                    remarks = $"There Was a Fatal Error: {ex.Message.ToString()}"
                 };
             }
         }
+
     }
 }

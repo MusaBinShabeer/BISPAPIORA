@@ -20,148 +20,213 @@ namespace BISPAPIORA.Repositories.InnerServicesRepo
             _managementBaseUrl = configuration.GetSection("BISPAPI:BaseUrl").Value ?? "";
             
         }
+
+        // Verifies a citizen's eligibility by calling an external API with the provided CNIC (Computerized National Identity Card) number
+        // Returns a response model containing survey details if the citizen is eligible; otherwise, returns a failure response
         public async Task<ResponseModel<SurvayResponseDTO>> VerifyCitzen(string cnic)
         {
             try
             {
+                // Construct the API endpoint using the management base URL and the specified API endpoint for CNIC verification
                 var api = _managementBaseUrl + _configuration.GetSection("BISPAPI:VerifyCnic").Value;
                 var requestUri = $"{api}?cnic={cnic}";
+
+                // Create a new HttpRequestMessage for a GET request to the constructed API endpoint
                 var httpRequestMessage = new HttpRequestMessage(HttpMethod.Get, requestUri);
+
+                // Obtain a JWT token for authentication
                 var jwtToken = await GetToken();
+
+                // Create a new HttpClientHandler
                 var handler = new HttpClientHandler();
 
                 // Set the custom certificate validation callback to accept any certificate
                 handler.ServerCertificateCustomValidationCallback = (sender, cert, chain, sslPolicyErrors) => true;
 
+                // Create a new HttpClient with the specified handler
                 var client = new HttpClient(handler);
-                {
-                    client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", jwtToken.data);
-                }
+
+                // Set the Authorization header with the obtained JWT token
+                client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", jwtToken.data);
+
+                // Send the HTTP request and await the response
                 var httpResponseMessage = client.SendAsync(httpRequestMessage).Result;
+
+                // Check if the HTTP response is successful
                 if (httpResponseMessage.IsSuccessStatusCode)
                 {
+                    // Read the response content as a string
                     var response = await httpResponseMessage.Content.ReadAsStringAsync();
+
+                    // Deserialize the JSON response into a ResponseDTO object
                     var ResponseModel = JsonConvert.DeserializeObject<ResponseDTO>(response);
+
+                    // Check if the ResponseDTO is not null
                     if (ResponseModel != null)
                     {
+                        // Check the eligibility status in the ResponseDTO
                         if (ResponseModel.status == "ELIGIBLE")
                         {
-                            return new ResponseModel<SurvayResponseDTO>() { data = ResponseModel.surveyDetails, success= true};
+                            // Return a success response model with survey details if the citizen is eligible
+                            return new ResponseModel<SurvayResponseDTO>() { data = ResponseModel.surveyDetails, success = true };
                         }
                         else
-                            return new ResponseModel<SurvayResponseDTO>() { data = ResponseModel.surveyDetails!=null? ResponseModel.surveyDetails:null,success = false };
+                        {
+                            // Return a failure response model if the citizen is not eligible
+                            return new ResponseModel<SurvayResponseDTO>() { data = ResponseModel.surveyDetails != null ? ResponseModel.surveyDetails : null, success = false };
+                        }
                     }
                     else
+                    {
+                        // Return a failure response model if the ResponseDTO is null
                         return new ResponseModel<SurvayResponseDTO>() { success = false };
+                    }
                 }
                 else
                 {
+                    // Return a failure response model if the HTTP response is not successful
                     return new ResponseModel<SurvayResponseDTO> { success = false };
                 }
             }
             catch (Exception)
             {
+                // Return a failure response model if an exception occurs during the verification process
                 return new ResponseModel<SurvayResponseDTO> { success = false };
             }
         }
 
+
+        // Sends an email using an external API with the specified recipient, subject, and body
         public async Task<ResponseModel> SendEmail(string to, string subject, string body)
         {
             try
             {
+                // Construct the API endpoint using the management base URL and the specified API endpoint for sending OTP emails
                 var api = _managementBaseUrl + _configuration.GetSection("BISPAPI:SendOtp").Value;
                 var requestUri = $"{api}?email={Uri.EscapeDataString(to)}&subject={Uri.EscapeDataString(subject)}&message={Uri.EscapeDataString(body)}";
 
-                //var parameters = new Dictionary<string, string>
-                //{
-                //    { "email", to },
-                //    { "subject", subject },
-                //    { "message", body }
-                //};
-
-                //// Convert parameters to a JSON string
-                //var jsonPayload = JsonConvert.SerializeObject(parameters);
-
-                //// Set the content type to application/json
-                //var content = new StringContent(jsonPayload, Encoding.UTF8, "application/json");
-                //var content = new FormUrlEncodedContent(parameters);
-
+                // Obtain a JWT token for authentication
                 var jwtToken = await GetToken();
+
+                // Create a new HttpClientHandler
                 var handler = new HttpClientHandler();
 
                 // Set the custom certificate validation callback to accept any certificate
                 handler.ServerCertificateCustomValidationCallback = (sender, cert, chain, sslPolicyErrors) => true;
 
+                // Create a new HttpClient with the specified handler
                 var client = new HttpClient(handler);
-                {
-                    client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", jwtToken.data);
-                }
-                var httpResponseMessage = await client.PostAsync(requestUri, null); 
+
+                // Set the Authorization header with the obtained JWT token
+                client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", jwtToken.data);
+
+                // Send a POST request to the API endpoint with the specified parameters
+                var httpResponseMessage = await client.PostAsync(requestUri, null);
+
+                // Check if the HTTP response is successful
                 if (httpResponseMessage.IsSuccessStatusCode)
                 {
+                    // Read the response content as a string
                     var response = await httpResponseMessage.Content.ReadAsStringAsync();
+
+                    // Deserialize the JSON response into a boolean indicating the success of sending the email
                     var ResponseModel = JsonConvert.DeserializeObject<bool>(response);
+
+                    // Check if the boolean response is not null
                     if (ResponseModel != null)
                     {
+                        // Return a success response model if the email was sent successfully
                         if (ResponseModel)
                         {
                             return new ResponseModel() { success = true };
                         }
                         else
+                        {
+                            // Return a failure response model if the email sending process failed
                             return new ResponseModel() { success = false };
+                        }
                     }
                     else
+                    {
+                        // Return a failure response model if the boolean response is null
                         return new ResponseModel() { success = false };
+                    }
                 }
                 else
                 {
+                    // Return a failure response model if the HTTP response is not successful
                     return new ResponseModel() { success = false };
                 }
             }
             catch (Exception)
             {
+                // Return a failure response model if an exception occurs during the email sending process
                 return new ResponseModel() { success = false };
             }
         }
+
+        // Retrieves an authentication token from an external API using a specified username and password
         public async Task<ResponseModel<string>> GetToken()
         {
             try
             {
+                // Specify the API credentials (username and password)
                 var user = "bispsaving";
                 var password = "HSPS@BISP@51Saving3";
+
+                // Construct the API endpoint using the management base URL and the specified API endpoint for obtaining a token
                 var api = _managementBaseUrl + _configuration.GetSection("BISPAPI:GetToken").Value;
                 var requestUri = $"{api}?user={user}&password={password}";
+
+                // Create a new HttpRequestMessage for making a GET request to the API endpoint
                 var httpRequestMessage = new HttpRequestMessage(HttpMethod.Get, requestUri);
+
+                // Create a new HttpClientHandler
                 var handler = new HttpClientHandler();
 
                 // Set the custom certificate validation callback to accept any certificate
                 handler.ServerCertificateCustomValidationCallback = (sender, cert, chain, sslPolicyErrors) => true;
+
+                // Create a new HttpClient with the specified handler
                 var client = new HttpClient(handler);
-               
-                var httpResponseMessage = client.SendAsync(httpRequestMessage).Result;
+
+                // Send the GET request to the API endpoint and await the response
+                var httpResponseMessage = await client.SendAsync(httpRequestMessage);
+
+                // Check if the HTTP response is successful
                 if (httpResponseMessage.IsSuccessStatusCode)
                 {
+                    // Read the response content as a string
                     var response = await httpResponseMessage.Content.ReadAsStringAsync();
-                    var ResponseModel = response/*JsonConvert.DeserializeObject<string>(response.ToString())*/;
+
+                    // Assign the response directly to the ResponseModel's data property (string)
+                    var ResponseModel = response;
+
+                    // Check if the response data is not null
                     if (ResponseModel != null)
                     {
-                        
-                            return new ResponseModel<string>() { data = ResponseModel, success = true };
-                    
+                        // Return a success response model with the retrieved token
+                        return new ResponseModel<string>() { data = ResponseModel, success = true };
                     }
                     else
+                    {
+                        // Return a failure response model if the response data is null
                         return new ResponseModel<string>() { success = false };
+                    }
                 }
                 else
                 {
+                    // Return a failure response model if the HTTP response is not successful
                     return new ResponseModel<string> { success = false };
                 }
             }
             catch (Exception)
             {
+                // Return a failure response model if an exception occurs during the token retrieval process
                 return new ResponseModel<string> { success = false };
             }
         }
+
         //public async Task<ResponseModel> SendEmail(string to, string subject, string body)
         //{
         //    try
