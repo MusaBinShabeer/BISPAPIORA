@@ -10,16 +10,23 @@ using BISPAPIORA.Extensions.Middleware;
 
 namespace BISPAPIORA.Controllers
 {
+    // Controller for managing transaction-related operations
+    // Requires user authentication
     [UserAuthorize]
     [Route("api/[controller]")]
     [ApiController]
     public class TransactionController : ControllerBase
     {
         private readonly ITransactionService transactionService;
+
+        // Constructor to inject the transactionService dependency
         public TransactionController(ITransactionService transactionService)
         {
             this.transactionService = transactionService;
         }
+
+        // POST api/Transaction
+        // Endpoint for adding a new transaction
         [HttpPost]
         public async Task<ActionResult<ResponseModel<TransactionResponseDTO>>> Post(AddTransactionDTO model)
         {
@@ -38,6 +45,9 @@ namespace BISPAPIORA.Controllers
                 return BadRequest(response);
             }
         }
+
+        // PUT api/Transaction
+        // Endpoint for updating an existing transaction
         [HttpPut]
         public async Task<ActionResult<ResponseModel<TransactionResponseDTO>>> Put(UpdateTransactionDTO model)
         {
@@ -56,6 +66,9 @@ namespace BISPAPIORA.Controllers
                 return BadRequest(response);
             }
         }
+
+        // DELETE api/Transaction
+        // Endpoint for deleting a transaction by ID
         [HttpDelete]
         public async Task<ActionResult<ResponseModel<TransactionResponseDTO>>> Delete(string id)
         {
@@ -74,6 +87,9 @@ namespace BISPAPIORA.Controllers
                 return BadRequest(response);
             }
         }
+
+        // GET api/Transaction/GetById
+        // Endpoint for getting a transaction by ID
         [HttpGet("GetById")]
         public async Task<ActionResult<ResponseModel<TransactionResponseDTO>>> GetById(string id)
         {
@@ -92,12 +108,18 @@ namespace BISPAPIORA.Controllers
                 return BadRequest(response);
             }
         }
+
+        // GET api/Transaction
+        // Endpoint for getting a list of all transactions
         [HttpGet]
         public async Task<ActionResult<ResponseModel<List<TransactionResponseDTO>>>> Get()
         {
             var response = transactionService.GetTransactionsList();
             return Ok(await response);
         }
+
+        // GET api/Transaction/GetByCitizenId
+        // Endpoint for getting a list of transactions by citizen ID
         [HttpGet("GetByCitizenId")]
         public async Task<ActionResult<ResponseModel<List<TransactionResponseDTO>>>> GetByCitizenId(string id)
         {
@@ -117,4 +139,5 @@ namespace BISPAPIORA.Controllers
             }
         }
     }
+
 }

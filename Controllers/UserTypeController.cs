@@ -8,16 +8,23 @@ using BISPAPIORA.Extensions.Middleware;
 
 namespace BISPAPIORA.Controllers
 {
+    // Controller for managing user types
+    // Requires user authentication
     [UserAuthorize]
     [Route("api/[controller]")]
     [ApiController]
     public class UserTypeController : ControllerBase
     {
         private readonly IUserTypeService userTypeService;
+
+        // Constructor to inject the userTypeService dependency
         public UserTypeController(IUserTypeService userTypeService)
         {
             this.userTypeService = userTypeService;
         }
+
+        // POST api/UserType
+        // Endpoint for adding a new user type
         [HttpPost]
         public async Task<ActionResult<ResponseModel<UserTypeResponseDTO>>> Post(AddUserTypeDTO model)
         {
@@ -36,6 +43,9 @@ namespace BISPAPIORA.Controllers
                 return BadRequest(response);
             }
         }
+
+        // PUT api/UserType
+        // Endpoint for updating an existing user type
         [HttpPut]
         public async Task<ActionResult<ResponseModel<UserTypeResponseDTO>>> Put(UpdateUserTypeDTO model)
         {
@@ -54,6 +64,9 @@ namespace BISPAPIORA.Controllers
                 return BadRequest(response);
             }
         }
+
+        // DELETE api/UserType
+        // Endpoint for deleting a user type by ID
         [HttpDelete]
         public async Task<ActionResult<ResponseModel<UserTypeResponseDTO>>> Delete(string id)
         {
@@ -72,6 +85,9 @@ namespace BISPAPIORA.Controllers
                 return BadRequest(response);
             }
         }
+
+        // GET api/UserType/GetById
+        // Endpoint for getting a user type by ID
         [HttpGet("GetById")]
         public async Task<ActionResult<ResponseModel<UserTypeResponseDTO>>> GetById(string id)
         {
@@ -90,6 +106,9 @@ namespace BISPAPIORA.Controllers
                 return BadRequest(response);
             }
         }
+
+        // GET api/UserType
+        // Endpoint for getting a list of all user types
         [HttpGet]
         public async Task<ActionResult<ResponseModel<List<UserTypeResponseDTO>>>> Get()
         {
@@ -97,4 +116,5 @@ namespace BISPAPIORA.Controllers
             return Ok(await response);
         }
     }
+
 }
