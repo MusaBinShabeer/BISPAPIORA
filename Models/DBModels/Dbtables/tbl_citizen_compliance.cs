@@ -6,8 +6,7 @@ namespace BISPAPIORA.Models.DBModels.Dbtables;
 public partial class tbl_citizen_compliance
 {
     public Guid citizen_compliance_id { get; set; } = Guid.NewGuid();
-    public decimal code { get; set; } = 0;
-
+ 
     public decimal? starting_balance_on_quarterly_bank_statement { get; set; } = 0;
 
     public decimal? closing_balance_on_quarterly_bank_statement { get; set; } = 0;

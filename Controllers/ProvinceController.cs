@@ -1,4 +1,5 @@
-﻿using BISPAPIORA.Models.DTOS.ProvinceDTO;
+﻿using BISPAPIORA.Extensions.Middleware;
+using BISPAPIORA.Models.DTOS.ProvinceDTO;
 using BISPAPIORA.Models.DTOS.ResponseDTO;
 using BISPAPIORA.Repositories.ProvinceServicesRepo;
 using Microsoft.AspNetCore.Http;
@@ -6,15 +7,23 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace BISPAPIORA.Controllers
 {
+    // Controller for managing province-related operations
+    // Requires user authentication
+    [UserAuthorize]
     [Route("api/[controller]")]
     [ApiController]
     public class ProvinceController : ControllerBase
     {
         private readonly IProvinceService provinceService;
+
+        // Constructor to inject the provinceService dependency
         public ProvinceController(IProvinceService provinceService)
         {
             this.provinceService = provinceService;
         }
+
+        // POST api/Province
+        // Endpoint for adding a new province
         [HttpPost]
         public async Task<ActionResult<ResponseModel<ProvinceResponseDTO>>> Post(AddProvinceDTO model)
         {
@@ -33,6 +42,9 @@ namespace BISPAPIORA.Controllers
                 return BadRequest(response);
             }
         }
+
+        // PUT api/Province
+        // Endpoint for updating an existing province
         [HttpPut]
         public async Task<ActionResult<ResponseModel<ProvinceResponseDTO>>> Put(UpdateProvinceDTO model)
         {
@@ -51,6 +63,9 @@ namespace BISPAPIORA.Controllers
                 return BadRequest(response);
             }
         }
+
+        // DELETE api/Province
+        // Endpoint for deleting a province by ID
         [HttpDelete]
         public async Task<ActionResult<ResponseModel<ProvinceResponseDTO>>> Delete(string id)
         {
@@ -69,6 +84,9 @@ namespace BISPAPIORA.Controllers
                 return BadRequest(response);
             }
         }
+
+        // GET api/Province/GetById
+        // Endpoint for getting a province by ID
         [HttpGet("GetById")]
         public async Task<ActionResult<ResponseModel<ProvinceResponseDTO>>> GetById(string id)
         {
@@ -87,6 +105,9 @@ namespace BISPAPIORA.Controllers
                 return BadRequest(response);
             }
         }
+
+        // GET api/Province
+        // Endpoint for getting a list of all provinces
         [HttpGet]
         public async Task<ActionResult<ResponseModel<List<ProvinceResponseDTO>>>> Get()
         {
@@ -94,4 +115,5 @@ namespace BISPAPIORA.Controllers
             return Ok(await response);
         }
     }
+
 }

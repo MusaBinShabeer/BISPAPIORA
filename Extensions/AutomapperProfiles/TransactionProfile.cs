@@ -21,7 +21,6 @@ namespace BISPAPIORA.Extensions.AutomapperProfiles
              .ForMember(d => d.fk_citizen, opt => opt.MapFrom((src, dest) => otherServices.Check(src.fkCitizen) ? Guid.Parse(src.fkCitizen) : dest.fk_citizen));
             CreateMap<tbl_transaction, TransactionResponseDTO>()
              .ForMember(d => d.transactionId, opt => opt.MapFrom(src => src.transaction_id))
-             .ForMember(d => d.transactionCode, opt => opt.MapFrom(src => src.code))
              .ForMember(d => d.transactionDate, opt => opt.MapFrom((src) => src.transaction_date))
              .ForMember(d => d.transactionAmmount, opt => opt.MapFrom((src) => src.transaction_amount))
              .ForMember(d => d.fkCitizen, opt => opt.MapFrom(src => src.fk_citizen));

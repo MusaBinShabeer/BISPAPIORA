@@ -18,17 +18,24 @@ namespace BISPAPIORA.Repositories.CitizenComplianceServicesRepo
             _mapper = mapper;
             this.db = db;
         }
+        // Adds a new citizen compliance
         public async Task<ResponseModel<CitizenComplianceResponseDTO>> AddCitizenCompliance(AddCitizenComplianceDTO model)
         {
             try
             {
-                var citizenCompliance = await db.tbl_citizen_compliances.Where(x => x.fk_citizen.Equals(Guid.Parse(model.fkCitizen))).FirstOrDefaultAsync();
+                // Check if the citizen compliance already exists
+                var citizenCompliance = await db.tbl_citizen_compliances
+                    .Where(x => x.fk_citizen.Equals(Guid.Parse(model.fkCitizen)))
+                    .FirstOrDefaultAsync();
+
                 if (citizenCompliance == null)
                 {
+                    // If not, create a new citizen compliance
                     var newCitizenCompliance = new tbl_citizen_compliance();
                     newCitizenCompliance = _mapper.Map<tbl_citizen_compliance>(model);
                     db.tbl_citizen_compliances.Add(newCitizenCompliance);
                     await db.SaveChangesAsync();
+
                     return new ResponseModel<CitizenComplianceResponseDTO>()
                     {
                         success = true,
@@ -38,9 +45,11 @@ namespace BISPAPIORA.Repositories.CitizenComplianceServicesRepo
                 }
                 else
                 {
+                    // If it exists, update the existing citizen compliance
                     var existingCitizenCompliance = _mapper.Map<UpdateCitizenComplianceDTO>(model);
                     existingCitizenCompliance.citizenComplianceId = citizenCompliance.citizen_compliance_id.ToString();
                     var response = await UpdateCitizenCompliance(existingCitizenCompliance);
+
                     return new ResponseModel<CitizenComplianceResponseDTO>()
                     {
                         success = response.success,
@@ -57,15 +66,23 @@ namespace BISPAPIORA.Repositories.CitizenComplianceServicesRepo
                 };
             }
         }
+
+        // Deletes a citizen compliance based on the provided citizen compliance ID
         public async Task<ResponseModel<CitizenComplianceResponseDTO>> DeleteCitizenCompliance(string citizenComplianceId)
         {
             try
             {
-                var existingCitizenCompliance = await db.tbl_citizen_compliances.Where(x => x.citizen_compliance_id == Guid.Parse(citizenComplianceId)).FirstOrDefaultAsync();
+                // Find the existing citizen compliance in the database based on the provided ID
+                var existingCitizenCompliance = await db.tbl_citizen_compliances
+                    .Where(x => x.citizen_compliance_id == Guid.Parse(citizenComplianceId))
+                    .FirstOrDefaultAsync();
+
                 if (existingCitizenCompliance != null)
                 {
+                    // Remove the citizen compliance from the database and save changes
                     db.tbl_citizen_compliances.Remove(existingCitizenCompliance);
                     await db.SaveChangesAsync();
+
                     return new ResponseModel<CitizenComplianceResponseDTO>()
                     {
                         remarks = "Citizen Compliance Deleted",
@@ -74,6 +91,7 @@ namespace BISPAPIORA.Repositories.CitizenComplianceServicesRepo
                 }
                 else
                 {
+                    // Return a failure response model if no record is found for the provided ID
                     return new ResponseModel<CitizenComplianceResponseDTO>()
                     {
                         remarks = "No Record",
@@ -90,13 +108,20 @@ namespace BISPAPIORA.Repositories.CitizenComplianceServicesRepo
                 };
             }
         }
+
+        // Retrieves a list of all citizen compliances
         public async Task<ResponseModel<List<CitizenComplianceResponseDTO>>> GetCitizenCompliancesList()
         {
             try
             {
-                var citizenCompliances = await db.tbl_citizen_compliances.Include(x => x.tbl_citizen)/*.Include(x => x.tbl_citizen_scheme)*/.ToListAsync();
+                // Retrieve all citizen compliances from the database
+                var citizenCompliances = await db.tbl_citizen_compliances
+                    .Include(x => x.tbl_citizen)
+                    .ToListAsync();
+
                 if (citizenCompliances.Count() > 0)
                 {
+                    // Create a success response model with the list of citizen compliances
                     return new ResponseModel<List<CitizenComplianceResponseDTO>>()
                     {
                         data = _mapper.Map<List<CitizenComplianceResponseDTO>>(citizenCompliances),
@@ -106,6 +131,7 @@ namespace BISPAPIORA.Repositories.CitizenComplianceServicesRepo
                 }
                 else
                 {
+                    // Return a failure response model if no records are found
                     return new ResponseModel<List<CitizenComplianceResponseDTO>>()
                     {
                         success = false,
@@ -115,6 +141,7 @@ namespace BISPAPIORA.Repositories.CitizenComplianceServicesRepo
             }
             catch (Exception ex)
             {
+                // Return a failure response model if an exception occurs during the process
                 return new ResponseModel<List<CitizenComplianceResponseDTO>>()
                 {
                     success = false,
@@ -122,13 +149,21 @@ namespace BISPAPIORA.Repositories.CitizenComplianceServicesRepo
                 };
             }
         }
+
+        // Retrieves a specific citizen compliance by citizen compliance ID
         public async Task<ResponseModel<CitizenComplianceResponseDTO>> GetCitizenCompliance(string citizenComplianceId)
         {
             try
             {
-                var existingCitizenCompliance = await db.tbl_citizen_compliances.Include(x => x.tbl_citizen)/*.Include(x => x.tbl_citizen_scheme)*/.Where(x => x.citizen_compliance_id == Guid.Parse(citizenComplianceId)).FirstOrDefaultAsync();
+                // Find the existing citizen compliance in the database based on the provided ID
+                var existingCitizenCompliance = await db.tbl_citizen_compliances
+                    .Include(x => x.tbl_citizen)
+                    .Where(x => x.citizen_compliance_id == Guid.Parse(citizenComplianceId))
+                    .FirstOrDefaultAsync();
+
                 if (existingCitizenCompliance != null)
                 {
+                    // Return a success response model with the found citizen compliance
                     return new ResponseModel<CitizenComplianceResponseDTO>()
                     {
                         data = _mapper.Map<CitizenComplianceResponseDTO>(existingCitizenCompliance),
@@ -138,6 +173,7 @@ namespace BISPAPIORA.Repositories.CitizenComplianceServicesRepo
                 }
                 else
                 {
+                    // Return a failure response model if no record is found for the provided ID
                     return new ResponseModel<CitizenComplianceResponseDTO>()
                     {
                         success = false,
@@ -147,6 +183,7 @@ namespace BISPAPIORA.Repositories.CitizenComplianceServicesRepo
             }
             catch (Exception ex)
             {
+                // Return a failure response model if an exception occurs during the process
                 return new ResponseModel<CitizenComplianceResponseDTO>()
                 {
                     success = false,
@@ -154,24 +191,35 @@ namespace BISPAPIORA.Repositories.CitizenComplianceServicesRepo
                 };
             }
         }
+
+        // Updates a citizen compliance based on the provided model
         public async Task<ResponseModel<CitizenComplianceResponseDTO>> UpdateCitizenCompliance(UpdateCitizenComplianceDTO model)
         {
             try
             {
-                var existingCitizenCompliance = await db.tbl_citizen_compliances.Include(x => x.tbl_citizen)/*.Include(x => x.tbl_citizen_scheme)*/.Where(x => x.citizen_compliance_id == Guid.Parse(model.citizenComplianceId)).FirstOrDefaultAsync();
+                // Find the existing citizen compliance in the database based on the provided citizen compliance ID
+                var existingCitizenCompliance = await db.tbl_citizen_compliances
+                    .Include(x => x.tbl_citizen)
+                    .Where(x => x.citizen_compliance_id == Guid.Parse(model.citizenComplianceId))
+                    .FirstOrDefaultAsync();
+
                 if (existingCitizenCompliance != null)
                 {
+                    // Update the existing citizen compliance with the provided model and save changes
                     existingCitizenCompliance = _mapper.Map(model, existingCitizenCompliance);
                     await db.SaveChangesAsync();
+
+                    // Return a success response model with the updated citizen compliance
                     return new ResponseModel<CitizenComplianceResponseDTO>()
                     {
-                        remarks = $"CitizenCompliance has been updated",
+                        remarks = $"Citizen Compliance has been updated",
                         data = _mapper.Map<CitizenComplianceResponseDTO>(existingCitizenCompliance),
                         success = true,
                     };
                 }
                 else
                 {
+                    // Return a failure response model if no record is found for the provided citizen compliance ID
                     return new ResponseModel<CitizenComplianceResponseDTO>()
                     {
                         success = false,
@@ -181,6 +229,7 @@ namespace BISPAPIORA.Repositories.CitizenComplianceServicesRepo
             }
             catch (Exception ex)
             {
+                // Return a failure response model if an exception occurs during the process
                 return new ResponseModel<CitizenComplianceResponseDTO>()
                 {
                     success = false,
@@ -188,13 +237,21 @@ namespace BISPAPIORA.Repositories.CitizenComplianceServicesRepo
                 };
             }
         }
+
+        // Retrieves a list of citizen compliances based on citizen ID
         public async Task<ResponseModel<List<CitizenComplianceResponseDTO>>> GetCitizenComplianceByCitizenId(string citizenId)
         {
             try
             {
-                var existingDistricts = await db.tbl_citizen_compliances.Include(x => x.tbl_citizen)/*.Include(x => x.tbl_citizen_scheme)*/.Where(x => x.fk_citizen == Guid.Parse(citizenId)).ToListAsync();
-                if (existingDistricts != null)
+                // Find all citizen compliances in the database based on the provided citizen ID
+                var existingDistricts = await db.tbl_citizen_compliances
+                    .Include(x => x.tbl_citizen)
+                    .Where(x => x.fk_citizen == Guid.Parse(citizenId))
+                    .ToListAsync();
+
+                if (existingDistricts.Count > 0)
                 {
+                    // Return a success response model with the list of citizen compliances
                     return new ResponseModel<List<CitizenComplianceResponseDTO>>()
                     {
                         data = _mapper.Map<List<CitizenComplianceResponseDTO>>(existingDistricts),
@@ -204,6 +261,7 @@ namespace BISPAPIORA.Repositories.CitizenComplianceServicesRepo
                 }
                 else
                 {
+                    // Return a failure response model if no records are found for the provided citizen ID
                     return new ResponseModel<List<CitizenComplianceResponseDTO>>()
                     {
                         success = false,
@@ -213,6 +271,7 @@ namespace BISPAPIORA.Repositories.CitizenComplianceServicesRepo
             }
             catch (Exception ex)
             {
+                // Return a failure response model if an exception occurs during the process
                 return new ResponseModel<List<CitizenComplianceResponseDTO>>()
                 {
                     success = false,
@@ -220,6 +279,6 @@ namespace BISPAPIORA.Repositories.CitizenComplianceServicesRepo
                 };
             }
         }
-      
+
     }
 }

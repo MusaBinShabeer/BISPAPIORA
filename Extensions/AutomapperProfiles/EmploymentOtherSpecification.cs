@@ -23,7 +23,6 @@ namespace BISPAPIORA.Extensions.AutomapperProfiles
              .ForMember(d => d.fk_citizen, opt => opt.MapFrom((src, dest) => otherServices.Check(src.fkCitizen) ? Guid.Parse(src.fkCitizen) : dest.fk_citizen));
             CreateMap<tbl_employment_other_specification, EmploymentOtherSpecificationResponseDTO>()
              .ForMember(d => d.employmentOtherSpecificationId, opt => opt.MapFrom(src => src.employment_other_specification_id))
-             .ForMember(d => d.employmentOtherSpecificationCode, opt => opt.MapFrom(src => src.code))
              .ForMember(d => d.employmentOtherSpecification, opt => opt.MapFrom((src) => src.employment_other_specification))
              .ForMember(d => d.fkCitizen, opt => opt.MapFrom(src => src.fk_citizen));
         }

@@ -11,7 +11,7 @@ public partial class tbl_province
 
     public bool? is_active { get; set; } = true;
 
-    public int? province_code { get; set; } = default!;
+    public int? id { get; set; } = default!;
 
     public virtual ICollection<tbl_district> tbl_districts { get; set; } = new List<tbl_district>();
 }
