@@ -1,4 +1,6 @@
 using BISPAPIORA.Extensions;
+using BISPAPIORA.Extensions.Middleware;
+
 //using BISPAPIORA.Models.DBModels.OraDbContextClass;
 using Microsoft.EntityFrameworkCore;
 
@@ -8,9 +10,10 @@ var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
-builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
 builder.Services.ConfigureServices(builder.Configuration);
+builder.Services.AddEndpointsApiExplorer();
+builder.Services.ConfigureJWT(builder.Configuration);
+builder.Services.AddSwaggerGen();
 var app = builder.Build();
 using (var scope = app.Services.CreateScope())
 {
@@ -31,9 +34,8 @@ if (app.Environment.IsDevelopment() || app.Environment.IsProduction())
     app.UseSwaggerUI();
 }
 app.UseHttpsRedirection();
-
-app.UseAuthorization();
-
 app.MapControllers();
-
+app.UseAuthentication();
+app.UseAuthorization();
+app.UseMiddleware<JWTMiddleWare>();
 app.Run();

@@ -8,7 +8,7 @@ public partial class tbl_citizen
     public Guid citizen_id { get; set; } = Guid.NewGuid();
 
     public string citizen_cnic { get; set; } = string.Empty;
-    public decimal code { get; set; }
+    public decimal id { get; set; }
 
     public string? citizen_name { get; set; } = string.Empty;
 
@@ -36,6 +36,7 @@ public partial class tbl_citizen
     public virtual tbl_tehsil? tbl_citizen_tehsil { get; set; }
 
     public virtual tbl_citizen_bank_info? tbl_citizen_bank_info { get; set; }
+    public virtual tbl_citizen_family_bank_info? tbl_citizen_family_bank_info { get; set; }
 
     public virtual tbl_citizen_scheme? tbl_citizen_scheme { get; set; }
     public virtual tbl_citizen_compliance? tbl_citizen_compliance { get; set; }
@@ -43,12 +44,11 @@ public partial class tbl_citizen
     public virtual tbl_enrollment? tbl_enrollment { get; set; }
 
     public virtual tbl_registration? tbl_citizen_registration { get; set; }
-    public virtual tbl_citizen_attachment? tbl_citizen_attachment { get; set; }
-    public virtual tbl_citizen_thumb_print? tbl_citizen_thumb_print { get; set; }
-    public virtual tbl_bank_other_specification? tbl_bank_other_specification { get; set; }
+    //public virtual tbl_citizen_attachment? tbl_citizen_attachment { get; set; }
+    //public virtual tbl_citizen_thumb_print? tbl_citizen_thumb_print { get; set; }
     public virtual tbl_employment_other_specification? tbl_employment_other_specification { get; set; }
     public virtual ICollection<tbl_transaction> tbl_transactions { get; set; } = new List<tbl_transaction>();
-    public decimal? is_valid_beneficiary { get; set; }
+    public  bool? is_valid_beneficiary { get; set; }
 
     public decimal? unique_hh_id { get; set; } // Unique HouseholdId
 

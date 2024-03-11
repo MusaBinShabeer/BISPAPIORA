@@ -17,17 +17,26 @@ namespace BISPAPIORA.Repositories.TehsilServicesRepo
             _mapper = mapper;
             this.db = db;
         }
+        // Adds a new tehsil based on the provided model
+        // Returns a response model indicating the success or failure of the operation
         public async Task<ResponseModel<TehsilResponseDTO>> AddTehsil(AddTehsilDTO model)
         {
             try
             {
+                // Check if the tehsil with the provided name already exists
                 var tehsil = await db.tbl_tehsils.Where(x => x.tehsil_name.ToLower().Equals(model.tehsilName.ToLower())).FirstOrDefaultAsync();
+
                 if (tehsil == null)
                 {
+                    // Create a new tehsil entity and map properties from the provided model
                     var newTehsil = new tbl_tehsil();
                     newTehsil = _mapper.Map<tbl_tehsil>(model);
+
+                    // Add the new tehsil to the database and save changes
                     db.tbl_tehsils.Add(newTehsil);
                     await db.SaveChangesAsync();
+
+                    // Return a success response model with the added tehsil details
                     return new ResponseModel<TehsilResponseDTO>()
                     {
                         success = true,
@@ -37,6 +46,7 @@ namespace BISPAPIORA.Repositories.TehsilServicesRepo
                 }
                 else
                 {
+                    // Return a failure response model if tehsil with the same name already exists
                     return new ResponseModel<TehsilResponseDTO>()
                     {
                         success = false,
@@ -46,6 +56,7 @@ namespace BISPAPIORA.Repositories.TehsilServicesRepo
             }
             catch (Exception ex)
             {
+                // Return a failure response model with details about the exception if an error occurs
                 return new ResponseModel<TehsilResponseDTO>()
                 {
                     success = false,
@@ -53,15 +64,23 @@ namespace BISPAPIORA.Repositories.TehsilServicesRepo
                 };
             }
         }
+
+        // Deletes a tehsil based on the provided tehsilId
+        // Returns a response model indicating the success or failure of the operation
         public async Task<ResponseModel<TehsilResponseDTO>> DeleteTehsil(string tehsilId)
         {
             try
             {
+                // Retrieve the existing tehsil from the database based on the tehsilId
                 var existingTehsil = await db.tbl_tehsils.Where(x => x.tehsil_id == Guid.Parse(tehsilId)).FirstOrDefaultAsync();
+
                 if (existingTehsil != null)
                 {
+                    // Remove the existing tehsil and save changes to the database
                     db.tbl_tehsils.Remove(existingTehsil);
                     await db.SaveChangesAsync();
+
+                    // Return a success response model indicating that the tehsil has been deleted
                     return new ResponseModel<TehsilResponseDTO>()
                     {
                         remarks = "Tehsil Deleted",
@@ -70,6 +89,7 @@ namespace BISPAPIORA.Repositories.TehsilServicesRepo
                 }
                 else
                 {
+                    // Return a failure response model if no matching record is found
                     return new ResponseModel<TehsilResponseDTO>()
                     {
                         remarks = "No Record",
@@ -79,6 +99,7 @@ namespace BISPAPIORA.Repositories.TehsilServicesRepo
             }
             catch (Exception ex)
             {
+                // Return a failure response model with details about the exception if an error occurs
                 return new ResponseModel<TehsilResponseDTO>()
                 {
                     success = false,
@@ -86,13 +107,19 @@ namespace BISPAPIORA.Repositories.TehsilServicesRepo
                 };
             }
         }
+
+        // Retrieves a list of all tehsils along with associated district and province details
+        // Returns a response model containing the list of tehsils or an error message
         public async Task<ResponseModel<List<TehsilResponseDTO>>> GetTehsilsList()
         {
             try
             {
+                // Retrieve all tehsils from the database, including associated district and province details
                 var tehsils = await db.tbl_tehsils.Include(x => x.tbl_district).Include(x => x.tbl_district.tbl_province).ToListAsync();
+
                 if (tehsils.Count() > 0)
                 {
+                    // Return a success response model with the list of tehsils
                     return new ResponseModel<List<TehsilResponseDTO>>()
                     {
                         data = _mapper.Map<List<TehsilResponseDTO>>(tehsils),
@@ -102,6 +129,7 @@ namespace BISPAPIORA.Repositories.TehsilServicesRepo
                 }
                 else
                 {
+                    // Return a failure response model if no tehsils are found
                     return new ResponseModel<List<TehsilResponseDTO>>()
                     {
                         success = false,
@@ -111,6 +139,7 @@ namespace BISPAPIORA.Repositories.TehsilServicesRepo
             }
             catch (Exception ex)
             {
+                // Return a failure response model with details about the exception if an error occurs
                 return new ResponseModel<List<TehsilResponseDTO>>()
                 {
                     success = false,
@@ -118,13 +147,19 @@ namespace BISPAPIORA.Repositories.TehsilServicesRepo
                 };
             }
         }
+
+        // Retrieves a specific tehsil based on the provided tehsilId
+        // Returns a response model containing the tehsil details or an error message
         public async Task<ResponseModel<TehsilResponseDTO>> GetTehsil(string tehsilId)
         {
             try
             {
+                // Retrieve the existing tehsil from the database, including associated district and province details
                 var existingTehsil = await db.tbl_tehsils.Include(x => x.tbl_district).Include(x => x.tbl_district.tbl_province).Where(x => x.tehsil_id == Guid.Parse(tehsilId)).FirstOrDefaultAsync();
+
                 if (existingTehsil != null)
                 {
+                    // Return a success response model with the details of the retrieved tehsil
                     return new ResponseModel<TehsilResponseDTO>()
                     {
                         data = _mapper.Map<TehsilResponseDTO>(existingTehsil),
@@ -134,6 +169,7 @@ namespace BISPAPIORA.Repositories.TehsilServicesRepo
                 }
                 else
                 {
+                    // Return a failure response model if no matching record is found
                     return new ResponseModel<TehsilResponseDTO>()
                     {
                         success = false,
@@ -143,6 +179,7 @@ namespace BISPAPIORA.Repositories.TehsilServicesRepo
             }
             catch (Exception ex)
             {
+                // Return a failure response model with details about the exception if an error occurs
                 return new ResponseModel<TehsilResponseDTO>()
                 {
                     success = false,
@@ -150,15 +187,23 @@ namespace BISPAPIORA.Repositories.TehsilServicesRepo
                 };
             }
         }
+
+        // Updates an existing tehsil based on the provided model
+        // Returns a response model indicating the success or failure of the operation
         public async Task<ResponseModel<TehsilResponseDTO>> UpdateTehsil(UpdateTehsilDTO model)
         {
             try
             {
+                // Retrieve the existing tehsil from the database based on the tehsilId
                 var existingTehsil = await db.tbl_tehsils.Where(x => x.tehsil_id == Guid.Parse(model.tehsilId)).FirstOrDefaultAsync();
+
                 if (existingTehsil != null)
                 {
+                    // Map properties from the provided model to the existing tehsil and save changes
                     existingTehsil = _mapper.Map(model, existingTehsil);
                     await db.SaveChangesAsync();
+
+                    // Return a success response model indicating that the tehsil has been updated
                     return new ResponseModel<TehsilResponseDTO>()
                     {
                         remarks = $"Tehsil: {model.tehsilName} has been updated",
@@ -168,6 +213,7 @@ namespace BISPAPIORA.Repositories.TehsilServicesRepo
                 }
                 else
                 {
+                    // Return a failure response model if no matching record is found
                     return new ResponseModel<TehsilResponseDTO>()
                     {
                         success = false,
@@ -177,6 +223,7 @@ namespace BISPAPIORA.Repositories.TehsilServicesRepo
             }
             catch (Exception ex)
             {
+                // Return a failure response model with details about the exception if an error occurs
                 return new ResponseModel<TehsilResponseDTO>()
                 {
                     success = false,
@@ -184,13 +231,19 @@ namespace BISPAPIORA.Repositories.TehsilServicesRepo
                 };
             }
         }
+
+        // Retrieves a list of tehsils based on the provided districtId
+        // Returns a response model containing the list of tehsils or an error message
         public async Task<ResponseModel<List<TehsilResponseDTO>>> GetTehsilByDistrictId(string districtId)
         {
             try
             {
+                // Retrieve all tehsils from the database associated with the provided districtId
                 var existingTehsils = await db.tbl_tehsils.Include(x => x.tbl_district).Where(x => x.fk_district == Guid.Parse(districtId)).ToListAsync();
-                if (existingTehsils.Count()>0)
+
+                if (existingTehsils.Count() > 0)
                 {
+                    // Return a success response model with the list of tehsils
                     return new ResponseModel<List<TehsilResponseDTO>>()
                     {
                         data = _mapper.Map<List<TehsilResponseDTO>>(existingTehsils),
@@ -200,6 +253,7 @@ namespace BISPAPIORA.Repositories.TehsilServicesRepo
                 }
                 else
                 {
+                    // Return a failure response model if no tehsils are found
                     return new ResponseModel<List<TehsilResponseDTO>>()
                     {
                         success = false,
@@ -209,6 +263,7 @@ namespace BISPAPIORA.Repositories.TehsilServicesRepo
             }
             catch (Exception ex)
             {
+                // Return a failure response model with details about the exception if an error occurs
                 return new ResponseModel<List<TehsilResponseDTO>>()
                 {
                     success = false,
@@ -216,5 +271,6 @@ namespace BISPAPIORA.Repositories.TehsilServicesRepo
                 };
             }
         }
+
     }
 }

@@ -1,4 +1,5 @@
-﻿using BISPAPIORA.Models.DTOS.EmploymentDTO;
+﻿using BISPAPIORA.Extensions.Middleware;
+using BISPAPIORA.Models.DTOS.EmploymentDTO;
 using BISPAPIORA.Models.DTOS.ResponseDTO;
 using BISPAPIORA.Repositories.EmploymentServicesRepo;
 using Microsoft.AspNetCore.Authorization;
@@ -7,6 +8,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace BISPAPIORA.Controllers
 {
+    [UserAuthorize]
     [Route("api/[controller]")]
     [ApiController]
     public class EmploymentController : ControllerBase
@@ -16,6 +18,7 @@ namespace BISPAPIORA.Controllers
         {
             this.employmentService = employmentService;
         }
+        //Add Employment Method
         [HttpPost]
         public async Task<ActionResult<ResponseModel<EmploymentResponseDTO>>> Post(AddEmploymentDTO model)
         {
@@ -34,6 +37,7 @@ namespace BISPAPIORA.Controllers
                 return BadRequest(response);
             }
         }
+        //Update Employment Method
         [HttpPut]
         public async Task<ActionResult<ResponseModel<EmploymentResponseDTO>>> Put(UpdateEmploymentDTO model)
         {
@@ -52,6 +56,7 @@ namespace BISPAPIORA.Controllers
                 return BadRequest(response);
             }
         }
+        //Delete Employment Method
         [HttpDelete]
         public async Task<ActionResult<ResponseModel<EmploymentResponseDTO>>> Delete(string id)
         {
@@ -70,6 +75,7 @@ namespace BISPAPIORA.Controllers
                 return BadRequest(response);
             }
         }
+        //Get Employment By Id Method
         [HttpGet("GetById")]
         public async Task<ActionResult<ResponseModel<EmploymentResponseDTO>>> GetById(string id)
         {
@@ -88,6 +94,7 @@ namespace BISPAPIORA.Controllers
                 return BadRequest(response);
             }
         }
+        //Get All Employments Method
         [HttpGet]
         public async Task<ActionResult<ResponseModel<List<EmploymentResponseDTO>>>> Get()
         {

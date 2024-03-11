@@ -6,7 +6,6 @@ namespace BISPAPIORA.Models.DBModels.Dbtables;
 public partial class tbl_image_citizen_attachment
 {
     public Guid id { get; set; } = Guid.NewGuid();
-    public decimal? code { get; set; } = 0;
 
     public string? name { get; set; } = string.Empty;
 

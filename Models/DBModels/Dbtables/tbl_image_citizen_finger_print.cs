@@ -6,7 +6,6 @@ namespace BISPAPIORA.Models.DBModels.Dbtables;
 public partial class tbl_image_citizen_finger_print
 {
     public Guid id { get; set; } = Guid.NewGuid();
-    public decimal? code { get; set; } = 0;
 
     public string? finger_print_name { get; set; } = string.Empty;
 

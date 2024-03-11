@@ -18,17 +18,24 @@ namespace BISPAPIORA.Repositories.CitizenSchemeServicesRepo
             _mapper = mapper;
             this.db = db;
         }
+
+        // Adds or updates a citizen scheme based on the provided model
         public async Task<ResponseModel<CitizenSchemeResponseDTO>> AddCitizenScheme(AddCitizenSchemeDTO model)
         {
             try
             {
-                var citizenScheme = await db.tbl_citizen_schemes.Where(x => x.fk_citizen.Equals(Guid.Parse(model.fkCitizen))).FirstOrDefaultAsync();
+                // Check if a citizen scheme already exists for the provided citizen
+                var citizenScheme = await db.tbl_citizen_schemes
+                    .Where(x => x.fk_citizen.Equals(Guid.Parse(model.fkCitizen)))
+                    .FirstOrDefaultAsync();
+
                 if (citizenScheme == null)
                 {
-                    var newCitizenScheme = new tbl_citizen_scheme();
-                    newCitizenScheme = _mapper.Map<tbl_citizen_scheme>(model);
+                    // If no citizen scheme exists, create a new one
+                    var newCitizenScheme = _mapper.Map<tbl_citizen_scheme>(model);
                     db.tbl_citizen_schemes.Add(newCitizenScheme);
                     await db.SaveChangesAsync();
+
                     return new ResponseModel<CitizenSchemeResponseDTO>()
                     {
                         success = true,
@@ -38,9 +45,11 @@ namespace BISPAPIORA.Repositories.CitizenSchemeServicesRepo
                 }
                 else
                 {
+                    // If a citizen scheme already exists, update it using the provided model
                     var existingCitizenScheme = _mapper.Map<UpdateCitizenSchemeDTO>(model);
                     existingCitizenScheme.citizenSchemeId = citizenScheme.citizen_scheme_id.ToString();
                     var response = await UpdateCitizenScheme(existingCitizenScheme);
+
                     return new ResponseModel<CitizenSchemeResponseDTO>()
                     {
                         success = response.success,
@@ -50,6 +59,7 @@ namespace BISPAPIORA.Repositories.CitizenSchemeServicesRepo
             }
             catch (Exception ex)
             {
+                // Return a failure response model if an exception occurs during the process
                 return new ResponseModel<CitizenSchemeResponseDTO>()
                 {
                     success = false,
@@ -57,15 +67,23 @@ namespace BISPAPIORA.Repositories.CitizenSchemeServicesRepo
                 };
             }
         }
+
+        // Deletes a citizen scheme based on the provided citizen scheme ID
         public async Task<ResponseModel<CitizenSchemeResponseDTO>> DeleteCitizenScheme(string citizenSchemeId)
         {
             try
             {
-                var existingCitizenScheme = await db.tbl_citizen_schemes.Where(x => x.citizen_scheme_id == Guid.Parse(citizenSchemeId)).FirstOrDefaultAsync();
+                // Find the existing citizen scheme in the database based on the provided ID
+                var existingCitizenScheme = await db.tbl_citizen_schemes
+                    .Where(x => x.citizen_scheme_id == Guid.Parse(citizenSchemeId))
+                    .FirstOrDefaultAsync();
+
                 if (existingCitizenScheme != null)
                 {
+                    // Remove the citizen scheme and save changes
                     db.tbl_citizen_schemes.Remove(existingCitizenScheme);
                     await db.SaveChangesAsync();
+
                     return new ResponseModel<CitizenSchemeResponseDTO>()
                     {
                         remarks = "Citizen Scheme Deleted",
@@ -74,6 +92,7 @@ namespace BISPAPIORA.Repositories.CitizenSchemeServicesRepo
                 }
                 else
                 {
+                    // Return a failure response model if no record is found for the provided ID
                     return new ResponseModel<CitizenSchemeResponseDTO>()
                     {
                         remarks = "No Record",
@@ -83,6 +102,7 @@ namespace BISPAPIORA.Repositories.CitizenSchemeServicesRepo
             }
             catch (Exception ex)
             {
+                // Return a failure response model if an exception occurs during the process
                 return new ResponseModel<CitizenSchemeResponseDTO>()
                 {
                     success = false,
@@ -90,13 +110,18 @@ namespace BISPAPIORA.Repositories.CitizenSchemeServicesRepo
                 };
             }
         }
+
+        // Retrieves a list of all citizen schemes
         public async Task<ResponseModel<List<CitizenSchemeResponseDTO>>> GetCitizenSchemesList()
         {
             try
             {
+                // Retrieve all citizen schemes from the database
                 var citizenSchemes = await db.tbl_citizen_schemes.ToListAsync();
+
                 if (citizenSchemes.Count() > 0)
                 {
+                    // Create a success response model with the list of citizen schemes
                     return new ResponseModel<List<CitizenSchemeResponseDTO>>()
                     {
                         data = _mapper.Map<List<CitizenSchemeResponseDTO>>(citizenSchemes),
@@ -106,6 +131,7 @@ namespace BISPAPIORA.Repositories.CitizenSchemeServicesRepo
                 }
                 else
                 {
+                    // Return a failure response model if no citizen schemes are found
                     return new ResponseModel<List<CitizenSchemeResponseDTO>>()
                     {
                         success = false,
@@ -115,6 +141,7 @@ namespace BISPAPIORA.Repositories.CitizenSchemeServicesRepo
             }
             catch (Exception ex)
             {
+                // Return a failure response model if an exception occurs during the process
                 return new ResponseModel<List<CitizenSchemeResponseDTO>>()
                 {
                     success = false,
@@ -122,13 +149,20 @@ namespace BISPAPIORA.Repositories.CitizenSchemeServicesRepo
                 };
             }
         }
+
+        // Retrieves a citizen scheme based on the provided citizen scheme ID
         public async Task<ResponseModel<CitizenSchemeResponseDTO>> GetCitizenScheme(string citizenSchemeId)
         {
             try
             {
-                var existingCitizenScheme = await db.tbl_citizen_schemes.Where(x => x.citizen_scheme_id == Guid.Parse(citizenSchemeId)).FirstOrDefaultAsync();
+                // Find the existing citizen scheme in the database based on the provided ID
+                var existingCitizenScheme = await db.tbl_citizen_schemes
+                    .Where(x => x.citizen_scheme_id == Guid.Parse(citizenSchemeId))
+                    .FirstOrDefaultAsync();
+
                 if (existingCitizenScheme != null)
                 {
+                    // Create a success response model with the found citizen scheme
                     return new ResponseModel<CitizenSchemeResponseDTO>()
                     {
                         data = _mapper.Map<CitizenSchemeResponseDTO>(existingCitizenScheme),
@@ -138,6 +172,7 @@ namespace BISPAPIORA.Repositories.CitizenSchemeServicesRepo
                 }
                 else
                 {
+                    // Return a failure response model if no record is found for the provided ID
                     return new ResponseModel<CitizenSchemeResponseDTO>()
                     {
                         success = false,
@@ -147,6 +182,7 @@ namespace BISPAPIORA.Repositories.CitizenSchemeServicesRepo
             }
             catch (Exception ex)
             {
+                // Return a failure response model if an exception occurs during the process
                 return new ResponseModel<CitizenSchemeResponseDTO>()
                 {
                     success = false,
@@ -154,15 +190,23 @@ namespace BISPAPIORA.Repositories.CitizenSchemeServicesRepo
                 };
             }
         }
+
+        // Updates a citizen scheme based on the provided model
         public async Task<ResponseModel<CitizenSchemeResponseDTO>> UpdateCitizenScheme(UpdateCitizenSchemeDTO model)
         {
             try
             {
-                var existingCitizenScheme = await db.tbl_citizen_schemes.Where(x => x.citizen_scheme_id == Guid.Parse(model.citizenSchemeId)).FirstOrDefaultAsync();
+                // Find the existing citizen scheme in the database based on the provided ID
+                var existingCitizenScheme = await db.tbl_citizen_schemes
+                    .Where(x => x.citizen_scheme_id == Guid.Parse(model.citizenSchemeId))
+                    .FirstOrDefaultAsync();
+
                 if (existingCitizenScheme != null)
                 {
+                    // Update the citizen scheme using the provided model and save changes
                     existingCitizenScheme = _mapper.Map(model, existingCitizenScheme);
                     await db.SaveChangesAsync();
+
                     return new ResponseModel<CitizenSchemeResponseDTO>()
                     {
                         remarks = $"Citizen Scheme has been updated",
@@ -172,6 +216,7 @@ namespace BISPAPIORA.Repositories.CitizenSchemeServicesRepo
                 }
                 else
                 {
+                    // Return a failure response model if no record is found for the provided ID
                     return new ResponseModel<CitizenSchemeResponseDTO>()
                     {
                         success = false,
@@ -181,6 +226,7 @@ namespace BISPAPIORA.Repositories.CitizenSchemeServicesRepo
             }
             catch (Exception ex)
             {
+                // Return a failure response model if an exception occurs during the process
                 return new ResponseModel<CitizenSchemeResponseDTO>()
                 {
                     success = false,
@@ -188,5 +234,6 @@ namespace BISPAPIORA.Repositories.CitizenSchemeServicesRepo
                 };
             }
         }
+
     }
 }

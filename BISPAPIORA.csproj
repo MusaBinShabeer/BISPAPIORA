@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk.Web">
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
 
   <PropertyGroup>
     <TargetFramework>net8.0</TargetFramework>
@@ -8,8 +8,37 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="Models\DTOS\CitizenAttachmentDTO\**" />
+    <Compile Remove="Models\DTOS\CitizenThumbPrintDTO\**" />
+    <Compile Remove="Repositories\CitizenAttachmentServicesRepo\**" />
+    <Compile Remove="Repositories\CitizenThumbPrintServicesRepo\**" />
+    <Content Remove="Models\DTOS\CitizenAttachmentDTO\**" />
+    <Content Remove="Models\DTOS\CitizenThumbPrintDTO\**" />
+    <Content Remove="Repositories\CitizenAttachmentServicesRepo\**" />
+    <Content Remove="Repositories\CitizenThumbPrintServicesRepo\**" />
+    <EmbeddedResource Remove="Models\DTOS\CitizenAttachmentDTO\**" />
+    <EmbeddedResource Remove="Models\DTOS\CitizenThumbPrintDTO\**" />
+    <EmbeddedResource Remove="Repositories\CitizenAttachmentServicesRepo\**" />
+    <EmbeddedResource Remove="Repositories\CitizenThumbPrintServicesRepo\**" />
+    <None Remove="Models\DTOS\CitizenAttachmentDTO\**" />
+    <None Remove="Models\DTOS\CitizenThumbPrintDTO\**" />
+    <None Remove="Repositories\CitizenAttachmentServicesRepo\**" />
+    <None Remove="Repositories\CitizenThumbPrintServicesRepo\**" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Remove="Controllers\CitizenAttachmentController.cs" />
+    <Compile Remove="Controllers\CitizenThumbPrintController.cs" />
+    <Compile Remove="Extensions\AutomapperProfiles\CitizenAttachmentProfile.cs" />
+    <Compile Remove="Extensions\AutomapperProfiles\CitizenThumbPrintProfile.cs" />
+    <Compile Remove="Models\DBModels\Dbtables\tbl_citizen_attachment.cs" />
+    <Compile Remove="Models\DBModels\Dbtables\tbl_citizen_thumb_print.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="AutoMapper.Extensions.Microsoft.DependencyInjection" Version="12.0.1" />
     <PackageReference Include="FileSignatures" Version="4.4.1" />
+    <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="8.0.2" />
     <PackageReference Include="Microsoft.EntityFrameworkCore" Version="8.0.1" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="8.0.1">
       <PrivateAssets>all</PrivateAssets>
@@ -19,6 +48,7 @@
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
+    <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
     <PackageReference Include="Oracle.EntityFrameworkCore" Version="8.21.121" />
     <PackageReference Include="Swashbuckle.AspNetCore" Version="6.4.0" />
   </ItemGroup>
