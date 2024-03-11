@@ -8,6 +8,7 @@ public partial class tbl_citizen
     public Guid citizen_id { get; set; } = Guid.NewGuid();
 
     public string citizen_cnic { get; set; } = string.Empty;
+
     public decimal id { get; set; }
 
     public string? citizen_name { get; set; } = string.Empty;
