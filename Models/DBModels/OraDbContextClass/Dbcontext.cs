@@ -21,6 +21,10 @@ public partial class Dbcontext : DbContext
 
     public virtual DbSet<tbl_bank> tbl_banks { get; set; }
 
+    public virtual DbSet<tbl_functionality> tbl_functionalitys { get; set; }
+
+    public virtual DbSet<tbl_group_permission> tbl_group_permissions { get; set; }
+
     public virtual DbSet<tbl_citizen> tbl_citizens { get; set; }
 
     public virtual DbSet<tbl_citizen_bank_info> tbl_citizen_bank_infos { get; set; }
@@ -95,6 +99,74 @@ public partial class Dbcontext : DbContext
                 .HasPrecision(1)
                 .HasDefaultValueSql("1 ")
                 .HasColumnName("IS_ACTIVE");
+        });
+
+        modelBuilder.Entity<tbl_functionality>(entity =>
+        {
+            entity.HasKey(e => e.functionality_id).HasName("TBL_FUNCTIONALITY_PK");
+
+            entity.ToTable("TBL_FUNCTIOALITY");
+
+            entity.Property(e => e.functionality_id)
+                .HasDefaultValueSql("SYS_GUID() ")
+                .HasColumnName("FUNCTIONALITY_ID");
+            entity.Property(e => e.functionality_name)
+                .HasMaxLength(255)
+                .IsUnicode(false)
+                .HasDefaultValueSql("''")
+                .HasColumnName("FUNCTIONALITY_NAME");
+            entity.Property(e => e.is_active)
+                .IsRequired()
+                .HasPrecision(1)
+                .HasDefaultValueSql("1 ")
+                .HasColumnName("IS_ACTIVE");
+        });
+
+        modelBuilder.Entity<tbl_group_permission>(entity =>
+        {
+            entity.HasKey(e => e.group_permission_id).HasName("GROUP_PERMISSION_PK");
+
+            entity.ToTable("TBL_GROUP_PERMISSION");
+
+            entity.Property(e => e.group_permission_id)
+                .HasDefaultValueSql("SYS_GUID() ")
+                .HasColumnName("GROUP_PERMISSION_ID");
+            entity.Property(e => e.can_create)
+                .IsRequired()
+                .HasPrecision(1)
+                .HasDefaultValueSql("1 ")
+                .HasColumnName("CAN_CREATE");
+            entity.Property(e => e.can_delete)
+                .IsRequired()
+                .HasPrecision(1)
+                .HasDefaultValueSql("1 ")
+                .HasColumnName("CAN_DELETE");
+            entity.Property(e => e.can_read)
+                .IsRequired()
+                .HasPrecision(1)
+                .HasDefaultValueSql("1 ")
+                .HasColumnName("CAN_READ");
+            entity.Property(e => e.can_update)
+                .IsRequired()
+                .HasPrecision(1)
+                .HasDefaultValueSql("1 ")
+                .HasColumnName("CAN_UPDATE");
+            entity.Property(e => e.fk_functionality)
+                .HasDefaultValueSql("NULL")
+                .HasColumnName("FK_FUNCTIONALITY");
+            entity.Property(e => e.fk_user_type)
+                .HasDefaultValueSql("NULL")
+                .HasColumnName("FK_USER_TYPE");
+
+            entity.HasOne(d => d.tbl_user_type).WithMany(p => p.tbl_group_permissions)
+                .HasForeignKey(d => d.fk_user_type)
+                .OnDelete(DeleteBehavior.Cascade)
+                .HasConstraintName("GROUP_PERMISSION_FK_USER_TYPE");
+
+            entity.HasOne(d => d.tbl_functionality).WithMany(p => p.tbl_group_permissions)
+                .HasForeignKey(d => d.fk_functionality)
+                .OnDelete(DeleteBehavior.Cascade)
+                .HasConstraintName("GROUP_PERMISSION_FK_FUNCTIONALITY");
         });
 
         modelBuilder.Entity<tbl_citizen>(entity =>

@@ -32,6 +32,9 @@ using BISPAPIORA.Repositories.InnerServicesRepo;
 
 using BISPAPIORA.Repositories.ReportingResponseServicesRepo;
 using BISPAPIORA.Repositories.TehsilStatusResponseServicesRepo;
+using BISPAPIORA.Repositories.FunctionalityServicesRepo;
+using BISPAPIORA.Models.DTOS.GroupPermissionDTO;
+using BISPAPIORA.Repositories.GroupPermissionServicesRepo;
 
 
 
@@ -67,7 +70,7 @@ namespace BISPAPIORA.Extensions
                                       .AllowAnyMethod()
                                       .AllowAnyOrigin();
                                   });
-        });
+            });
             services.AddHttpClient();
             services.AddAutoMapper(typeof(Program).Assembly);
             services.AddTransient<IBankService, BankService>();
@@ -98,7 +101,8 @@ namespace BISPAPIORA.Extensions
             services.AddTransient<IAuthServices, AuthServices>();
             services.AddTransient<IReportingResponseService, ReportingResponseService>();
             services.AddTransient<ITehsilStatusResponseService, TehsilStatusResponseService>();
-
+            services.AddTransient<IFunctionalityService, FunctionalityService>();
+            services.AddTransient<IGroupPermissionService, GroupPermissionService>();
         }
     }
 }
