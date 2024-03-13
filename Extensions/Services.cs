@@ -35,6 +35,8 @@ using BISPAPIORA.Repositories.TehsilStatusResponseServicesRepo;
 using BISPAPIORA.Repositories.FunctionalityServicesRepo;
 using BISPAPIORA.Models.DTOS.GroupPermissionDTO;
 using BISPAPIORA.Repositories.GroupPermissionServicesRepo;
+using BISPAPIORA.Repositories.AppVersionServicesRepo;
+using BISPAPIORA.Repositories.ComplexMappersRepo;
 
 
 
@@ -103,6 +105,8 @@ namespace BISPAPIORA.Extensions
             services.AddTransient<ITehsilStatusResponseService, TehsilStatusResponseService>();
             services.AddTransient<IFunctionalityService, FunctionalityService>();
             services.AddTransient<IGroupPermissionService, GroupPermissionService>();
+            services.AddTransient<IAppVersionServices, AppVersionServices>();
+            services.AddTransient<IComplexMapperServices, ComplexMapperServices>();
         }
     }
 }

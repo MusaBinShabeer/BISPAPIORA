@@ -9,7 +9,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace BISPAPIORA.Controllers
 {
     // Custom authorization attribute for user authentication
-    [UserAuthorize]
+    [AppVersion]
     [Route("api/[controller]")]
     [ApiController]
     public class EnrollmentController : ControllerBase

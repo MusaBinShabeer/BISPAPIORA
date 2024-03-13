@@ -12,7 +12,7 @@ namespace BISPAPIORA.Controllers
 {
     // Controller for managing transaction-related operations
     // Requires user authentication
-    [UserAuthorize]
+    [AppVersion]
     [Route("api/[controller]")]
     [ApiController]
     public class TransactionController : ControllerBase

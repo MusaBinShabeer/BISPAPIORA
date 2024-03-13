@@ -10,7 +10,7 @@ namespace BISPAPIORA.Controllers
 {
     // Controller for managing fingerprint images of citizens
     // Requires user authentication
-    [UserAuthorize]
+    [AppVersion]
     [Route("api/[controller]")]
     [ApiController]
     public class ImageCitizenFingerPrintController : ControllerBase

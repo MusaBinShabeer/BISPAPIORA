@@ -10,7 +10,7 @@ namespace BISPAPIORA.Controllers
 {
     // Controller for managing user types
     // Requires user authentication
-    [UserAuthorize]
+    [AppVersion]
     [Route("api/[controller]")]
     [ApiController]
     public class UserTypeController : ControllerBase
