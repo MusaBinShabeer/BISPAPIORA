@@ -12,7 +12,6 @@ namespace BISPAPIORA.Models.DTOS.EnrollmentDTO
         public string fkBank { get; set; } = string.Empty;
         public string ibanNo { get; set; } = string.Empty;
         public string fkTehsil { get; set; } = string.Empty;
-        public string accountHolderName { get; set; } = string.Empty;
         public string fkEmployment { get; set; } = string.Empty;
         public string fkEducation { get; set; } = string.Empty;
         public int accountType { get; set; } = 0;

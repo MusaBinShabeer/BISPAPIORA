@@ -7,7 +7,6 @@ namespace BISPAPIORA.Models.DTOS.CitizenBankInfoDTO
         public string fkCitizen { get; set; } = string.Empty;
         public string fkBank { get; set; } = string.Empty;
         public string ibanNo { get; set; } = string.Empty;
-        public string accountHolderName { get; set; } = string.Empty;
     }
     public class AddEnrolledCitizenBankInfoDTO : CitizenBankInfoDTO
     {

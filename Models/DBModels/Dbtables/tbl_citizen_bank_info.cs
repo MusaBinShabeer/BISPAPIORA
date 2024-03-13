@@ -10,7 +10,6 @@ public partial class tbl_citizen_bank_info
     public string? iban_no { get; set; } = string.Empty;
 
     public string? account_type { get; set; } =string.Empty;
-    public string? account_holder_name { get; set; } =string.Empty;
 
     public Guid? fk_bank { get; set; } = default!;
 

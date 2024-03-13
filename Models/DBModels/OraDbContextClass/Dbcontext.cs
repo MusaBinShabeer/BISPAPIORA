@@ -275,11 +275,6 @@ public partial class Dbcontext : DbContext
                 .IsUnicode(false)
                 .HasDefaultValueSql("''")
                 .HasColumnName("IBAN_NO");
-            entity.Property(e => e.account_holder_name)
-               .HasMaxLength(255)
-               .IsUnicode(false)
-               .HasDefaultValueSql("''")
-               .HasColumnName("ACCOUNT_HOLDER_NAME");
             entity.HasOne(d => d.tbl_bank).WithMany(p => p.tbl_citizen_bank_infos)
                 .HasForeignKey(d => d.fk_bank)
                 .OnDelete(DeleteBehavior.Cascade)
