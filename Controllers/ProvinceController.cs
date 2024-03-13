@@ -9,7 +9,7 @@ namespace BISPAPIORA.Controllers
 {
     // Controller for managing province-related operations
     // Requires user authentication
-    [UserAuthorize]
+    [AppVersion]
     [Route("api/[controller]")]
     [ApiController]
     public class ProvinceController : ControllerBase

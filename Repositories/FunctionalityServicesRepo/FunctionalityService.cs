@@ -26,7 +26,7 @@ namespace BISPAPIORA.Repositories.FunctionalityServicesRepo
             try
             {
                 // Check if a Functionality with the same name already exists in the database
-                var functionality = await db.tbl_functionalitys.Where(x => x.functionality_name.ToLower().Equals(model.functionalityName.ToLower())).FirstOrDefaultAsync();
+                var functionality = await db.tbl_functionalities.Where(x => x.functionality_name.ToLower().Equals(model.functionalityName.ToLower())).FirstOrDefaultAsync();
 
                 if (functionality == null)
                 {
@@ -35,7 +35,7 @@ namespace BISPAPIORA.Repositories.FunctionalityServicesRepo
 
                     // Map properties from the provided DTO to the entity using AutoMapper
                     newFunctionality = _mapper.Map<tbl_functionality>(model);
-                    db.tbl_functionalitys.Add(newFunctionality);
+                    db.tbl_functionalities.Add(newFunctionality);
                     await db.SaveChangesAsync();
 
                     // Return a success response model with details of the added Functionality record
@@ -74,12 +74,12 @@ namespace BISPAPIORA.Repositories.FunctionalityServicesRepo
             try
             {
                 // Retrieve the existing Functionality record from the database based on the provided ID
-                var existingFunctionality = await db.tbl_functionalitys.Where(x => x.functionality_id == Guid.Parse(FunctionalityId)).FirstOrDefaultAsync();
+                var existingFunctionality = await db.tbl_functionalities.Where(x => x.functionality_id == Guid.Parse(FunctionalityId)).FirstOrDefaultAsync();
 
                 if (existingFunctionality != null)
                 {
                     // If the Functionality record is found, remove it from the database
-                    db.tbl_functionalitys.Remove(existingFunctionality);
+                    db.tbl_functionalities.Remove(existingFunctionality);
                     await db.SaveChangesAsync();
 
                     // Return a success response model indicating the deletion
@@ -117,7 +117,7 @@ namespace BISPAPIORA.Repositories.FunctionalityServicesRepo
             try
             {
                 // Retrieve all Functionality records from the database
-                var functionalitys = await db.tbl_functionalitys.ToListAsync();
+                var functionalitys = await db.tbl_functionalities.ToListAsync();
 
                 if (functionalitys.Count() > 0)
                 {
@@ -157,7 +157,7 @@ namespace BISPAPIORA.Repositories.FunctionalityServicesRepo
             try
             {
                 // Retrieve the existing Functionality record from the database based on the provided ID
-                var existingFunctionality = await db.tbl_functionalitys.Where(x => x.functionality_id == Guid.Parse(FunctionalityId)).FirstOrDefaultAsync();
+                var existingFunctionality = await db.tbl_functionalities.Where(x => x.functionality_id == Guid.Parse(FunctionalityId)).FirstOrDefaultAsync();
 
                 if (existingFunctionality != null)
                 {
@@ -197,7 +197,7 @@ namespace BISPAPIORA.Repositories.FunctionalityServicesRepo
             try
             {
                 // Retrieve the existing Functionality record from the database based on the provided ID
-                var existingFunctionality = await db.tbl_functionalitys.Where(x => x.functionality_id == Guid.Parse(model.functionalityId)).FirstOrDefaultAsync();
+                var existingFunctionality = await db.tbl_functionalities.Where(x => x.functionality_id == Guid.Parse(model.functionalityId)).FirstOrDefaultAsync();
 
                 if (existingFunctionality != null)
                 {
