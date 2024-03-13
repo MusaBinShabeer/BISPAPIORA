@@ -21,7 +21,7 @@ public partial class Dbcontext : DbContext
 
     public virtual DbSet<tbl_bank> tbl_banks { get; set; }
 
-    public virtual DbSet<tbl_functionality> tbl_functionalitys { get; set; }
+    public virtual DbSet<tbl_functionality> tbl_functionalities { get; set; }
 
     public virtual DbSet<tbl_group_permission> tbl_group_permissions { get; set; }
 

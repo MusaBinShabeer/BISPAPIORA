@@ -4,6 +4,7 @@ using BISPAPIORA.Models.DBModels.Dbtables;
 using BISPAPIORA.Models.DBModels.OraDbContextClass;
 using BISPAPIORA.Models.DTOS.AuthDTO;
 using BISPAPIORA.Models.DTOS.ResponseDTO;
+using BISPAPIORA.Repositories.ComplexMappersRepo;
 using BISPAPIORA.Repositories.JWTServicesRepo;
 using Microsoft.EntityFrameworkCore;
 using System.IdentityModel.Tokens.Jwt;
@@ -17,12 +18,14 @@ namespace BISPAPIORA.Repositories.AuthServicesRepo
         private readonly Dbcontext db;
         private readonly IMapper mapper;
         private readonly IJwtUtils jwtUtils;
-        public AuthServices(IConfiguration configuration, Dbcontext db, IMapper mapper, IJwtUtils jwtUtils)
+        private readonly IComplexMapperServices complexMapperServices;
+        public AuthServices(IConfiguration configuration, Dbcontext db, IMapper mapper, IJwtUtils jwtUtils, IComplexMapperServices complexMapperServices)
         {
             _configuration = configuration;
             this.db = db;
             this.mapper = mapper;
             this.jwtUtils = jwtUtils;
+            this.complexMapperServices = complexMapperServices;
         }
 
         // Handles user login based on the provided credentials
@@ -32,7 +35,7 @@ namespace BISPAPIORA.Repositories.AuthServicesRepo
             try
             {
                 // Retrieve user information from the database based on the provided email
-                var user = await db.tbl_users.Include(x => x.tbl_user_type).Where(x => x.user_email.ToLower() == model.userEmail.ToLower()).FirstOrDefaultAsync();
+                var user = await db.tbl_users.Include(x => x.tbl_user_type).ThenInclude(x=>x.tbl_group_permissions).ThenInclude(x=>x.tbl_functionality).Where(x => x.user_email.ToLower() == model.userEmail.ToLower()).FirstOrDefaultAsync();
 
                 if (user != null)
                 {
@@ -96,7 +99,7 @@ namespace BISPAPIORA.Repositories.AuthServicesRepo
                 await db.SaveChangesAsync();
 
                 // Map user information to the response DTO
-                var responseUser = mapper.Map<LoginResponseDTO>(user);
+                var responseUser = complexMapperServices.ComplexAutomapperForLogin().Map<LoginResponseDTO>(user);
                 responseUser.userToken = user.user_token;
 
                 // Return a success response model with the user information and JWT token

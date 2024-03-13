@@ -10,7 +10,7 @@ namespace BISPAPIORA.Controllers
 {
     // Controller for managing attachment images of citizens
     // Requires user authentication
-    [UserAuthorize]
+    [AppVersion]
     [Route("api/[controller]")]
     [ApiController]
     public class ImageCitizenAttachmentController : ControllerBase
