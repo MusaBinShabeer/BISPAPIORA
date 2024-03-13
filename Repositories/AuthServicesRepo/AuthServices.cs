@@ -27,7 +27,6 @@ namespace BISPAPIORA.Repositories.AuthServicesRepo
             this.jwtUtils = jwtUtils;
             this.complexMapperServices = complexMapperServices;
         }
-
         // Handles user login based on the provided credentials
         // Returns a response model indicating the success or failure of the login operation
         public async Task<ResponseModel<LoginResponseDTO>> Login(LoginRequestDTO model)
@@ -35,7 +34,7 @@ namespace BISPAPIORA.Repositories.AuthServicesRepo
             try
             {
                 // Retrieve user information from the database based on the provided email
-                var user = await db.tbl_users.Include(x => x.tbl_user_type).ThenInclude(x=>x.tbl_group_permissions).ThenInclude(x=>x.tbl_functionality).Where(x => x.user_email.ToLower() == model.userEmail.ToLower()).FirstOrDefaultAsync();
+                var user = await db.tbl_users.Include(x => x.tbl_user_type).ThenInclude(x => x.tbl_group_permissions).ThenInclude(x => x.tbl_functionality).Where(x => x.user_email.ToLower() == model.userEmail.ToLower()).FirstOrDefaultAsync();
 
                 if (user != null)
                 {
@@ -43,7 +42,43 @@ namespace BISPAPIORA.Repositories.AuthServicesRepo
                     if (user.user_password == new OtherServices().encodePassword(model.userPassword))
                     {
                         // If the password is correct, proceed with the login operation
-                        return await Login(user);
+                        //return await Login(user);
+
+                        //stateless Token Method
+                        try
+                        {
+                            var userRole = user.tbl_user_type.user_type_name;
+                            var authClaims = new List<Claim>
+                            {
+                                new Claim(ClaimTypes.Email, user.user_email),
+                                new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
+                                new Claim(ClaimTypes.Role, userRole)
+                            };
+
+                            // Generate a JWT token using the authentication claims
+                            var token = jwtUtils.GetToken(authClaims);
+
+                            // Map user information to the response DTO
+                            var responseUser = mapper.Map<LoginResponseDTO>(user);
+                            responseUser.userToken = new JwtSecurityTokenHandler().WriteToken(token);
+
+                            // Return a success response model with the user information and JWT token
+                            return new ResponseModel<LoginResponseDTO>()
+                            {
+                                data = responseUser,
+                                success = true,
+                                remarks = "Success"
+                            };
+                        }
+                        catch (Exception ex)
+                        {
+                            // Return a failure response model with details about the exception if an error occurs during the login process
+                            return new ResponseModel<LoginResponseDTO>()
+                            {
+                                success = false,
+                                remarks = $"There was an error during the login process: {ex.Message}"
+                            };
+                        }
                     }
                     else
                     {

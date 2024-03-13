@@ -32,17 +32,16 @@ namespace BISPAPIORA.Repositories.GroupPermissionServicesRepo
                 {
                     // If no existing record is found, create a new GroupPermission record
                     var newGroupPermission = new tbl_group_permission();
-
+                    
                     // Map properties from the provided DTO to the entity using AutoMapper
                     newGroupPermission = _mapper.Map<tbl_group_permission>(model);
                     db.tbl_group_permissions.Add(newGroupPermission);
                     await db.SaveChangesAsync();
-
                     // Return a success response model with details of the added GroupPermission record
                     return new ResponseModel<GroupPermissionResponseDTO>()
                     {
                         success = true,
-                        remarks = $"Group Permission of User type: {newGroupPermission.tbl_user_type.user_type_name} with Functionality {newGroupPermission.tbl_functionality.functionality_name} has been added successfully",
+                        remarks = $"Group Permission has been added successfully",
                         data = _mapper.Map<GroupPermissionResponseDTO>(newGroupPermission),
                     };
                 }
