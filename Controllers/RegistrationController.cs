@@ -11,6 +11,7 @@ namespace BISPAPIORA.Controllers
 {
     // Custom authorization attribute for user authentication
     [AppVersion]
+    //[UserAuthorize]
     [Route("api/[controller]")]
     [ApiController]
     public class RegistrationController : ControllerBase
