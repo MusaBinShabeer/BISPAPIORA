@@ -97,7 +97,7 @@ namespace BISPAPIORA.Extensions
             services.AddTransient<IImageCitizenFingerPrintService, ImageCitizenFingerPrintService>();
             services.AddTransient<IUserTypeService, UserTypeService>();
             services.AddTransient<IJwtUtils, JWTUtils>();
-            services.AddSingleton<UserAuthorizeAttribute>();
+            services.AddTransient<UserAuthorizeAttribute>();
             services.AddTransient<IUserService, UserService>(); 
             services.AddTransient<IAuthServices, AuthServices>();
             services.AddTransient<IReportingResponseService, ReportingResponseService>();
