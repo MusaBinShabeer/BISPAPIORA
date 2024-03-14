@@ -2,8 +2,8 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc.Filters;
 using Microsoft.AspNetCore.Mvc;
-using BISPAPIORA.Repositories.AppVersionServicesRepo;
 using System.Net;
+using BISPAPIORA.Repositories.AppVersionValidatingServicesRepo;
 
 namespace BISPAPIORA.Extensions.Middleware
 {
@@ -12,18 +12,18 @@ namespace BISPAPIORA.Extensions.Middleware
     {
 
         private readonly IConfiguration configuration;
-        private readonly IAppVersionServices appVersionServices;
+        private readonly IAppVersionValidatingServices appVersionValidatingServices;
         private readonly string AppVersionHeaderName;
-        public UserAuthorizeAttribute( IAppVersionServices appVersionServices, IConfiguration configuration)
+        public UserAuthorizeAttribute(IAppVersionValidatingServices appVersionValidatingServices, IConfiguration configuration)
         {
-            this.appVersionServices = appVersionServices;
+            this.appVersionValidatingServices = appVersionValidatingServices;
             this.configuration = configuration;
             AppVersionHeaderName = configuration.GetSection("App-Version:Header_key").Value ?? "";
         }
         public void OnAuthorization(AuthorizationFilterContext context)
         {
             string appVersion = context.HttpContext.Request.Headers[AppVersionHeaderName];
-            if (!appVersionServices.IsValid(appVersion))
+            if (!appVersionValidatingServices.IsValid(appVersion))
             {
                 var allowAnonymous = context.ActionDescriptor.EndpointMetadata.OfType<AllowAnonymousAttribute>().Any();
                 if (allowAnonymous)

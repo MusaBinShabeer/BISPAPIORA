@@ -73,7 +73,7 @@ namespace BISPAPIORA.Repositories.JWTServicesRepo
             {
                 // Retrieve the user from the database based on the email and user token
                 var user = await db.tbl_users
-                    .Where(x => x.user_email == email && x.user_token == userToken)
+                    .Where(x => x.user_email == email)
                     .FirstOrDefaultAsync();
 
                 // Check if a user is found

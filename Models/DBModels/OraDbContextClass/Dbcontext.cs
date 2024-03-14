@@ -44,11 +44,13 @@ public partial class Dbcontext : DbContext
     public virtual DbSet<tbl_registration> tbl_registrations { get; set; }
 
     public virtual DbSet<tbl_tehsil> tbl_tehsils { get; set; }
-    //public virtual DbSet<tbl_citizen_attachment> tbl_citizen_attachments { get; set; }
-    //public virtual DbSet<tbl_citizen_thumb_print> tbl_citizen_thumb_prints { get; set; }
+
     public virtual DbSet<tbl_citizen_compliance> tbl_citizen_compliances { get; set; }
+
     public virtual DbSet<tbl_transaction> tbl_transactions { get; set; }
+
     public virtual DbSet<tbl_employment_other_specification> tbl_employment_other_specifications { get; set; }
+
     public virtual DbSet<tbl_bank_other_specification> tbl_bank_other_specifications { get; set; }
 
     public virtual DbSet<tbl_image_citizen_attachment> tbl_image_citizen_attachments { get; set; }
@@ -58,7 +60,10 @@ public partial class Dbcontext : DbContext
     public virtual DbSet<tbl_user> tbl_users { get; set; }
 
     public virtual DbSet<tbl_user_type> tbl_user_types { get; set; }
+
     public virtual DbSet<tbl_citizen_family_bank_info> tbl_citizen_family_bank_infos { get; set; }
+
+    public virtual DbSet<tbl_app_version> tbl_app_versions { get; set; }
 
     //    protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     //#warning To protect potentially sensitive information in your connection string, you should move it out of source code. You can avoid scaffolding the connection string by using the Name= syntax to read it from configuration - see https://go.microsoft.com/fwlink/?linkid=2131148. For more guidance on storing connection strings, see https://go.microsoft.com/fwlink/?LinkId=723263.
@@ -105,7 +110,7 @@ public partial class Dbcontext : DbContext
         {
             entity.HasKey(e => e.functionality_id).HasName("TBL_FUNCTIONALITY_PK");
 
-            entity.ToTable("TBL_FUNCTIOALITY");
+            entity.ToTable("TBL_FUNCTIONALITY");
 
             entity.Property(e => e.functionality_id)
                 .HasDefaultValueSql("SYS_GUID() ")
@@ -275,11 +280,6 @@ public partial class Dbcontext : DbContext
                 .IsUnicode(false)
                 .HasDefaultValueSql("''")
                 .HasColumnName("IBAN_NO");
-            entity.Property(e => e.account_holder_name)
-               .HasMaxLength(255)
-               .IsUnicode(false)
-               .HasDefaultValueSql("''")
-               .HasColumnName("ACCOUNT_HOLDER_NAME");
             entity.HasOne(d => d.tbl_bank).WithMany(p => p.tbl_citizen_bank_infos)
                 .HasForeignKey(d => d.fk_bank)
                 .OnDelete(DeleteBehavior.Cascade)
@@ -568,70 +568,6 @@ public partial class Dbcontext : DbContext
                 .HasConstraintName("FK_DISTRICT_TEHSIL");
         });
 
-        //modelBuilder.Entity<tbl_citizen_attachment>(entity =>
-        //{
-        //    entity.HasKey(e => e.citizen_attachment_id).HasName("SYS_C006061");
-
-        //    entity.ToTable("TBL_CITIZEN_ATTACHMENT");
-
-        //    entity.HasIndex(e => e.fk_citizen, "SYS_C006062").IsUnique();
-
-        //    entity.Property(e => e.citizen_attachment_id)
-        //        .HasDefaultValueSql("SYS_GUID() ")
-        //        .HasColumnName("CITIZEN_ATTACHMENT_ID");
-        //    entity.Property(e => e.attachment_name)
-        //        .HasMaxLength(255)
-        //        .IsUnicode(false)
-        //        .HasDefaultValueSql("'' ")
-        //        .HasColumnName("CITIZEN_ATTACHMENT_NAME");
-        //    entity.Property(e => e.attachment_path)
-        //        .HasMaxLength(255)
-        //        .IsUnicode(false)
-        //        .HasDefaultValueSql("'' ")
-        //        .HasColumnName("CITIZEN_ATTACHMENT_PATH");
-        //    entity.Property(e => e.code)
-        //        .ValueGeneratedOnAdd()
-        //        .HasColumnType("NUMBER")
-        //        .HasColumnName("CODE");
-        //    entity.Property(e => e.fk_citizen).HasColumnName("FK_CITIZEN");
-        //    entity.HasOne(d => d.tbl_citizen).WithOne(p => p.tbl_citizen_attachment)
-        //       .HasForeignKey<tbl_citizen_attachment>(d => d.fk_citizen)
-        //       .OnDelete(DeleteBehavior.Cascade)
-        //       .HasConstraintName("FK_CITIZEN_ATTACHMENT_CITIZEN");
-        //});
-
-        //modelBuilder.Entity<tbl_citizen_thumb_print>(entity =>
-        //{
-        //    entity.HasKey(e => e.citizen_thumb_print_id).HasName("SYS_C006067");
-
-        //    entity.ToTable("TBL_CITIZEN_THUMB_PRINT");
-
-        //    entity.HasIndex(e => e.fk_citizen, "SYS_C006068").IsUnique();
-
-        //    entity.Property(e => e.citizen_thumb_print_id)
-        //        .HasDefaultValueSql("SYS_GUID() ")
-        //        .HasColumnName("CITIZEN_THUMB_PRINT_ID");
-        //    entity.Property(e => e.code)
-        //        .ValueGeneratedOnAdd()
-        //        .HasColumnType("NUMBER")
-        //        .HasColumnName("CODE");
-        //    entity.Property(e => e.citizen_thumb_print_name)
-        //        .HasMaxLength(255)
-        //        .IsUnicode(false)
-        //        .HasDefaultValueSql("'' ")
-        //        .HasColumnName("CITIZEN_THUMB_PRINT_NAME");
-        //    entity.Property(e => e.citizen_thumb_print_path)
-        //        .HasMaxLength(255)
-        //        .IsUnicode(false)
-        //        .HasDefaultValueSql("'' ")
-        //        .HasColumnName("CITIZEN_THUMB_PRINT_PATH");
-        //    entity.Property(e => e.fk_citizen).HasColumnName("FK_CITIZEN");
-        //    entity.HasOne(d => d.tbl_citizen).WithOne(p => p.tbl_citizen_thumb_print)
-        //       .HasForeignKey<tbl_citizen_thumb_print>(d => d.fk_citizen)
-        //       .OnDelete(DeleteBehavior.Cascade)
-        //       .HasConstraintName("FK_CITIZEN_THUMB_PRINT_CITIZEN");
-        //});
-
         modelBuilder.Entity<tbl_bank_other_specification>(entity =>
         {
             entity.HasKey(e => e.bank_other_specification_id).HasName("SYS_C006191");
@@ -869,6 +805,27 @@ public partial class Dbcontext : DbContext
                 .IsUnicode(false)
                 .HasDefaultValueSql("''")
                 .HasColumnName("USER_TYPE_NAME");
+        });
+
+        modelBuilder.Entity<tbl_app_version>(entity =>
+        {
+            entity.HasKey(e => e.app_version_id).HasName("SYS_C008281");
+
+            entity.ToTable("TBL_APP_VERSION");
+
+            entity.Property(e => e.app_version_id)
+                .HasDefaultValueSql("SYS_GUID() ")
+                .HasColumnName("APP_VERSION_ID");
+            entity.Property(e => e.app_update_url)
+                .HasMaxLength(255)
+                .IsUnicode(false)
+                .HasDefaultValueSql("''")
+                .HasColumnName("APP_UPDATE_URL");
+            entity.Property(e => e.app_version)
+                .HasMaxLength(255)
+                .IsUnicode(false)
+                .HasDefaultValueSql("''")
+                .HasColumnName("APP_VERSION");
         });
 
         OnModelCreatingPartial(modelBuilder);

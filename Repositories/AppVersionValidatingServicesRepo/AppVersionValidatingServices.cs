@@ -1,9 +1,15 @@
-﻿namespace BISPAPIORA.Repositories.AppVersionServicesRepo
+﻿using AutoMapper;
+using BISPAPIORA.Models.DBModels.Dbtables;
+using BISPAPIORA.Models.DBModels.OraDbContextClass;
+using BISPAPIORA.Models.DTOS.ResponseDTO;
+using Microsoft.EntityFrameworkCore;
+
+namespace BISPAPIORA.Repositories.AppVersionValidatingServicesRepo
 {
-    public class AppVersionServices : IAppVersionServices
+    public class AppVersionValidatingServices : IAppVersionValidatingServices
     {
         private readonly IConfiguration configuration;
-        public AppVersionServices(IConfiguration configuration)
+        public AppVersionValidatingServices(IConfiguration configuration)
         {
             this.configuration = configuration;
         }
