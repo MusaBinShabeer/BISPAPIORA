@@ -9,14 +9,16 @@ namespace BISPAPIORA.Repositories.AppVersionValidatingServicesRepo
     public class AppVersionValidatingServices : IAppVersionValidatingServices
     {
         private readonly IConfiguration configuration;
-        public AppVersionValidatingServices(IConfiguration configuration)
+        private readonly Dbcontext db;
+        public AppVersionValidatingServices(IConfiguration configuration, Dbcontext db)
         {
             this.configuration = configuration;
+            this.db = db;
         }
         public bool IsValid(string apiVersion)
         {
-            var key = configuration.GetSection("App-Version:Version").Value ?? "";
-            if (apiVersion == key)
+            var key = db.tbl_app_versions.FirstOrDefault();
+            if (apiVersion == key.app_version)
             {
                 return true;
             }

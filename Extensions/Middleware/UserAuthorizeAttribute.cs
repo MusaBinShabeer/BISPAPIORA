@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc.Filters;
 using Microsoft.AspNetCore.Mvc;
 using System.Net;
 using BISPAPIORA.Repositories.AppVersionValidatingServicesRepo;
+using BISPAPIORA.Models.DBModels.OraDbContextClass;
 
 namespace BISPAPIORA.Extensions.Middleware
 {
@@ -14,11 +15,13 @@ namespace BISPAPIORA.Extensions.Middleware
         private readonly IConfiguration configuration;
         private readonly IAppVersionValidatingServices appVersionValidatingServices;
         private readonly string AppVersionHeaderName;
-        public UserAuthorizeAttribute(IAppVersionValidatingServices appVersionValidatingServices, IConfiguration configuration)
+        private readonly Dbcontext db;
+        public UserAuthorizeAttribute(IAppVersionValidatingServices appVersionValidatingServices, IConfiguration configuration, Dbcontext db)
         {
             this.appVersionValidatingServices = appVersionValidatingServices;
             this.configuration = configuration;
             AppVersionHeaderName = configuration.GetSection("App-Version:Header_key").Value ?? "";
+            this.db = db;
         }
         public void OnAuthorization(AuthorizationFilterContext context)
         {
@@ -36,7 +39,8 @@ namespace BISPAPIORA.Extensions.Middleware
             }
             else
             {
-                context.Result = Result(HttpStatusCode.Unauthorized, "Follow This Url to Update App");
+                var url = db.tbl_app_versions.FirstOrDefault().app_update_url;
+                context.Result = Result(HttpStatusCode.Unauthorized, $"Follow This Url {url} to Update App");
             }
         }
         private static ActionResult Result(HttpStatusCode statusCode, string reason) => new ContentResult
