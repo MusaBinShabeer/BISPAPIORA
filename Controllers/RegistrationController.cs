@@ -18,7 +18,6 @@ namespace BISPAPIORA.Controllers
     {
         private readonly IRegistrationService registrationService;
         private readonly ICitizenService citizenService;
-
         // Constructor for Dependency Injection
         public RegistrationController(IRegistrationService registrationService, ICitizenService citizenService)
         {

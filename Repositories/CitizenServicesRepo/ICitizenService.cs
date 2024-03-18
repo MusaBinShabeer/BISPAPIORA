@@ -20,6 +20,7 @@ namespace BISPAPIORA.Repositories.CitizenServicesRepo
         public Task<ResponseModel<EnrollmentResponseDTO>> UpdateEnrolledCitizen(UpdateEnrollmentDTO model);
         public Task<ResponseModel<List<EnrollmentResponseDTO>>> GetEnrolledCitizensList();
         public Task<ResponseModel<EnrollmentResponseDTO>> GetEnrolledCitizenByCnic(string citizenCnic);
+        public Task<ResponseModel<RegistrationResponseDTO>> VerifyCitizenEnrollmentWithCNIC(string citizenCnic);
         #endregion
         public Task<ResponseModel<RegistrationResponseDTO>> DeleteCitizen(string CitizenId);
         public Task<ResponseModel<RegistrationResponseDTO>> GetCitizen(string CitizenId);
