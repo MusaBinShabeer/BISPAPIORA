@@ -75,7 +75,8 @@ namespace BISPAPIORA.Extensions.AutomapperProfiles
              .ForMember(d => d.pmt, opt => opt.MapFrom(src => (!string.IsNullOrEmpty(src.pmt) ? src.pmt : "")))
              .ForMember(d => d.submission_date, opt => opt.MapFrom(src => !string.IsNullOrEmpty(src.submissionDate) ? DateTime.Parse(src.submissionDate) : default!))
              .ForMember(d => d.is_valid_beneficiary, opt => opt.MapFrom(src => (src.isValidBeneficiary)))
-             .ForMember(d => d.citizen_cnic, opt => opt.MapFrom(src => src.citizenCnic));
+             .ForMember(d => d.citizen_cnic, opt => opt.MapFrom(src => src.citizenCnic))
+             .ForMember(d => d.insertion_date, opt => opt.MapFrom((src => DateTime.Now)));
             CreateMap<UpdateRegistrationDTO, tbl_citizen>()
              .ForMember(d => d.citizen_id, opt => opt.MapFrom((src, dest) => dest.citizen_id))
              .ForMember(d => d.citizen_name, opt => opt.MapFrom((src, dest) => otherServices.Check(src.citizenName) ? src.citizenName : dest.citizen_name))
@@ -165,8 +166,9 @@ namespace BISPAPIORA.Extensions.AutomapperProfiles
              .ForMember(d => d.unique_hh_id, opt => opt.MapFrom((src, dest) => !string.IsNullOrEmpty(src.uniHHId) ? decimal.Parse(src.uniHHId) : dest.unique_hh_id))
              .ForMember(d => d.pmt, opt => opt.MapFrom((src, dest) => (!string.IsNullOrEmpty(src.pmt) ? src.pmt :dest.pmt )))
              .ForMember(d => d.submission_date, opt => opt.MapFrom((src, dest) => !string.IsNullOrEmpty(src.submissionDate) ? DateTime.Parse(src.submissionDate) : dest.submission_date!))
-             .ForMember(d => d.is_valid_beneficiary, opt => opt.MapFrom((src, dest) => (dest.is_valid_beneficiary)));
-             CreateMap<UpdateEnrollmentDTO, tbl_citizen>()
+             .ForMember(d => d.is_valid_beneficiary, opt => opt.MapFrom((src, dest) => (dest.is_valid_beneficiary)))
+             .ForMember(d => d.insertion_date, opt => opt.MapFrom((src => DateTime.Now)));
+            CreateMap<UpdateEnrollmentDTO, tbl_citizen>()
              .ForMember(d => d.citizen_id, opt => opt.MapFrom((src, dest) => dest.citizen_id))
              .ForMember(d => d.citizen_name, opt => opt.MapFrom((src, dest) => otherServices.Check(src.citizenName) ? src.citizenName : dest.citizen_name))
              .ForMember(d => d.citizen_phone_no, opt => opt.MapFrom((src, dest) => otherServices.Check(src.citizenPhoneNo) ? src.citizenPhoneNo : dest.citizen_phone_no))

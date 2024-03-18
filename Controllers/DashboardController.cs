@@ -1,8 +1,10 @@
 ﻿using BISPAPIORA.Extensions.Middleware;
 using BISPAPIORA.Models.DTOS.CitizenDTO;
+using BISPAPIORA.Models.DTOS.DashboardDTO;
 using BISPAPIORA.Models.DTOS.RegistrationDTO;
 using BISPAPIORA.Models.DTOS.ResponseDTO;
 using BISPAPIORA.Repositories.CitizenServicesRepo;
+using BISPAPIORA.Repositories.DashboardServicesRepo;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
@@ -14,9 +16,11 @@ namespace BISPAPIORA.Controllers
     public class DashboardController : ControllerBase
     {
         private readonly ICitizenService citizenService;
-        public DashboardController(ICitizenService citizenService)
+        private readonly IDashboardServices dashboardServices;
+        public DashboardController(ICitizenService citizenService, IDashboardServices dashboardServices)
         {
             this.citizenService = citizenService;
+            this.dashboardServices = dashboardServices;
         }
         [HttpGet("GetByCnic")]
         public async Task<ActionResult<ResponseModel<CitizenResponseDTO>>> GetByCnic(string cnic)
@@ -38,6 +42,34 @@ namespace BISPAPIORA.Controllers
                 };
                 return BadRequest(response);
             }
+        }
+
+        [HttpGet("GetTehsilStatus")]
+        public async Task<ActionResult<ResponseModel<List<TehsilStatusResponseDTO>>>> GetTehsilStatus()
+        {
+            var response = dashboardServices.GetTehsilStatusResponses();
+            return Ok(await response);
+        }
+
+        [HttpGet("GetDistrictStatus")]
+        public async Task<ActionResult<ResponseModel<List<DistrictStatusResponseDTO>>>> GetDistrictStatus()
+        {
+            var response = dashboardServices.GetDistrictStatusResponses();
+            return Ok(await response);
+        }
+
+        [HttpGet("GetProvinceStatus")]
+        public async Task<ActionResult<ResponseModel<List<ProvinceStatusResponseDTO>>>> GetProvinceStatus()
+        {
+            var response = dashboardServices.GetProvinceStatusResponses();
+            return Ok(await response);
+        }
+
+        [HttpGet("GetUserPerformanceStats")]
+        public async Task<ActionResult<ResponseModel<ProvinceStatusResponseDTO>>> GetUserPerformanceStats(string id)
+        {
+            var response = dashboardServices.GetUserPerformanceStats(id);
+            return Ok(await response);
         }
     }
 }
