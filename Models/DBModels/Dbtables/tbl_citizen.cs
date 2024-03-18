@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using BISPAPIORA.Models.DBModels.Dbtables2;
 
 namespace BISPAPIORA.Models.DBModels.Dbtables;
 
@@ -30,6 +31,7 @@ public partial class tbl_citizen
     public Guid? fk_citizen_employment { get; set; } = default(Guid?);
 
     public Guid? fk_tehsil { get; set; } = default(Guid?);
+
     public virtual tbl_education? tbl_citizen_education { get; set; }
 
     public virtual tbl_employment? tbl_citizen_employment { get; set; }
@@ -37,9 +39,11 @@ public partial class tbl_citizen
     public virtual tbl_tehsil? tbl_citizen_tehsil { get; set; }
 
     public virtual tbl_citizen_bank_info? tbl_citizen_bank_info { get; set; }
+
     public virtual tbl_citizen_family_bank_info? tbl_citizen_family_bank_info { get; set; }
 
     public virtual tbl_citizen_scheme? tbl_citizen_scheme { get; set; }
+
     public virtual tbl_citizen_compliance? tbl_citizen_compliance { get; set; }
 
     public virtual tbl_enrollment? tbl_enrollment { get; set; }
@@ -48,7 +52,13 @@ public partial class tbl_citizen
     //public virtual tbl_citizen_attachment? tbl_citizen_attachment { get; set; }
     //public virtual tbl_citizen_thumb_print? tbl_citizen_thumb_print { get; set; }
     public virtual tbl_employment_other_specification? tbl_employment_other_specification { get; set; }
+
     public virtual ICollection<tbl_transaction> tbl_transactions { get; set; } = new List<tbl_transaction>();
+
+    public virtual ICollection<tbl_image_citizen_attachment> tbl_image_citizen_attachments { get; set; } = new List<tbl_image_citizen_attachment>();
+
+    public virtual ICollection<tbl_image_citizen_finger_print> tbl_image_citizen_finger_prints { get; set; } = new List<tbl_image_citizen_finger_print>();
+
     public  bool? is_valid_beneficiary { get; set; }
 
     public decimal? unique_hh_id { get; set; } // Unique HouseholdId
