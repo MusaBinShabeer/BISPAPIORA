@@ -31,13 +31,13 @@ using BISPAPIORA.Repositories.AuthServicesRepo;
 using BISPAPIORA.Repositories.InnerServicesRepo;
 
 using BISPAPIORA.Repositories.ReportingResponseServicesRepo;
-using BISPAPIORA.Repositories.TehsilStatusResponseServicesRepo;
 using BISPAPIORA.Repositories.FunctionalityServicesRepo;
 using BISPAPIORA.Models.DTOS.GroupPermissionDTO;
 using BISPAPIORA.Repositories.GroupPermissionServicesRepo;
 using BISPAPIORA.Repositories.AppVersionServicesRepo;
 using BISPAPIORA.Repositories.ComplexMappersRepo;
 using BISPAPIORA.Repositories.AppVersionValidatingServicesRepo;
+using BISPAPIORA.Repositories.DashboardServicesRepo;
 
 
 
@@ -101,12 +101,12 @@ namespace BISPAPIORA.Extensions
             services.AddTransient<IUserService, UserService>(); 
             services.AddTransient<IAuthServices, AuthServices>();
             services.AddTransient<IReportingResponseService, ReportingResponseService>();
-            services.AddTransient<ITehsilStatusResponseService, TehsilStatusResponseService>();
             services.AddTransient<IFunctionalityService, FunctionalityService>();
             services.AddTransient<IGroupPermissionService, GroupPermissionService>();
             services.AddTransient<IAppVersionValidatingServices, AppVersionValidatingServices>();
             services.AddTransient<IComplexMapperServices, ComplexMapperServices>();
             services.AddTransient<IAppVersionService, AppVersionService>();
+            services.AddTransient<IDashboardServices, DashboardServices>();
         }
     }
 }
