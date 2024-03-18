@@ -298,7 +298,16 @@ namespace BISPAPIORA.Extensions.AutomapperProfiles
               .ForMember(d => d.citizenSchemeQuarter, opt => opt.MapFrom((src) => src.tbl_citizen_scheme.citizen_scheme_quarter))
               .ForMember(d => d.quarterCode, opt => opt.MapFrom((src) => src.tbl_citizen_scheme.citizen_scheme_quarter_code))
               .ForMember(d => d.citizenSchemeStartingMonth, opt => opt.MapFrom((src) => src.tbl_citizen_scheme.citizen_scheme_starting_month))
-              .ForMember(d => d.citizenSchemeSavingAmount, opt => opt.MapFrom((src) => src.tbl_citizen_scheme.citizen_scheme_saving_amount));
+              .ForMember(d => d.citizenSchemeSavingAmount, opt => opt.MapFrom((src) => src.tbl_citizen_scheme.citizen_scheme_saving_amount))
+              .ForMember(d => d.imageCitizenAttachmentName, opt => opt.MapFrom((src) => src.tbl_image_citizen_attachment.name))
+              .ForMember(d => d.imageCitizenAttachmentData, opt => opt.MapFrom((src) => src.tbl_image_citizen_attachment.data))
+              .ForMember(d => d.imageCitizenAttachmentContentType, opt => opt.MapFrom((src) => src.tbl_image_citizen_attachment.content_type))
+              .ForMember(d => d.imageCitizenFingerPrintName, opt => opt.MapFrom((src) => src.tbl_image_citizen_finger_print.finger_print_name))
+              .ForMember(d => d.imageCitizenFingerPrintData, opt => opt.MapFrom((src) => src.tbl_image_citizen_finger_print.finger_print_data))
+              .ForMember(d => d.imageCitizenFingerPrintContentType, opt => opt.MapFrom((src) => src.tbl_image_citizen_finger_print.finger_print_content_type))
+              .ForMember(d => d.imageCitizenThumbPrintName, opt => opt.MapFrom((src) => src.tbl_image_citizen_finger_print.thumb_print_content_type))
+              .ForMember(d => d.imageCitizenThumbPrintData, opt => opt.MapFrom((src) => src.tbl_image_citizen_finger_print.thumb_print_data))
+              .ForMember(d => d.imageCitizenThumbPrintContentType, opt => opt.MapFrom((src) => src.tbl_image_citizen_finger_print.thumb_print_content_type));
             #endregion
         }
     }
