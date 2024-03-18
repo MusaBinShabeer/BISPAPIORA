@@ -26,7 +26,7 @@ namespace BISPAPIORA.Extensions.Middleware
         public void OnAuthorization(AuthorizationFilterContext context)
         {
             string appVersion = context.HttpContext.Request.Headers[AppVersionHeaderName];
-            if (!appVersionValidatingServices.IsValid(appVersion))
+            if (appVersionValidatingServices.IsValid(appVersion))
             {
                 var allowAnonymous = context.ActionDescriptor.EndpointMetadata.OfType<AllowAnonymousAttribute>().Any();
                 if (allowAnonymous)
