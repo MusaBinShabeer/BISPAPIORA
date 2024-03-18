@@ -15,7 +15,8 @@ namespace BISPAPIORA.Extensions.AutomapperProfiles
                 .ForMember(d => d.data, opt => opt.MapFrom(src => src.imageCitizenAttachmentData))
                 .ForMember(d => d.content_type, opt => opt.MapFrom(src => src.imageCitizenAttachmentContentType))
                 .ForMember(d => d.cnic, opt => opt.MapFrom(src => src.imageCitizenAttachmentCnic))
-                .ForMember(d => d.fk_citizen, opt => opt.MapFrom((src, dest) => otherServices.Check(src.fkCitizen) ? Guid.Parse(src.fkCitizen) : dest.fk_citizen));
+                .ForMember(d => d.fk_citizen, opt => opt.MapFrom((src, dest) => otherServices.Check(src.fkCitizen) ? Guid.Parse(src.fkCitizen) : dest.fk_citizen))
+                .ForMember(d => d.insertion_date, opt => opt.MapFrom((src => DateTime.Now)));
             CreateMap<UpdateImageCitizenAttachmentDTO, tbl_image_citizen_attachment>()
                 .ForMember(d => d.id, opt => opt.MapFrom((src, dest) => dest.id))
                 .ForMember(d => d.name, opt => opt.MapFrom((src, dest) => otherServices.Check(src.imageCitizenAttachmentName) ? src.imageCitizenAttachmentName : dest.name))

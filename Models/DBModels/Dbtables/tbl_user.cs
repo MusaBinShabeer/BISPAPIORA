@@ -19,8 +19,10 @@ public partial class tbl_user
     public bool? is_ftp_set { get; set; } = false;          //ftp => first-time Passwword
 
     public bool? is_active { get; set; } = true;
-    
+
     public string? user_token { get; set; } = string.Empty;
+
+    public DateTime? insertion_date { get; set; }
 
     public Guid? fk_user_type { get; set; } = default!;
 
