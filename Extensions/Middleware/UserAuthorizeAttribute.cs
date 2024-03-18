@@ -40,7 +40,7 @@ namespace BISPAPIORA.Extensions.Middleware
             else
             {
                 var url = db.tbl_app_versions.FirstOrDefault().app_update_url;
-                context.Result = Result(HttpStatusCode.Unauthorized, $"Follow This Url {url} to Update App");
+                context.Result = Result(HttpStatusCode.Unauthorized, $"{url}");
             }
         }
         private static ActionResult Result(HttpStatusCode statusCode, string reason) => new ContentResult

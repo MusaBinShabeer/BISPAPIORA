@@ -2,6 +2,7 @@
 using BISPAPIORA.Extensions;
 using BISPAPIORA.Models.DBModels.Dbtables;
 using BISPAPIORA.Models.DTOS.BankDTO;
+using BISPAPIORA.Models.DTOS.CitizenDTO;
 using BISPAPIORA.Models.DTOS.EmploymentDTO;
 using BISPAPIORA.Models.DTOS.EnrollmentDTO;
 using BISPAPIORA.Models.DTOS.RegistrationDTO;
@@ -223,7 +224,7 @@ namespace BISPAPIORA.Extensions.AutomapperProfiles
              .ForMember(d => d.citizenCode, opt => opt.MapFrom(src => src.id))
              .ForMember(d => d.citizenName, opt => opt.MapFrom(src => src.citizen_name))
              .ForMember(d => d.fatherSpouseName, opt => opt.MapFrom(src => src.citizen_name))
-             .ForMember(d => d.citizenPhoneNo, opt => opt.MapFrom(src => src.citizen_father_spouce_name))
+             .ForMember(d => d.citizenPhoneNo, opt => opt.MapFrom(src => src.citizen_phone_no))
              .ForMember(d => d.maritalStatus, opt => opt.MapFrom(src => (MartialStatusEnum)Enum.Parse(typeof(MartialStatusEnum), src.citizen_martial_status)))
              .ForMember(d => d.maritalStatusName, opt => opt.MapFrom(src => src.citizen_martial_status))
              .ForMember(d => d.citizenGender, opt => opt.MapFrom(src => (GenderEnum)Enum.Parse(typeof(GenderEnum), src.citizen_gender)))
@@ -253,6 +254,51 @@ namespace BISPAPIORA.Extensions.AutomapperProfiles
              .ForMember(d => d.pmt, opt => opt.MapFrom(src => (src.pmt)))
              .ForMember(d => d.submissionDate, opt => opt.MapFrom(src => (src.submission_date).ToString()))
              .ForMember(d => d.isValidBeneficiary, opt => opt.MapFrom(src => (src.is_valid_beneficiary)));
+            #endregion
+            #region Citizen
+            CreateMap<tbl_citizen, CitizenResponseDTO>()
+              .ForMember(d => d.enrollmentId, opt => opt.MapFrom(src => src.tbl_enrollment != null ? src.tbl_enrollment.enrollment_id.ToString() : ""))
+              .ForMember(d => d.registrationId, opt => opt.MapFrom(src => src.tbl_citizen_registration != null ? src.tbl_citizen_registration.registration_id.ToString() : ""))
+              .ForMember(d => d.citizenId, opt => opt.MapFrom(src => src.citizen_id))
+              .ForMember(d => d.citizenCode, opt => opt.MapFrom(src => src.id))
+              .ForMember(d => d.citizenName, opt => opt.MapFrom(src => src.citizen_name))
+              .ForMember(d => d.citizenPhoneNo, opt => opt.MapFrom(src => src.citizen_phone_no))
+              .ForMember(d => d.registrationDate, opt => opt.MapFrom(src => src.tbl_citizen_registration.registered_date))
+              .ForMember(d => d.citizenGender, opt => opt.MapFrom(src => (GenderEnum)Enum.Parse(typeof(GenderEnum), src.citizen_gender)))
+              .ForMember(d => d.genderName, opt => opt.MapFrom(src => src.citizen_gender))
+              .ForMember(d => d.citizenAddress, opt => opt.MapFrom(src => src.citizen_address))
+              .ForMember(d => d.fkTehsil, opt => opt.MapFrom(src => src.fk_tehsil))
+              .ForMember(d => d.fkDistrict, opt => opt.MapFrom(src => src.tbl_citizen_tehsil.fk_district))
+              .ForMember(d => d.fkProvince, opt => opt.MapFrom(src => src.tbl_citizen_tehsil.tbl_district.fk_province))
+              .ForMember(d => d.tehsilName, opt => opt.MapFrom(src => src.tbl_citizen_tehsil != null ? src.tbl_citizen_tehsil.tehsil_name : ""))
+              .ForMember(d => d.districtName, opt => opt.MapFrom(src => src.tbl_citizen_tehsil != null ? src.tbl_citizen_tehsil.tbl_district.district_name : ""))
+              .ForMember(d => d.provinceName, opt => opt.MapFrom(src => src.tbl_citizen_tehsil != null ? src.tbl_citizen_tehsil.tbl_district.tbl_province.province_name : ""))
+              .ForMember(d => d.fkEmployment, opt => opt.MapFrom(src => src.fk_citizen_employment))
+              .ForMember(d => d.employmentName, opt => opt.MapFrom(src => src.tbl_employment_other_specification != null ? src.tbl_employment_other_specification.employment_other_specification : (src.tbl_citizen_employment != null ? src.tbl_citizen_employment.employment_name : "")))
+              .ForMember(d => d.fkEducation, opt => opt.MapFrom(src => src.fk_citizen_education))
+              .ForMember(d => d.educationName, opt => opt.MapFrom(src => src.tbl_citizen_education != null ? src.tbl_citizen_education.education_name : ""))
+              .ForMember(d => d.citizenCnic, opt => opt.MapFrom(src => src.citizen_cnic))
+              .ForMember(d => d.ibanNo, opt => opt.MapFrom((src) => src.tbl_citizen_family_bank_info.iban_no))
+              .ForMember(d => d.accountHolderName, opt => opt.MapFrom((src) => src.tbl_citizen_family_bank_info.account_holder_name))
+              .ForMember(d => d.aIOA, opt => opt.MapFrom((src) => src.tbl_citizen_family_bank_info.family_income))
+              .ForMember(d => d.fkBank, opt => opt.MapFrom(src => (src.tbl_citizen_family_bank_info.fk_bank)))
+              .ForMember(d => d.bankName, opt => opt.MapFrom((src) => src.tbl_citizen_family_bank_info.tbl_bank_other_specification != null ? src.tbl_citizen_family_bank_info.tbl_bank_other_specification.bank_other_specification : src.tbl_citizen_family_bank_info.tbl_bank.bank_name))
+              .ForMember(d => d.uniHHId, opt => opt.MapFrom(src => (src.unique_hh_id).ToString()))
+              .ForMember(d => d.pmt, opt => opt.MapFrom(src => (src.pmt)))
+              .ForMember(d => d.submissionDate, opt => opt.MapFrom(src => (src.submission_date).ToString()))
+              .ForMember(d => d.isValidBeneficiary, opt => opt.MapFrom(src => (src.is_valid_beneficiary)))
+              .ForMember(d => d.fatherSpouseName, opt => opt.MapFrom(src => src.citizen_name))
+              .ForMember(d => d.maritalStatus, opt => opt.MapFrom(src => (MartialStatusEnum)Enum.Parse(typeof(MartialStatusEnum), src.citizen_martial_status)))
+              .ForMember(d => d.maritalStatusName, opt => opt.MapFrom(src => src.citizen_martial_status))
+              .ForMember(d => d.dateOfBirth, opt => opt.MapFrom(src => src.citizen_date_of_birth))
+              .ForMember(d => d.citizenIbanNo, opt => opt.MapFrom((src) => src.tbl_citizen_bank_info.iban_no))
+              .ForMember(d => d.citizenAccountTypeName, opt => opt.MapFrom((src) => src.tbl_citizen_bank_info.account_type))
+              .ForMember(d => d.citizenBankName, opt => opt.MapFrom((src) => src.tbl_citizen_bank_info.tbl_bank_other_specification != null ? src.tbl_citizen_bank_info.tbl_bank_other_specification.bank_other_specification : src.tbl_citizen_bank_info.tbl_bank.bank_name))
+              .ForMember(d => d.citizenSchemeYear, opt => opt.MapFrom((src) => src.tbl_citizen_scheme.citizen_scheme_year))
+              .ForMember(d => d.citizenSchemeQuarter, opt => opt.MapFrom((src) => src.tbl_citizen_scheme.citizen_scheme_quarter))
+              .ForMember(d => d.quarterCode, opt => opt.MapFrom((src) => src.tbl_citizen_scheme.citizen_scheme_quarter_code))
+              .ForMember(d => d.citizenSchemeStartingMonth, opt => opt.MapFrom((src) => src.tbl_citizen_scheme.citizen_scheme_starting_month))
+              .ForMember(d => d.citizenSchemeSavingAmount, opt => opt.MapFrom((src) => src.tbl_citizen_scheme.citizen_scheme_saving_amount));
             #endregion
         }
     }

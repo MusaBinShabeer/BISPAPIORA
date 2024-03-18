@@ -17,6 +17,7 @@ using BISPAPIORA.Models.DTOS.ImageCitizenFingerPrintDTO;
 using BISPAPIORA.Repositories.ImageCitizenFingePrintServicesRepo;
 using BISPAPIORA.Repositories.InnerServicesRepo;
 using BISPAPIORA.Models.DTOS.VerificationResponseDTO;
+using BISPAPIORA.Models.DTOS.CitizenDTO;
 
 namespace BISPAPIORA.Repositories.CitizenServicesRepo
 {
@@ -443,6 +444,54 @@ namespace BISPAPIORA.Repositories.CitizenServicesRepo
             {
                 // Return a failure response model if an exception occurs during the process
                 return new ResponseModel<RegistrationResponseDTO>()
+                {
+                    success = false,
+                    remarks = $"There Was Fatal Error {ex.Message.ToString()}"
+                };
+            }
+        }
+
+        public async Task<ResponseModel<CitizenResponseDTO>> GetCitizenByCnic(string CitizenCnic)
+        {
+            try
+            {
+                // Find the existing citizen in the database based on the provided citizen ID
+                var existingCitizen = await db.tbl_citizens
+                    .Where(x => x.citizen_cnic == CitizenCnic)
+                    .Include(x => x.tbl_citizen_tehsil).ThenInclude(x => x.tbl_district).ThenInclude(x => x.tbl_province)
+                    .Include(x => x.tbl_citizen_employment)
+                    .Include(x => x.tbl_citizen_education)
+                    .Include(x => x.tbl_citizen_scheme)
+                    .Include(x => x.tbl_citizen_registration)
+                    .Include(x => x.tbl_enrollment)
+                    .Include(x => x.tbl_citizen_bank_info).ThenInclude(x => x.tbl_bank)
+                    .Include(x => x.tbl_citizen_family_bank_info).ThenInclude(x => x.tbl_bank_other_specification)
+                    .FirstOrDefaultAsync();
+
+                if (existingCitizen != null)
+                {
+                    // Return a success response model with the details of the found citizen
+                    return new ResponseModel<CitizenResponseDTO>()
+                    {
+                        data = _mapper.Map<CitizenResponseDTO>(existingCitizen),
+                        remarks = "Citizen found successfully",
+                        success = true,
+                    };
+                }
+                else
+                {
+                    // Return a failure response model if no record is found for the provided citizen ID
+                    return new ResponseModel<CitizenResponseDTO>()
+                    {
+                        success = false,
+                        remarks = "No Record"
+                    };
+                }
+            }
+            catch (Exception ex)
+            {
+                // Return a failure response model if an exception occurs during the process
+                return new ResponseModel<CitizenResponseDTO>()
                 {
                     success = false,
                     remarks = $"There Was Fatal Error {ex.Message.ToString()}"

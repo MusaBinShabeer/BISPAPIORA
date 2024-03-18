@@ -1,4 +1,5 @@
 ﻿using BISPAPIORA.Models.DBModels.Dbtables;
+using BISPAPIORA.Models.DTOS.CitizenDTO;
 using BISPAPIORA.Models.DTOS.EnrollmentDTO;
 using BISPAPIORA.Models.DTOS.RegistrationDTO;
 using BISPAPIORA.Models.DTOS.ResponseDTO;
@@ -23,5 +24,6 @@ namespace BISPAPIORA.Repositories.CitizenServicesRepo
         #endregion
         public Task<ResponseModel<RegistrationResponseDTO>> DeleteCitizen(string CitizenId);
         public Task<ResponseModel<RegistrationResponseDTO>> GetCitizen(string CitizenId);
+        public Task<ResponseModel<CitizenResponseDTO>> GetCitizenByCnic(string CitizenCnic);
     }
 }
