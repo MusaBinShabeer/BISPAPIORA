@@ -207,7 +207,7 @@ namespace BISPAPIORA.Repositories.GroupPermissionServicesRepo
                     // Return a success response model with details of the updated GroupPermission record
                     return new ResponseModel<GroupPermissionResponseDTO>()
                     {
-                        remarks = $"GroupPermission: {model.groupPermissionId} of User Type: {existingGroupPermission.tbl_user_type.user_type_name} for Functionality {existingGroupPermission.tbl_functionality.functionality_name} has been updated",
+                        remarks = $"GroupPermission has been updated",
                         data = _mapper.Map<GroupPermissionResponseDTO>(existingGroupPermission),
                         success = true,
                     };

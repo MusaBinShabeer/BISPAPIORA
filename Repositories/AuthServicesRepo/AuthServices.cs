@@ -41,44 +41,8 @@ namespace BISPAPIORA.Repositories.AuthServicesRepo
                     // Check if the provided password matches the stored encoded password
                     if (user.user_password == new OtherServices().encodePassword(model.userPassword))
                     {
-                        // If the password is correct, proceed with the login operation
-                        //return await Login(user);
-
-                        //stateless Token Method
-                        try
-                        {
-                            var userRole = user.tbl_user_type.user_type_name;
-                            var authClaims = new List<Claim>
-                            {
-                                new Claim(ClaimTypes.Email, user.user_email),
-                                new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
-                                new Claim(ClaimTypes.Role, userRole)
-                            };
-
-                            // Generate a JWT token using the authentication claims
-                            var token = jwtUtils.GetToken(authClaims);
-
-                            // Map user information to the response DTO
-                            var responseUser = mapper.Map<LoginResponseDTO>(user);
-                            responseUser.userToken = new JwtSecurityTokenHandler().WriteToken(token);
-
-                            // Return a success response model with the user information and JWT token
-                            return new ResponseModel<LoginResponseDTO>()
-                            {
-                                data = responseUser,
-                                success = true,
-                                remarks = "Success"
-                            };
-                        }
-                        catch (Exception ex)
-                        {
-                            // Return a failure response model with details about the exception if an error occurs during the login process
-                            return new ResponseModel<LoginResponseDTO>()
-                            {
-                                success = false,
-                                remarks = $"There was an error during the login process: {ex.Message}"
-                            };
-                        }
+                        //If the password is correct, proceed with the login operation
+                        return await Login(user);
                     }
                     else
                     {
@@ -120,22 +84,18 @@ namespace BISPAPIORA.Repositories.AuthServicesRepo
                 // Extract user role and create authentication claims
                 var userRole = user.tbl_user_type.user_type_name;
                 var authClaims = new List<Claim>
-        {
-            new Claim(ClaimTypes.Email, user.user_email),
-            new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString())
-        };
-                authClaims.Add(new Claim(ClaimTypes.Role, userRole));
+                            {
+                                new Claim(ClaimTypes.Email, user.user_email),
+                                new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
+                                new Claim(ClaimTypes.Role, userRole)
+                            };
 
                 // Generate a JWT token using the authentication claims
                 var token = jwtUtils.GetToken(authClaims);
 
-                // Update the user's token in the database
-                user.user_token = new JwtSecurityTokenHandler().WriteToken(token);
-                await db.SaveChangesAsync();
-
                 // Map user information to the response DTO
                 var responseUser = complexMapperServices.ComplexAutomapperForLogin().Map<LoginResponseDTO>(user);
-                responseUser.userToken = user.user_token;
+                responseUser.userToken = new JwtSecurityTokenHandler().WriteToken(token);
 
                 // Return a success response model with the user information and JWT token
                 return new ResponseModel<LoginResponseDTO>()
