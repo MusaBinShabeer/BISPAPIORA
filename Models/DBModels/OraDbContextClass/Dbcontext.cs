@@ -235,6 +235,11 @@ public partial class Dbcontext : DbContext
             entity.Property(e => e.submission_date)
                 .HasColumnType("DATE")
                 .HasColumnName("SUBMISSION_DATE");
+
+            entity.Property(e => e.insertion_date)
+                .HasColumnType("DATE")
+                .HasColumnName("INSERTION_DATE");
+
             entity.Property(e => e.unique_hh_id)
                 .HasColumnType("NUMBER")
                 .HasColumnName("UNIQUE_HH_ID");
@@ -696,6 +701,11 @@ public partial class Dbcontext : DbContext
                 .HasMaxLength(255)
                 .IsUnicode(false)
                 .HasColumnName("NAME");
+
+            entity.Property(e => e.insertion_date)
+                .HasColumnType("DATE")
+                .HasColumnName("INSERTION_DATE");
+
             entity.HasOne(d => d.tbl_citizen)
                   .WithOne(p => p.tbl_image_citizen_attachment)
                   .HasForeignKey<tbl_image_citizen_attachment>(d => d.fk_citizen)
@@ -739,6 +749,11 @@ public partial class Dbcontext : DbContext
                 .HasMaxLength(255)
                 .IsUnicode(false)
                 .HasColumnName("THUMB_PRINT_NAME");
+
+            entity.Property(e => e.insertion_date)
+                .HasColumnType("DATE")
+                .HasColumnName("INSERTION_DATE");
+
             entity.HasOne(d => d.tbl_citizen)
                 .WithOne(p => p.tbl_image_citizen_finger_print)
                 .HasForeignKey<tbl_image_citizen_finger_print>(d => d.fk_citizen)
@@ -789,6 +804,10 @@ public partial class Dbcontext : DbContext
                 .IsUnicode(false)
                 .HasDefaultValueSql("''")
                 .HasColumnName("USER_TOKEN");
+
+            entity.Property(e => e.insertion_date)
+                .HasColumnType("DATE")
+                .HasColumnName("INSERTION_DATE");
 
             entity.HasOne(d => d.tbl_user_type).WithMany(p => p.tbl_users)
                 .HasForeignKey(d => d.fk_user_type)

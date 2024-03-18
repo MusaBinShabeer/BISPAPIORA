@@ -58,11 +58,13 @@ public partial class tbl_citizen
 
     public virtual ICollection<tbl_transaction> tbl_transactions { get; set; } = new List<tbl_transaction>();
 
-    public  bool? is_valid_beneficiary { get; set; }
+    public bool? is_valid_beneficiary { get; set; }
 
     public decimal? unique_hh_id { get; set; } // Unique HouseholdId
 
     public DateTime? submission_date { get; set; } // through form submission date
 
     public string? pmt { get; set; } // poverty score 40 =< eligible
+
+    public DateTime? insertion_date { get; set; }
 }

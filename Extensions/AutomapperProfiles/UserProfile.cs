@@ -16,7 +16,8 @@ namespace BISPAPIORA.Extensions.AutomapperProfiles
              .ForMember(d => d.user_email, opt => opt.MapFrom(src => src.userEmail))
              .ForMember(d => d.user_password, opt => opt.MapFrom(src => otherServices.encodePassword(src.userPassword)))
              .ForMember(d => d.fk_user_type, opt => opt.MapFrom(src => src.fkUserType))
-             .ForMember(d => d.is_active, opt => opt.MapFrom(src => src.isActive));
+             .ForMember(d => d.is_active, opt => opt.MapFrom(src => src.isActive))
+             .ForMember(d => d.insertion_date, opt => opt.MapFrom((src => DateTime.Now)));
             CreateMap<UpdateUserDTO, tbl_user>()
              .ForMember(d => d.user_id, opt => opt.MapFrom((src, dest) => dest.user_id))
              .ForMember(d => d.user_name, opt => opt.MapFrom((src, dest) => otherServices.Check(src.userName) ? src.userName : dest.user_name))
