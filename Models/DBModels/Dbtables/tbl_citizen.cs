@@ -52,11 +52,11 @@ public partial class tbl_citizen
     //public virtual tbl_citizen_thumb_print? tbl_citizen_thumb_print { get; set; }
     public virtual tbl_employment_other_specification? tbl_employment_other_specification { get; set; }
 
+    public virtual tbl_image_citizen_attachment? tbl_image_citizen_attachment { get; set; }
+
+    public virtual tbl_image_citizen_finger_print? tbl_image_citizen_finger_print { get; set; }
+
     public virtual ICollection<tbl_transaction> tbl_transactions { get; set; } = new List<tbl_transaction>();
-
-    public virtual ICollection<tbl_image_citizen_attachment> tbl_image_citizen_attachments { get; set; } = new List<tbl_image_citizen_attachment>();
-
-    public virtual ICollection<tbl_image_citizen_finger_print> tbl_image_citizen_finger_prints { get; set; } = new List<tbl_image_citizen_finger_print>();
 
     public  bool? is_valid_beneficiary { get; set; }
 
