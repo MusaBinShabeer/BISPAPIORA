@@ -21,4 +21,6 @@ public partial class tbl_image_citizen_finger_print
     public string? cnic { get; set; } = string.Empty;
 
     public Guid? fk_citizen { get; set; } = default!;
+
+    public virtual tbl_citizen? tbl_citizen { get; set; }
 }

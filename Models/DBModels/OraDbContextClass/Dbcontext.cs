@@ -696,6 +696,10 @@ public partial class Dbcontext : DbContext
                 .HasMaxLength(255)
                 .IsUnicode(false)
                 .HasColumnName("NAME");
+            entity.HasOne(d => d.tbl_citizen).WithMany(p => p.tbl_image_citizen_attachments)
+                .HasForeignKey(d => d.fk_citizen)
+                .OnDelete(DeleteBehavior.Cascade)
+                .HasConstraintName("FK_IMAGE_ATTACHMENT_CITIZEN");
         });
 
         modelBuilder.Entity<tbl_image_citizen_finger_print>(entity =>
@@ -734,6 +738,10 @@ public partial class Dbcontext : DbContext
                 .HasMaxLength(255)
                 .IsUnicode(false)
                 .HasColumnName("THUMB_PRINT_NAME");
+            entity.HasOne(d => d.tbl_citizen).WithMany(p => p.tbl_image_citizen_finger_prints)
+                .HasForeignKey(d => d.fk_citizen)
+                .OnDelete(DeleteBehavior.Cascade)
+                .HasConstraintName("FK_IMAGE_FINGER_PRINT_CITIZEN");
         });
 
         modelBuilder.Entity<tbl_user>(entity =>
