@@ -58,5 +58,14 @@ namespace BISPAPIORA.Models.DTOS.CitizenDTO
         public string citizenSchemeStartingMonth { get; set; } = string.Empty;
         public string citizenSchemeSavingAmount { get; set; } = string.Empty;
         public string citizenBankName { get; set; } = string.Empty;
+        public string imageCitizenAttachmentName { get; set; } = string.Empty;
+        public string imageCitizenAttachmentData { get; set; } = string.Empty;
+        public string imageCitizenAttachmentContentType { get; set; } = string.Empty;
+        public string imageCitizenFingerPrintName { get; set; } = string.Empty;
+        public string imageCitizenFingerPrintData { get; set; } = string.Empty;
+        public string imageCitizenFingerPrintContentType { get; set; } = string.Empty;
+        public string imageCitizenThumbPrintName { get; set; } = string.Empty;
+        public string imageCitizenThumbPrintData { get; set; } = string.Empty;
+        public string imageCitizenThumbPrintContentType { get; set; } = string.Empty;
     }
 }
