@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using BISPAPIORA.Models.DBModels.Dbtables2;
 
 namespace BISPAPIORA.Models.DBModels.Dbtables;
 
