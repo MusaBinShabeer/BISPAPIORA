@@ -466,6 +466,7 @@ namespace BISPAPIORA.Repositories.CitizenServicesRepo
                     .Include(x => x.tbl_enrollment)
                     .Include(x => x.tbl_citizen_bank_info).ThenInclude(x => x.tbl_bank)
                     .Include(x => x.tbl_citizen_family_bank_info).ThenInclude(x => x.tbl_bank_other_specification)
+                    .Include(x => x.tbl_image_citizen_attachments)
                     .FirstOrDefaultAsync();
 
                 if (existingCitizen != null)
