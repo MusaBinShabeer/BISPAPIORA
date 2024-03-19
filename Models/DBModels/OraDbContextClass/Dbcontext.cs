@@ -532,7 +532,7 @@ public partial class Dbcontext : DbContext
                 .HasColumnName("REGISTERED_DATE");
 
             entity.Property(e => e.fk_registered_by).HasColumnName("FK_REGISTERED_BY");
-            entity.HasOne(d => d.registerd_by).WithMany(p => p.tbl_registered_citizens)
+            entity.HasOne(d => d.registered_by).WithMany(p => p.tbl_registered_citizens)
               .HasForeignKey(d => d.fk_registered_by)
               .OnDelete(DeleteBehavior.Cascade)
               .HasConstraintName("FK_REGISTERED_BY_USER");

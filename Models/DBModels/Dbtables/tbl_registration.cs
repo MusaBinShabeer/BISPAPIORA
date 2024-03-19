@@ -13,5 +13,5 @@ public partial class tbl_registration
     public Guid? fk_registered_by { get; set; } = default(Guid?);
 
     public virtual tbl_citizen? tbl_citizen { get; set; }
-    public virtual tbl_user? registerd_by { get; set; }
+    public virtual tbl_user? registered_by { get; set; }
 }
