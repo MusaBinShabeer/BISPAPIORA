@@ -23,7 +23,7 @@ namespace BISPAPIORA.Repositories.DashboardServicesRepo
             try
             {
                 var registeredCitizenQuery =  db.tbl_citizens
-                    .Include(x=>x.tbl_citizen_registration).ThenInclude(x=>x.registerd_by)
+                    .Include(x=>x.tbl_citizen_registration).ThenInclude(x=>x.registered_by)
                     .Where(x=>x.tbl_citizen_registration!=null).AsQueryable();
                 var registeredBaseCitizen= mapper.Map<IQueryable<DashboardCitizenBaseModel>>(registeredCitizenQuery);
                 var enrolledCitizenQuery =  db.tbl_citizens
