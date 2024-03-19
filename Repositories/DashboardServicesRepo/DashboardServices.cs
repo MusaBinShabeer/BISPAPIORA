@@ -18,29 +18,29 @@ namespace BISPAPIORA.Repositories.DashboardServicesRepo
             this.db = db;
             this.mapper = mapper;
         }
-        public async Task<ResponseModel<DashboardUserPerformanceResponseDTO>> GetUserPerformanceStats(string userName, string dateStart, string dateEnd) 
+        public async Task<ResponseModel<DashboardUserPerformanceResponseDTO>> GetUserPerformanceStats(string userName, string dateStart, string dateEnd)
         {
             try
             {
-                var registeredCitizenQuery =  db.tbl_citizens
-                    .Include(x=>x.tbl_citizen_registration).ThenInclude(x=>x.registerd_by)
-                    .Where(x=>x.tbl_citizen_registration!=null).AsQueryable();
-                var registeredBaseCitizen= mapper.Map<IQueryable<DashboardCitizenBaseModel>>(registeredCitizenQuery);
-                var enrolledCitizenQuery =  db.tbl_citizens
+                var registeredCitizenQuery = db.tbl_citizens
+                    .Include(x => x.tbl_citizen_registration).ThenInclude(x => x.registerd_by)
+                    .Where(x => x.tbl_citizen_registration != null).AsQueryable();
+                var registeredBaseCitizen = mapper.Map<IQueryable<DashboardCitizenBaseModel>>(registeredCitizenQuery);
+                var enrolledCitizenQuery = db.tbl_citizens
                    .Include(x => x.tbl_enrollment).ThenInclude(x => x.enrolled_by)
                    .Where(x => x.tbl_enrollment != null).AsQueryable();
-                var enrolledBaseCitizen = mapper.Map< IQueryable<DashboardCitizenBaseModel>>(enrolledCitizenQuery);
+                var enrolledBaseCitizen = mapper.Map<IQueryable<DashboardCitizenBaseModel>>(enrolledCitizenQuery);
                 var predicateRegistered = PredicateBuilder.New<DashboardCitizenBaseModel>(true);
-                predicateRegistered= predicateRegistered.And(x=>x.user_name==(userName));               
+                predicateRegistered = predicateRegistered.And(x => x.user_name == (userName));
                 var predicateEnrolled = PredicateBuilder.New<DashboardCitizenBaseModel>(true);
-                predicateEnrolled= predicateEnrolled.And(x=>x.user_name == (userName));
+                predicateEnrolled = predicateEnrolled.And(x => x.user_name == (userName));
                 if (!string.IsNullOrEmpty(dateStart) && !string.IsNullOrEmpty(dateEnd))
                 {
-                    predicateRegistered = predicateRegistered.And(x=>x.registered_date>= DateTime.Parse(dateStart) && x.registered_date<= DateTime.Parse(dateEnd));
-                    predicateEnrolled = predicateEnrolled.And(x=>x.enrolled_date>= DateTime.Parse(dateStart) && x.enrolled_date<= DateTime.Parse(dateEnd));
+                    predicateRegistered = predicateRegistered.And(x => x.registered_date >= DateTime.Parse(dateStart) && x.registered_date <= DateTime.Parse(dateEnd));
+                    predicateEnrolled = predicateEnrolled.And(x => x.enrolled_date >= DateTime.Parse(dateStart) && x.enrolled_date <= DateTime.Parse(dateEnd));
                 }
-                var registeredCitizen= registeredBaseCitizen.Where(predicateRegistered).ToList();
-                var enrolledCitizen= enrolledBaseCitizen.Where(predicateEnrolled).ToList();
+                var registeredCitizen = registeredBaseCitizen.Where(predicateRegistered).ToList();
+                var enrolledCitizen = enrolledBaseCitizen.Where(predicateEnrolled).ToList();
                 return new ResponseModel<DashboardUserPerformanceResponseDTO>()
                 {
                     data = mapper.Map<DashboardUserPerformanceResponseDTO>((registeredCitizen, enrolledCitizen)),
@@ -183,6 +183,49 @@ namespace BISPAPIORA.Repositories.DashboardServicesRepo
             catch (Exception ex)
             {
                 return new ResponseModel<List<ProvinceStatusResponseDTO>>()
+                {
+                    success = false,
+                    remarks = $"There Was Fatal Error {ex.Message.ToString()}"
+                };
+            }
+        }
+
+        public async Task<ResponseModel<DashboardDTO>> GetTotalCitizenAndEnrolled()
+        {
+            try
+            {
+                var totalCitizens = await db.tbl_citizens.ToListAsync();
+                var totalCitizensCount = totalCitizens.Count();
+                if (totalCitizensCount > 0)
+                {
+
+                    var dashboardResponseDto = new DashboardDTO
+                    {
+                        totalCitizenCount = totalCitizensCount,
+                        registeredCount = totalCitizens.Count(citizen => citizen.tbl_citizen_registration != null && citizen.tbl_enrollment == null),
+                        enrolledCount = totalCitizens.Count(citizen => citizen.tbl_enrollment != null && citizen.fk_tehsil == tehsil.tehsil_id)
+                    });
+
+                    return new ResponseModel<DashboardDTO>()
+                    {
+                        success = true,
+                        remarks = "Citizen counts based on tehsil retrieved successfully.",
+                        data = dashboardResponseDto
+                    };
+
+                }
+                else
+                {
+                    return new ResponseModel<DashboardDTO>()
+                    {
+                        success = false,
+                        remarks = "There is no citizen."
+                    };
+                }
+            }
+            catch (Exception ex)
+            {
+                return new ResponseModel<DashboardDTO>()
                 {
                     success = false,
                     remarks = $"There Was Fatal Error {ex.Message.ToString()}"
