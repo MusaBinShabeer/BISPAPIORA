@@ -18,7 +18,7 @@ namespace BISPAPIORA.Repositories.DashboardServicesRepo
             this.db = db;
             this.mapper = mapper;
         }
-        public async Task<ResponseModel<DashboardUserPerformanceResponseDTO>> GetUserPerformanceStats(string userId, string dateStart, string dateEnd) 
+        public async Task<ResponseModel<DashboardUserPerformanceResponseDTO>> GetUserPerformanceStats(string userName, string dateStart, string dateEnd) 
         {
             try
             {
@@ -31,9 +31,9 @@ namespace BISPAPIORA.Repositories.DashboardServicesRepo
                    .Where(x => x.tbl_enrollment != null).AsQueryable();
                 var enrolledBaseCitizen = mapper.Map< IQueryable<DashboardCitizenBaseModel>>(enrolledCitizenQuery);
                 var predicateRegistered = PredicateBuilder.New<DashboardCitizenBaseModel>(true);
-                predicateRegistered= predicateRegistered.And(x=>x.registered_by==Guid.Parse(userId));               
+                predicateRegistered= predicateRegistered.And(x=>x.user_name==(userName));               
                 var predicateEnrolled = PredicateBuilder.New<DashboardCitizenBaseModel>(true);
-                predicateEnrolled= predicateEnrolled.And(x=>x.enrolled_by==Guid.Parse(userId));
+                predicateEnrolled= predicateEnrolled.And(x=>x.user_name == (userName));
                 if (!string.IsNullOrEmpty(dateStart) && !string.IsNullOrEmpty(dateEnd))
                 {
                     predicateRegistered = predicateRegistered.And(x=>x.registered_date>= DateTime.Parse(dateStart) && x.registered_date<= DateTime.Parse(dateEnd));
