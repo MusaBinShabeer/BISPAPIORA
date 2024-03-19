@@ -66,9 +66,9 @@ namespace BISPAPIORA.Controllers
         }
 
         [HttpGet("GetUserPerformanceStats")]
-        public async Task<ActionResult<ResponseModel<ProvinceStatusResponseDTO>>> GetUserPerformanceStats(string id)
+        public async Task<ActionResult<ResponseModel<ProvinceStatusResponseDTO>>> GetUserPerformanceStats(string id, string dateStart,string dateEnd)
         {
-            var response = dashboardServices.GetUserPerformanceStats(id);
+            var response = dashboardServices.GetUserPerformanceStats(id,dateStart,dateEnd);
             return Ok(await response);
         }
     }

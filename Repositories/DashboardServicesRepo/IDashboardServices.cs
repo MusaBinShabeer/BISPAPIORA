@@ -6,7 +6,7 @@ namespace BISPAPIORA.Repositories.DashboardServicesRepo
 {
     public interface IDashboardServices
     {
-        public Task<ResponseModel<DashboardUserPerformanceResponseDTO>> GetUserPerformanceStats(string userId);
+        public Task<ResponseModel<DashboardUserPerformanceResponseDTO>> GetUserPerformanceStats(string userIdstring,string dateStart, string dateEnd);
         public Task<ResponseModel<List<TehsilStatusResponseDTO>>> GetTehsilStatusResponses();
         public Task<ResponseModel<List<DistrictStatusResponseDTO>>> GetDistrictStatusResponses();
         public Task<ResponseModel<List<ProvinceStatusResponseDTO>>> GetProvinceStatusResponses();
