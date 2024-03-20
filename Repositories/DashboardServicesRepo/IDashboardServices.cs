@@ -10,5 +10,9 @@ namespace BISPAPIORA.Repositories.DashboardServicesRepo
         public Task<ResponseModel<List<TehsilStatusResponseDTO>>> GetTehsilStatusResponses();
         public Task<ResponseModel<List<DistrictStatusResponseDTO>>> GetDistrictStatusResponses();
         public Task<ResponseModel<List<ProvinceStatusResponseDTO>>> GetProvinceStatusResponses();
+        public Task<ResponseModel<DashboardDTO>> GetTotalCitizenAndEnrolled();
+        public Task<ResponseModel<DashboardDTO>> GetTotalCompliantApplicants();
+        public Task<ResponseModel<DashboardDTO>> GetTotalSavings();
+        public Task<ResponseModel<DashboardDTO>> GetTotalMatchingGrants();
     }
 }

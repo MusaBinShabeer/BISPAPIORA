@@ -1,5 +1,10 @@
 ﻿namespace BISPAPIORA.Models.DTOS.DashboardDTO
 {
+    public class DashboardCitizenCountPercentageDTO
+    {
+        public double registeredPercentage { get; set; } = 0;
+        public double enrolledPercentage { get; set; } = 0;
+    }
     public class DashboardUserPerformanceResponseDTO
     {
         public int registeredCount { get; set; } = 0;

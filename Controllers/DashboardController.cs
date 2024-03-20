@@ -10,7 +10,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace BISPAPIORA.Controllers
 {
-    [AppVersion]
+    //[AppVersion]
     [Route("api/[controller]")]
     [ApiController]
     public class DashboardController : ControllerBase
@@ -66,9 +66,45 @@ namespace BISPAPIORA.Controllers
         }
 
         [HttpGet("GetUserPerformanceStats")]
-        public async Task<ActionResult<ResponseModel<ProvinceStatusResponseDTO>>> GetUserPerformanceStats(string id, string dateStart,string dateEnd)
+        public async Task<ActionResult<ResponseModel<DashboardUserPerformanceResponseDTO>>> GetUserPerformanceStats(string usernName, string dateStart = null, string dateEnd = null)
         {
-            var response = dashboardServices.GetUserPerformanceStats(id,dateStart,dateEnd);
+            if ((string.IsNullOrEmpty(dateStart) && string.IsNullOrEmpty(dateEnd)) || (dateStart != null && dateEnd != null))
+            {
+                var response = dashboardServices.GetUserPerformanceStats(usernName, dateStart, dateEnd);
+                return Ok(await response);
+            }
+            else
+            {
+                return BadRequest("Both dateStart and dateEnd must be provided.");
+            }
+     
+        }
+
+        [HttpGet("GetTotalCitizens")]
+        public async Task<ActionResult<ResponseModel<List<ProvinceStatusResponseDTO>>>> GetTotalCitizens()
+        {
+            var response = dashboardServices.GetTotalCitizenAndEnrolled();
+            return Ok(await response);
+        }
+
+        [HttpGet("GetTotalCompliantApplicants")]
+        public async Task<ActionResult<ResponseModel<List<ProvinceStatusResponseDTO>>>> GetTotalCompliantApplicants()
+        {
+            var response = dashboardServices.GetTotalCompliantApplicants();
+            return Ok(await response);
+        }
+
+        [HttpGet("GetTotalSavings")]
+        public async Task<ActionResult<ResponseModel<List<ProvinceStatusResponseDTO>>>> GetTotalSavings()
+        {
+            var response = dashboardServices.GetTotalSavings();
+            return Ok(await response);
+        }
+
+        [HttpGet("GetTotalMatchingGrants")]
+        public async Task<ActionResult<ResponseModel<List<ProvinceStatusResponseDTO>>>> GetTotalMatchingGrants()
+        {
+            var response = dashboardServices.GetTotalCitizenAndEnrolled();
             return Ok(await response);
         }
     }

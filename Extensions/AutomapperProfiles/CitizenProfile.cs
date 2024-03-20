@@ -116,7 +116,7 @@ namespace BISPAPIORA.Extensions.AutomapperProfiles
              .ForMember(d => d.aIOA, opt => opt.MapFrom((src) => src.tbl_citizen.tbl_citizen_family_bank_info.family_income))
              .ForMember(d => d.fkBank, opt => opt.MapFrom(src => (src.tbl_citizen.tbl_citizen_family_bank_info.fk_bank)))
              .ForMember(d => d.fkRegisteredBy, opt => opt.MapFrom(src => (src.fk_registered_by)))
-             .ForMember(d => d.registeredByUser, opt => opt.MapFrom(src => (src.registerd_by.user_name)))
+             .ForMember(d => d.registeredByUser, opt => opt.MapFrom(src => (src.registered_by.user_name)))
              .ForMember(d => d.bankName, opt => opt.MapFrom((src) =>src.tbl_citizen.tbl_citizen_family_bank_info.tbl_bank_other_specification!=null?src.tbl_citizen.tbl_citizen_family_bank_info.tbl_bank_other_specification.bank_other_specification :src.tbl_citizen.tbl_citizen_family_bank_info.tbl_bank.bank_name));
             CreateMap<tbl_citizen, RegistrationResponseDTO>()
               .ForMember(d => d.enrollmentId, opt => opt.MapFrom(src => src.tbl_enrollment != null ? src.tbl_enrollment.enrollment_id.ToString() : ""))
