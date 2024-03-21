@@ -137,9 +137,7 @@ namespace BISPAPIORA.Repositories.DashboardServicesRepo
                     predicateRegistered = predicateRegistered.And(x => x.province_name.ToLower() == provinceName.ToLower());
                 }
 
-                var CitizensCount = totalCitizenQuery.Where(predicateRegistered).ToList().Count();
                 var filteredCitizens = totalCitizenQuery.Where(predicateRegistered).ToList();
-                var totalCitizensInDistrict = CitizensCount;
 
                 if (!string.IsNullOrEmpty(districtName))
                 {
@@ -150,7 +148,7 @@ namespace BISPAPIORA.Repositories.DashboardServicesRepo
                         provinceName = group.FirstOrDefault()?.province_name ?? string.Empty,
                         districtName = districtName,
                         tehsilName = group.Key,
-                        citizenPercentage = totalCitizensInDistrict > 0 ? (double)group.Count() / totalCitizensInDistrict * 100 : 0
+                        citizenPercentage = filteredCitizens.Count > 0 ? (double)group.Count() / filteredCitizens.Count * 100 : 0
                     })
                     .ToList();
 
@@ -169,7 +167,7 @@ namespace BISPAPIORA.Repositories.DashboardServicesRepo
                     {
                         provinceName = group.FirstOrDefault()?.province_name ?? string.Empty,
                         districtName = group.Key,
-                        citizenPercentage = totalCitizensInDistrict > 0 ? (double)group.Count() / totalCitizensInDistrict * 100 : 0
+                        citizenPercentage = filteredCitizens.Count > 0 ? (double)group.Count() / filteredCitizens.Count * 100 : 0
                     })
                     .ToList();
 
@@ -188,7 +186,7 @@ namespace BISPAPIORA.Repositories.DashboardServicesRepo
                     .Select(group => new DashboardProvinceCitizenCountPercentageDTO
                     {
                         provinceName = group.Key,
-                        citizenPercentage = totalCitizensInDistrict > 0 ? (double)group.Count() / totalCitizensInDistrict * 100 : 0
+                        citizenPercentage = filteredCitizens.Count > 0 ? (double)group.Count() / filteredCitizens.Count * 100 : 0
                     })
                     .ToList();
 
