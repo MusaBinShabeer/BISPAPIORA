@@ -130,15 +130,16 @@ namespace BISPAPIORA.Repositories.DashboardServicesRepo
 
                 if (!string.IsNullOrEmpty(districtName))
                 {
-                    predicateRegistered = predicateRegistered.And(x => x.province_name == provinceName && x.district_name == districtName);
+                    predicateRegistered = predicateRegistered.And(x => x.province_name.ToLower() == provinceName.ToLower() && x.district_name.ToLower() == districtName.ToLower());
                 }
                 else if (!string.IsNullOrEmpty(provinceName))
                 {
-                    predicateRegistered = predicateRegistered.And(x => x.province_name == provinceName);
+                    predicateRegistered = predicateRegistered.And(x => x.province_name.ToLower() == provinceName.ToLower());
                 }
 
+                var CitizensCount = totalCitizenQuery.Where(predicateRegistered).ToList().Count();
                 var filteredCitizens = totalCitizenQuery.Where(predicateRegistered).ToList();
-                var totalCitizensInDistrict = filteredCitizens.Count;
+                var totalCitizensInDistrict = CitizensCount;
 
                 if (!string.IsNullOrEmpty(districtName))
                 {
