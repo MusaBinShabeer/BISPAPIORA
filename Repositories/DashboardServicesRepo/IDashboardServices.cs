@@ -10,8 +10,7 @@ namespace BISPAPIORA.Repositories.DashboardServicesRepo
     {
         public Task<ResponseModel<DashboardUserPerformanceResponseDTO>> GetUserPerformanceStats(string userIdstring, string dateStart, string dateEnd);
         public Task<ResponseModel<DashboardCitizenCountPercentageDTO>> GetWebDesktopApplicantDistribution(string userName, string dateStart, string dateEnd);
-
-        public Task<ResponseModel<List<DashboardTehsilCitizenCountPercentageDTO>>> GetWebDesktopApplicantDistributionLocationBased(string userName, string dateStart, string dateEnd, string provinceName, string districtName, string tehsilname);
+        public Task<ResponseModel<List<DashboardProvinceCitizenCountPercentageDTO>, List<DashboardDistrictCitizenCountPercentageDTO>, List<DashboardTehsilCitizenCountPercentageDTO>>> GetWebDesktopApplicantDistributionLocationBased(string userName, string dateStart, string dateEnd, string provinceName, string districtName, string tehsilname);
         public Task<ResponseModel<List<TehsilStatusResponseDTO>>> GetTehsilStatusResponses();
         public Task<ResponseModel<List<DistrictStatusResponseDTO>>> GetDistrictStatusResponses();
         public Task<ResponseModel<List<ProvinceStatusResponseDTO>>> GetProvinceStatusResponses();
