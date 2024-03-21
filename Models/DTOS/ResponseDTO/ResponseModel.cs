@@ -6,6 +6,14 @@
         public bool success { get; set; }
         public string remarks { get; set; } = string.Empty;
     }
+    public class ResponseModel<T1,T2,T3>
+    {
+        public T1? ProvinceWise { get; set; }
+        public T2? DistrictWise { get; set; }
+        public T3? TehsilWise { get; set; }
+        public bool success { get; set; }
+        public string remarks { get; set; } = string.Empty;
+    }
     public class ResponseModel
     {
         public bool success { get; set; }
