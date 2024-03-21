@@ -77,7 +77,37 @@ namespace BISPAPIORA.Controllers
             {
                 return BadRequest("Both dateStart and dateEnd must be provided.");
             }
-     
+
+        }
+
+        [HttpGet("GetWebDesktopApplicantDistribution")]
+        public async Task<ActionResult<ResponseModel<DashboardUserPerformanceResponseDTO>>> GetWebDesktopApplicantDistribution(string usernName, string dateStart = null, string dateEnd = null)
+        {
+            if ((string.IsNullOrEmpty(dateStart) && string.IsNullOrEmpty(dateEnd)) || (dateStart != null && dateEnd != null))
+            {
+                var response = dashboardServices.GetWebDesktopApplicantDistribution(usernName, dateStart, dateEnd);
+                return Ok(await response);
+            }
+            else
+            {
+                return BadRequest("Both dateStart and dateEnd must be provided.");
+            }
+
+        }
+
+        [HttpGet("GetWebDesktopApplicantDistributionLocationBased")]
+        public async Task<ActionResult<ResponseModel<DashboardUserPerformanceResponseDTO>>> GetWebDesktopApplicantDistributionLocationBased(string usernName, string dateStart = null, string dateEnd = null, string provinceName = null, string districtName = null, string tehsilName = null)
+        {
+            if ((string.IsNullOrEmpty(dateStart) && string.IsNullOrEmpty(dateEnd)) || (dateStart != null && dateEnd != null))
+            {
+                var response = dashboardServices.GetWebDesktopApplicantDistributionLocationBased(usernName, dateStart, dateEnd, provinceName, districtName, tehsilName);
+                return Ok(await response);
+            }
+            else
+            {
+                return BadRequest("Both dateStart and dateEnd must be provided.");
+            }
+
         }
 
         [HttpGet("GetTotalCitizens")]
@@ -87,25 +117,25 @@ namespace BISPAPIORA.Controllers
             return Ok(await response);
         }
 
-        [HttpGet("GetTotalCompliantApplicants")]
-        public async Task<ActionResult<ResponseModel<List<ProvinceStatusResponseDTO>>>> GetTotalCompliantApplicants()
-        {
-            var response = dashboardServices.GetTotalCompliantApplicants();
-            return Ok(await response);
-        }
+        //[HttpGet("GetTotalCompliantApplicants")]
+        //public async Task<ActionResult<ResponseModel<List<ProvinceStatusResponseDTO>>>> GetTotalCompliantApplicants()
+        //{
+        //    var response = dashboardServices.GetTotalCompliantApplicants();
+        //    return Ok(await response);
+        //}
 
-        [HttpGet("GetTotalSavings")]
-        public async Task<ActionResult<ResponseModel<List<ProvinceStatusResponseDTO>>>> GetTotalSavings()
-        {
-            var response = dashboardServices.GetTotalSavings();
-            return Ok(await response);
-        }
+        //[HttpGet("GetTotalSavings")]
+        //public async Task<ActionResult<ResponseModel<List<ProvinceStatusResponseDTO>>>> GetTotalSavings()
+        //{
+        //    var response = dashboardServices.GetTotalSavings();
+        //    return Ok(await response);
+        //}
 
-        [HttpGet("GetTotalMatchingGrants")]
-        public async Task<ActionResult<ResponseModel<List<ProvinceStatusResponseDTO>>>> GetTotalMatchingGrants()
-        {
-            var response = dashboardServices.GetTotalCitizenAndEnrolled();
-            return Ok(await response);
-        }
+        //[HttpGet("GetTotalMatchingGrants")]
+        //public async Task<ActionResult<ResponseModel<List<ProvinceStatusResponseDTO>>>> GetTotalMatchingGrants()
+        //{
+        //    var response = dashboardServices.GetTotalCitizenAndEnrolled();
+        //    return Ok(await response);
+        //}
     }
 }
