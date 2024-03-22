@@ -110,7 +110,7 @@ namespace BISPAPIORA.Repositories.DashboardServicesRepo
             }
         }
 
-        public async Task<ResponseModel<List<DashboardTehsilCitizenCountPercentageDTO>>> GetWebDesktopApplicantDistributionLocationBased(string userName, string dateStart, string dateEnd, string provinceName, string districtName, string tehsilname)
+        public async Task<ResponseModel<List<DashboardProvinceCitizenCountPercentageDTO>, List<DashboardDistrictCitizenCountPercentageDTO>, List<DashboardTehsilCitizenCountPercentageDTO>>> GetWebDesktopApplicantDistributionLocationBased(string userName, string dateStart, string dateEnd, string provinceName, string districtName, string tehsilname)
         {
             try
             {
@@ -141,58 +141,121 @@ namespace BISPAPIORA.Repositories.DashboardServicesRepo
 
                 if (!string.IsNullOrEmpty(districtName))
                 {
-                    var tehsilCitizenGroups = filteredCitizens
-                    .GroupBy(c => c.tehsil_name)
-                    .Select(group => new DashboardTehsilCitizenCountPercentageDTO
-                    {
-                        provinceName = group.FirstOrDefault()?.province_name ?? string.Empty,
-                        districtName = districtName,
-                        tehsilName = group.Key,
-                        citizenPercentage = filteredCitizens.Count > 0 ? (double)group.Count() / filteredCitizens.Count * 100 : 0
-                    })
-                    .ToList();
+                    var tehsils = db.tbl_tehsils.Include(x => x.tbl_district).ThenInclude(x => x.tbl_province).ToList();
 
-                    return new ResponseModel<List<DashboardTehsilCitizenCountPercentageDTO>>()
+                    var tehsilCitizenGroups = tehsils.Select(tehsil =>
                     {
-                        data = tehsilCitizenGroups,
+                        var tehsilFilteredCitizens = filteredCitizens.Where(citizen => citizen.tehsil_name.ToLower() == tehsil.tehsil_name.ToLower()).ToList();
+                        var tehsilCitizenCount = tehsilFilteredCitizens.Count;
+                        var citizenPercentage = tehsilCitizenCount > 0 ? (double)tehsilCitizenCount / filteredCitizens.Count * 100 : 0;
+
+                        return new DashboardTehsilCitizenCountPercentageDTO
+                        {
+                            tehsilName = tehsil.tehsil_name,
+                            districtName = tehsil.tbl_district.district_name,
+                            provinceName = tehsil.tbl_district.tbl_province.province_name,
+                            citizenPercentage = citizenPercentage
+                        };
+                    }).ToList();
+
+                    var districts = db.tbl_districts.Include(x => x.tbl_province).ToList();
+                    var districtCitizenGroups = districts.Select(district =>
+                    {
+                        var districtFilteredCitizens = filteredCitizens.Where(citizen => citizen.district_name.ToLower() == district.district_name.ToLower()).ToList();
+                        var districtCitizenCount = districtFilteredCitizens.Count;
+                        var citizenPercentage = districtCitizenCount > 0 ? (double)districtCitizenCount / filteredCitizens.Count * 100 : 0;
+
+                        return new DashboardDistrictCitizenCountPercentageDTO
+                        {
+                            districtName = district.district_name,
+                            provinceName = district.tbl_province.province_name,
+                            citizenPercentage = citizenPercentage
+                        };
+                    }).ToList();
+
+                    var provinces = db.tbl_provinces.ToList();
+                    var provinceCitizenGroups = provinces.Select(province =>
+                    {
+                        var provinceFilteredCitizens = filteredCitizens.Where(citizen => citizen.province_name.ToLower() == province.province_name.ToLower()).ToList();
+                        var provinceCitizenCount = provinceFilteredCitizens.Count;
+                        var citizenPercentage = provinceCitizenCount > 0 ? (double)provinceCitizenCount / filteredCitizens.Count * 100 : 0;
+
+                        return new DashboardProvinceCitizenCountPercentageDTO
+                        {
+                            provinceName = province.province_name,
+                            citizenPercentage = citizenPercentage
+                        };
+                    }).ToList();
+
+                    return new ResponseModel<List<DashboardProvinceCitizenCountPercentageDTO>, List<DashboardDistrictCitizenCountPercentageDTO>, List<DashboardTehsilCitizenCountPercentageDTO>>()
+                    {
+                        ProvinceWise = provinceCitizenGroups,
+                        DistrictWise = districtCitizenGroups,
+                        TehsilWise = tehsilCitizenGroups,
                         remarks = "Success",
                         success = true
                     };
                 }
                 else if (!string.IsNullOrEmpty(provinceName))
                 {
-                    var districtCitizenGroups = filteredCitizens
-                    .GroupBy(c => c.district_name)
-                    .Select(group => new DashboardDistrictCitizenCountPercentageDTO
-                    {
-                        provinceName = group.FirstOrDefault()?.province_name ?? string.Empty,
-                        districtName = group.Key,
-                        citizenPercentage = filteredCitizens.Count > 0 ? (double)group.Count() / filteredCitizens.Count * 100 : 0
-                    })
-                    .ToList();
+                    var districts = db.tbl_districts.Include(x => x.tbl_province).ToList();
 
-                    return new ResponseModel<List<DashboardTehsilCitizenCountPercentageDTO>>()
+                    var districtCitizenGroups = districts.Select(district =>
                     {
-                        data = mapper.Map<List<DashboardTehsilCitizenCountPercentageDTO>>((districtCitizenGroups)),
+                        var districtFilteredCitizens = filteredCitizens.Where(citizen => citizen.district_name.ToLower() == district.district_name.ToLower()).ToList();
+                        var districtCitizenCount = districtFilteredCitizens.Count;
+                        var citizenPercentage = districtCitizenCount > 0 ? (double)districtCitizenCount / filteredCitizens.Count * 100 : 0;
+
+                        return new DashboardDistrictCitizenCountPercentageDTO
+                        {
+                            districtName = district.district_name,
+                            provinceName = district.tbl_province.province_name,
+                            citizenPercentage = citizenPercentage
+                        };
+                    }).ToList();
+
+                    var provinces = db.tbl_provinces.ToList();
+                    var provinceCitizenGroups = provinces.Select(province =>
+                    {
+                        var provinceFilteredCitizens = filteredCitizens.Where(citizen => citizen.province_name.ToLower() == province.province_name.ToLower()).ToList();
+                        var provinceCitizenCount = provinceFilteredCitizens.Count;
+                        var citizenPercentage = provinceCitizenCount > 0 ? (double)provinceCitizenCount / filteredCitizens.Count * 100 : 0;
+
+                        return new DashboardProvinceCitizenCountPercentageDTO
+                        {
+                            provinceName = province.province_name,
+                            citizenPercentage = citizenPercentage
+                        };
+                    }).ToList();
+
+                    return new ResponseModel<List<DashboardProvinceCitizenCountPercentageDTO>, List<DashboardDistrictCitizenCountPercentageDTO>, List<DashboardTehsilCitizenCountPercentageDTO>>()
+                    {
+                        ProvinceWise = provinceCitizenGroups,
+                        DistrictWise = districtCitizenGroups,
                         remarks = "Success",
                         success = true
                     };
+
                 }
                 else
                 {
-
-                    var provinceCitizenGroups = filteredCitizens
-                    .GroupBy(c => c.province_name)
-                    .Select(group => new DashboardProvinceCitizenCountPercentageDTO
+                    var provinces = db.tbl_provinces.ToList();
+                    var provinceCitizenGroups = provinces.Select(province =>
                     {
-                        provinceName = group.Key,
-                        citizenPercentage = filteredCitizens.Count > 0 ? (double)group.Count() / filteredCitizens.Count * 100 : 0
-                    })
-                    .ToList();
+                        var provinceFilteredCitizens = filteredCitizens.Where(citizen => citizen.province_name.ToLower() == province.province_name.ToLower()).ToList();
+                        var provinceCitizenCount = provinceFilteredCitizens.Count;
+                        var citizenPercentage = provinceCitizenCount > 0 ? (double)provinceCitizenCount / filteredCitizens.Count * 100 : 0;
 
-                    return new ResponseModel<List<DashboardTehsilCitizenCountPercentageDTO>>()
+                        return new DashboardProvinceCitizenCountPercentageDTO
+                        {
+                            provinceName = province.province_name,
+                            citizenPercentage = citizenPercentage
+                        };
+                    }).ToList();
+
+                    return new ResponseModel<List<DashboardProvinceCitizenCountPercentageDTO>, List<DashboardDistrictCitizenCountPercentageDTO>, List<DashboardTehsilCitizenCountPercentageDTO>>()
                     {
-                        data = mapper.Map<List<DashboardTehsilCitizenCountPercentageDTO>>((provinceCitizenGroups)),
+                        ProvinceWise = provinceCitizenGroups,
                         remarks = "Success",
                         success = true
                     };
@@ -200,7 +263,7 @@ namespace BISPAPIORA.Repositories.DashboardServicesRepo
             }
             catch (Exception ex)
             {
-                return new ResponseModel<List<DashboardTehsilCitizenCountPercentageDTO>>()
+                return new ResponseModel<List<DashboardProvinceCitizenCountPercentageDTO>, List<DashboardDistrictCitizenCountPercentageDTO>, List<DashboardTehsilCitizenCountPercentageDTO>>()
                 {
                     remarks = $"There was a fatal error {ex.ToString()}",
                     success = false,
