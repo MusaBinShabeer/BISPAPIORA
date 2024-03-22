@@ -66,7 +66,7 @@ namespace BISPAPIORA.Controllers
         }
 
         [HttpGet("GetUserPerformanceStats")]
-        public async Task<ActionResult<ResponseModel<DashboardUserPerformanceResponseDTO>>> GetUserPerformanceStats(string usernName, string dateStart = null, string dateEnd = null)
+        public async Task<ActionResult<ResponseModel<List<DashboardProvinceCitizenCountPercentageDTO>, List<DashboardDistrictCitizenCountPercentageDTO>, List<DashboardTehsilCitizenCountPercentageDTO>>>> GetUserPerformanceStats(string usernName, string dateStart = null, string dateEnd = null)
         {
             if ((string.IsNullOrEmpty(dateStart) && string.IsNullOrEmpty(dateEnd)) || (dateStart != null && dateEnd != null))
             {
