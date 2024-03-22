@@ -114,30 +114,33 @@ namespace BISPAPIORA.Repositories.DashboardServicesRepo
         {
             try
             {
+                #region Location-Based Region Applicant Distrubution
                 var totalCitizenQuery = db.tbl_citizens
                     .Include(x => x.tbl_citizen_registration).ThenInclude(x => x.registered_by)
                     .Include(x => x.tbl_enrollment).ThenInclude(x => x.enrolled_by)
                     .Include(x => x.tbl_citizen_tehsil).ThenInclude(x => x.tbl_district).ThenInclude(x => x.tbl_province)
                     .ProjectTo<DashboardCitizenLocationModel>(mapper.ConfigurationProvider);
 
-                var predicateRegistered = PredicateBuilder.New<DashboardCitizenLocationModel>(true);
-                predicateRegistered = predicateRegistered.And(x => x.user_name == (userName));
+                var predicateCitizen = PredicateBuilder.New<DashboardCitizenLocationModel>(true);
+                predicateCitizen = predicateCitizen.And(x => x.user_name == (userName));
 
+                #region Filters
+                #endregion
                 if (!string.IsNullOrEmpty(dateStart) && !string.IsNullOrEmpty(dateEnd))
                 {
-                    predicateRegistered = predicateRegistered.And(x => x.registered_date >= DateTime.Parse(dateStart) && x.registered_date <= DateTime.Parse(dateEnd));
+                    predicateCitizen = predicateCitizen.And(x => x.registered_date >= DateTime.Parse(dateStart) && x.registered_date <= DateTime.Parse(dateEnd));
                 }
 
                 if (!string.IsNullOrEmpty(districtName))
                 {
-                    predicateRegistered = predicateRegistered.And(x => x.province_name.ToLower() == provinceName.ToLower() && x.district_name.ToLower() == districtName.ToLower());
+                    predicateCitizen = predicateCitizen.And(x => x.province_name.ToLower() == provinceName.ToLower() && x.district_name.ToLower() == districtName.ToLower());
                 }
                 else if (!string.IsNullOrEmpty(provinceName))
                 {
-                    predicateRegistered = predicateRegistered.And(x => x.province_name.ToLower() == provinceName.ToLower());
+                    predicateCitizen = predicateCitizen.And(x => x.province_name.ToLower() == provinceName.ToLower());
                 }
 
-                var filteredCitizens = totalCitizenQuery.Where(predicateRegistered).ToList();
+                var filteredCitizens = totalCitizenQuery.Where(predicateCitizen).ToList();
 
                 if (!string.IsNullOrEmpty(districtName))
                 {
@@ -260,6 +263,12 @@ namespace BISPAPIORA.Repositories.DashboardServicesRepo
                         success = true
                     };
                 }
+                #endregion
+
+                #region Citizen Gender-Baesd Region Applicant Distrubution
+
+
+                #endregion
             }
             catch (Exception ex)
             {
