@@ -111,12 +111,12 @@ namespace BISPAPIORA.Repositories.DashboardServicesRepo
                 var predicateTehsil = PredicateBuilder.New<tbl_tehsil>(true);
                 var predicateCitizen = PredicateBuilder.New<DashboardCitizenLocationModel>(true);
                 #endregion
-                #region Location-Based Region Applicant Distrubution
                 var totalCitizenQuery = db.tbl_citizens
                     .Include(x => x.tbl_citizen_registration).ThenInclude(x => x.registered_by)
                     .Include(x => x.tbl_enrollment).ThenInclude(x => x.enrolled_by)
                     .Include(x => x.tbl_citizen_tehsil).ThenInclude(x => x.tbl_district).ThenInclude(x => x.tbl_province)
-                    .ProjectTo<DashboardCitizenLocationModel>(mapper.ConfigurationProvider);
+                    .Include(x => x.tbl_citizen_education)
+                    .ProjectTo<DashboardCitizenLocationModel>(mapper.ConfigurationProvider);              
                 #region Filters                    
                 if (!string.IsNullOrEmpty(dateStart) && !string.IsNullOrEmpty(dateEnd))
                 {
@@ -145,85 +145,91 @@ namespace BISPAPIORA.Repositories.DashboardServicesRepo
                         predicateTehsil = predicateTehsil.And(x => x.tbl_district.fk_province == Guid.Parse(provinceId));
                     }
                 }                
-                var filteredCitizens = totalCitizenQuery.Where(predicateCitizen).ToList();
+                var filteredCitizens =await totalCitizenQuery.Where(predicateCitizen).ToListAsync();
                 #endregion
-                #region Lcoation Base Group By
-                if (!string.IsNullOrEmpty(provinceId))
-                {                  
-                    #region District Query
-                    var districtsQuery = db.tbl_districts.Include(x => x.tbl_province).AsQueryable();                    
-                    var districts= districtsQuery.Where(predicateDistrict).ToList();
-                    var districtCitizenGroups = districts.Select(district =>
-                    {
-                        var districtFilteredCitizens = filteredCitizens.Where(citizen => citizen.district_name.ToLower() == district.district_name.ToLower()).ToList();
-                        var districtCitizenCount = districtFilteredCitizens.Count;
-                        var citizenPercentage = districtCitizenCount > 0 ? (double)districtCitizenCount / filteredCitizens.Count * 100 : 0;
-                        return new DashboardDistrictCitizenCountPercentageDTO
-                        {
-                            districtName = district.district_name,
-                            provinceName = district.tbl_province.province_name,
-                            citizenPercentage = citizenPercentage
-                        };
-                    }).ToList();
-                    #endregion
-                    #region Tehsil Query
-                    var tehsilsQuery = db.tbl_tehsils.Include(x => x.tbl_district).ThenInclude(x => x.tbl_province).AsQueryable();                   
-                    var tehsils= tehsilsQuery.Where(predicateTehsil).ToList();
-                    var tehsilCitizenGroups = tehsils.Select(tehsil =>
-                    {
-                        var tehsilFilteredCitizens = filteredCitizens.Where(citizen => citizen.tehsil_name.ToLower() == tehsil.tehsil_name.ToLower()).ToList();
-                        var tehsilCitizenCount = tehsilFilteredCitizens.Count;
-                        var citizenPercentage = tehsilCitizenCount > 0 ? (double)tehsilCitizenCount / filteredCitizens.Count * 100 : 0;
-                        return new DashboardTehsilCitizenCountPercentageDTO
-                        {
-                            tehsilName = tehsil.tehsil_name,
-                            districtName = tehsil.tbl_district.district_name,
-                            provinceName = tehsil.tbl_district.tbl_province.province_name,
-                            citizenPercentage = citizenPercentage
-                        };
-                    }).ToList();
-                    #endregion
-                    #region Response
-                    return new ResponseModel<List<DashboardProvinceCitizenCountPercentageDTO>, List<DashboardDistrictCitizenCountPercentageDTO>, List<DashboardTehsilCitizenCountPercentageDTO>>()
-                    {
-                        ProvinceWise = null,
-                        DistrictWise = districtCitizenGroups,
-                        TehsilWise = tehsilCitizenGroups,
-                        remarks = "Success",
-                        success = true
-                    };
-                    #endregion
-                }
-                else
+                #region Location Base Group By               
+                #region Province Query
+                var provinces = await db.tbl_provinces.ToListAsync();
+                var provinceCitizenGroups = provinces.Select(province =>
                 {
-                    #region Province Query
-                    var provinces = db.tbl_provinces.ToList();
-                    var provinceCitizenGroups = provinces.Select(province =>
-                    {
-                        var provinceFilteredCitizens = filteredCitizens.Where(citizen => citizen.province_name.ToLower() == province.province_name.ToLower()).ToList();
-                        var provinceCitizenCount = provinceFilteredCitizens.Count;
-                        var citizenPercentage = provinceCitizenCount > 0 ? (double)provinceCitizenCount / filteredCitizens.Count * 100 : 0;
+                    var provinceFilteredCitizens = filteredCitizens.Where(citizen => citizen.province_name.ToLower() == province.province_name.ToLower()).ToList();
+                    var provinceCitizenCount = provinceFilteredCitizens.Count;
+                    var citizenPercentage = provinceCitizenCount > 0 ? (double)provinceCitizenCount / filteredCitizens.Count * 100 : 0;
 
-                        return new DashboardProvinceCitizenCountPercentageDTO
-                        {
-                            provinceName = province.province_name,
-                            citizenPercentage = citizenPercentage
-                        };
-                    }).ToList();
-                    return new ResponseModel<List<DashboardProvinceCitizenCountPercentageDTO>, List<DashboardDistrictCitizenCountPercentageDTO>, List<DashboardTehsilCitizenCountPercentageDTO>>()
+                    return new DashboardProvinceCitizenCountPercentageDTO
                     {
-                        ProvinceWise = provinceCitizenGroups,
-                        remarks = "Success",
-                        success = true
+                        provinceName = province.province_name,
+                        citizenPercentage = citizenPercentage
                     };
-                    #endregion
-                }
+                }).ToList();
+                return new ResponseModel<List<DashboardProvinceCitizenCountPercentageDTO>, List<DashboardDistrictCitizenCountPercentageDTO>, List<DashboardTehsilCitizenCountPercentageDTO>>()
+                {
+                    ProvinceWise = provinceCitizenGroups,
+                    remarks = "Success",
+                    success = true
+                };
                 #endregion
-
-                #region Citizen Gender-Baesd Region Applicant Distrubution
-
-
+                #region District Query
+                var districtsQuery = db.tbl_districts.Include(x => x.tbl_province).AsQueryable();                    
+                var districts= await districtsQuery.Where(predicateDistrict).ToListAsync();
+                var districtCitizenGroups = districts.Select(district =>
+                {
+                    var districtFilteredCitizens = filteredCitizens.Where(citizen => citizen.district_name.ToLower() == district.district_name.ToLower()).ToList();
+                    var districtCitizenCount = districtFilteredCitizens.Count;
+                    var citizenPercentage = districtCitizenCount > 0 ? (double)districtCitizenCount / filteredCitizens.Count * 100 : 0;
+                    return new DashboardDistrictCitizenCountPercentageDTO
+                    {
+                        districtName = district.district_name,
+                        provinceName = district.tbl_province.province_name,
+                        citizenPercentage = citizenPercentage
+                    };
+                }).ToList();
                 #endregion
+                #region Tehsil Query
+                var tehsilsQuery = db.tbl_tehsils.Include(x => x.tbl_district).ThenInclude(x => x.tbl_province).AsQueryable();                   
+                var tehsils= await tehsilsQuery.Where(predicateTehsil).ToListAsync();
+                var tehsilCitizenGroups = tehsils.Select(tehsil =>
+                {
+                    var tehsilFilteredCitizens = filteredCitizens.Where(citizen => citizen.tehsil_name.ToLower() == tehsil.tehsil_name.ToLower()).ToList();
+                    var tehsilCitizenCount = tehsilFilteredCitizens.Count;
+                    var citizenPercentage = tehsilCitizenCount > 0 ? (double)tehsilCitizenCount / filteredCitizens.Count * 100 : 0;
+                    return new DashboardTehsilCitizenCountPercentageDTO
+                    {
+                        tehsilName = tehsil.tehsil_name,
+                        districtName = tehsil.tbl_district.district_name,
+                        provinceName = tehsil.tbl_district.tbl_province.province_name,
+                        citizenPercentage = citizenPercentage
+                    };
+                }).ToList();
+                #endregion
+                #endregion
+                #region Citizen Gender-Based Region Applicant Distrubution
+
+
+                #endregion                
+                #region Citizen Educational Background Group By
+                var educations = await db.tbl_educations.ToListAsync();
+                var educationGroups = educations.Select(education =>
+                {
+                    var citizensGroupedByEducation = filteredCitizens.Where(citizen => citizen.educationId== education.education_id).ToList();
+                    var citizensGroupedByEducationCount = citizensGroupedByEducation.Count;
+                    var citizenPercentage = citizensGroupedByEducationCount > 0 ? (double)citizensGroupedByEducationCount / filteredCitizens.Count * 100 : 0;
+                    return new DashboardCitizenEducationalPercentageStatDTO
+                    {
+                        educationalBackground = education.education_name,
+                        educationalBackgroundPercentage = citizenPercentage,
+                    };
+                }).ToList();
+                #endregion
+                #region Response
+                return new ResponseModel<List<DashboardProvinceCitizenCountPercentageDTO>, List<DashboardDistrictCitizenCountPercentageDTO>, List<DashboardTehsilCitizenCountPercentageDTO>>()
+                {
+                    ProvinceWise = null,
+                    DistrictWise = districtCitizenGroups,
+                    TehsilWise = tehsilCitizenGroups,
+                    remarks = "Success",
+                    success = true
+                };
                 #endregion
             }
             catch (Exception ex)
