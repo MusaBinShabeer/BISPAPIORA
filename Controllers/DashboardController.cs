@@ -66,11 +66,11 @@ namespace BISPAPIORA.Controllers
         }
 
         [HttpGet("GetUserPerformanceStats")]
-        public async Task<ActionResult<ResponseModel<DashboardUserPerformanceResponseDTO>>> GetUserPerformanceStats(string usernName, string dateStart = null, string dateEnd = null)
+        public async Task<ActionResult<ResponseModel<DashboardUserPerformanceResponseDTO>>> GetUserPerformanceStats(string userName, string dateStart = null, string dateEnd = null)
         {
             if ((string.IsNullOrEmpty(dateStart) && string.IsNullOrEmpty(dateEnd)) || (dateStart != null && dateEnd != null))
             {
-                var response = dashboardServices.GetUserPerformanceStats(usernName, dateStart, dateEnd);
+                var response = dashboardServices.GetUserPerformanceStats(userName, dateStart, dateEnd);
                 return Ok(await response);
             }
             else
@@ -81,26 +81,19 @@ namespace BISPAPIORA.Controllers
         }
 
         [HttpGet("GetWebDesktopApplicantDistribution")]
-        public async Task<ActionResult<ResponseModel<DashboardUserPerformanceResponseDTO>>> GetWebDesktopApplicantDistribution(string usernName, string dateStart = null, string dateEnd = null)
+        public async Task<ActionResult<ResponseModel<DashboardUserPerformanceResponseDTO>>> GetWebDesktopApplicantDistribution()
         {
-            if ((string.IsNullOrEmpty(dateStart) && string.IsNullOrEmpty(dateEnd)) || (dateStart != null && dateEnd != null))
-            {
-                var response = dashboardServices.GetWebDesktopApplicantDistribution(usernName, dateStart, dateEnd);
-                return Ok(await response);
-            }
-            else
-            {
-                return BadRequest("Both dateStart and dateEnd must be provided.");
-            }
-
+            
+                var response = dashboardServices.GetWebDesktopApplicantDistribution();
+                return Ok(await response);            
         }
 
         [HttpGet("GetWebDesktopApplicantDistributionLocationBased")]
-        public async Task<ActionResult<ResponseModel<List<DashboardProvinceCitizenCountPercentageDTO>, List<DashboardDistrictCitizenCountPercentageDTO>, List<DashboardTehsilCitizenCountPercentageDTO>>>> GetWebDesktopApplicantDistributionLocationBased(string usernName, string dateStart = null, string dateEnd = null, string provinceName = null, string districtName = null, string tehsilName = null)
+        public async Task<ActionResult<ResponseModel<List<DashboardProvinceCitizenCountPercentageDTO>, List<DashboardDistrictCitizenCountPercentageDTO>, List<DashboardTehsilCitizenCountPercentageDTO>>>> GetWebDesktopApplicantDistributionLocationBased( string dateStart = null, string dateEnd = null, string provinceId = null, string districtId = null, string tehsilId = null)
         {
             if ((string.IsNullOrEmpty(dateStart) && string.IsNullOrEmpty(dateEnd)) || (dateStart != null && dateEnd != null))
             {
-                var response = dashboardServices.GetWebDesktopApplicantDistributionLocationBased(usernName, dateStart, dateEnd, provinceName, districtName, tehsilName);
+                var response = dashboardServices.GetWebDesktopApplicantDistributionLocationBased(dateStart, dateEnd, provinceId, districtId, tehsilId);
                 return Ok(await response);
             }
             else

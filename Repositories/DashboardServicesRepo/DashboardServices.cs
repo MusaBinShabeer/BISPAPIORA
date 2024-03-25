@@ -60,7 +60,7 @@ namespace BISPAPIORA.Repositories.DashboardServicesRepo
             }
         }
 
-        public async Task<ResponseModel<DashboardCitizenCountPercentageDTO>> GetWebDesktopApplicantDistribution(string userName, string dateStart, string dateEnd)
+        public async Task<ResponseModel<DashboardCitizenCountPercentageDTO>> GetWebDesktopApplicantDistribution()
         {
             try
             {
@@ -72,17 +72,9 @@ namespace BISPAPIORA.Repositories.DashboardServicesRepo
                    .Include(x => x.tbl_enrollment).ThenInclude(x => x.enrolled_by)
                    .Where(x => x.tbl_enrollment != null)
                    .ProjectTo<DashboardCitizenBaseModel>(mapper.ConfigurationProvider);
-                var predicateRegistered = PredicateBuilder.New<DashboardCitizenBaseModel>(true);
-                predicateRegistered = predicateRegistered.And(x => x.user_name == (userName));
-                var predicateEnrolled = PredicateBuilder.New<DashboardCitizenBaseModel>(true);
-                predicateEnrolled = predicateEnrolled.And(x => x.user_name == (userName));
-                if (!string.IsNullOrEmpty(dateStart) && !string.IsNullOrEmpty(dateEnd))
-                {
-                    predicateRegistered = predicateRegistered.And(x => x.registered_date >= DateTime.Parse(dateStart) && x.registered_date <= DateTime.Parse(dateEnd));
-                    predicateEnrolled = predicateEnrolled.And(x => x.enrolled_date >= DateTime.Parse(dateStart) && x.enrolled_date <= DateTime.Parse(dateEnd));
-                }
-                var registeredCitizen = registeredCitizenQuery.Where(predicateRegistered).ToList();
-                var enrolledCitizen = enrolledCitizenQuery.Where(predicateEnrolled).ToList();
+                
+                var registeredCitizen = registeredCitizenQuery.ToList();
+                var enrolledCitizen = enrolledCitizenQuery.ToList();
 
                 var totalRegisteredCount = registeredCitizen.Count;
                 var totalEnrolledCount = enrolledCitizen.Count;
@@ -110,7 +102,7 @@ namespace BISPAPIORA.Repositories.DashboardServicesRepo
             }
         }
 
-        public async Task<ResponseModel<List<DashboardProvinceCitizenCountPercentageDTO>, List<DashboardDistrictCitizenCountPercentageDTO>, List<DashboardTehsilCitizenCountPercentageDTO>>> GetWebDesktopApplicantDistributionLocationBased(string userName, string dateStart, string dateEnd, string provinceId, string districtId, string tehsilId)
+        public async Task<ResponseModel<List<DashboardProvinceCitizenCountPercentageDTO>, List<DashboardDistrictCitizenCountPercentageDTO>, List<DashboardTehsilCitizenCountPercentageDTO>>> GetWebDesktopApplicantDistributionLocationBased( string dateStart, string dateEnd, string provinceId, string districtId, string tehsilId)
         {
             try
             {
@@ -126,7 +118,6 @@ namespace BISPAPIORA.Repositories.DashboardServicesRepo
                     .Include(x => x.tbl_citizen_tehsil).ThenInclude(x => x.tbl_district).ThenInclude(x => x.tbl_province)
                     .ProjectTo<DashboardCitizenLocationModel>(mapper.ConfigurationProvider);
                 #region Filters                    
-                predicateCitizen = predicateCitizen.And(x => x.user_name == (userName));
                 if (!string.IsNullOrEmpty(dateStart) && !string.IsNullOrEmpty(dateEnd))
                 {
                     predicateCitizen = predicateCitizen.And(x => x.registered_date >= DateTime.Parse(dateStart) && x.registered_date <= DateTime.Parse(dateEnd));
