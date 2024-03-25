@@ -32,6 +32,9 @@
         public DateTime? registered_date { get; set; } = default!;
         public Guid? enrolled_by { get; set; } = default!;
         public DateTime? enrolled_date { get; set; } = default!;
+
+        public string citizen_gender { get; set; } = string.Empty;
+        public string citizen_martial_status { get; set; } = string.Empty;
     }
     public class DashboardCitizenLocationModel : DashboardCitizenBaseModel
     {
