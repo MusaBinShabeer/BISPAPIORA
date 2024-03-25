@@ -102,7 +102,7 @@ namespace BISPAPIORA.Repositories.DashboardServicesRepo
             }
         }
 
-        public async Task<ResponseModel<List<DashboardProvinceCitizenCountPercentageDTO>, List<DashboardDistrictCitizenCountPercentageDTO>, List<DashboardTehsilCitizenCountPercentageDTO>>> GetWebDesktopApplicantDistributionLocationBased( string dateStart, string dateEnd, string provinceId, string districtId, string tehsilId)
+        public async Task<ResponseModel<List<DashboardProvinceCitizenCountPercentageDTO>, List<DashboardDistrictCitizenCountPercentageDTO>, List<DashboardTehsilCitizenCountPercentageDTO>, List<DashboardCitizenEducationalPercentageStatDTO>>> GetWebDesktopApplicantDistributionLocationBased( string dateStart, string dateEnd, string provinceId, string districtId, string tehsilId)
         {
             try
             {
@@ -162,12 +162,7 @@ namespace BISPAPIORA.Repositories.DashboardServicesRepo
                         citizenPercentage = citizenPercentage
                     };
                 }).ToList();
-                return new ResponseModel<List<DashboardProvinceCitizenCountPercentageDTO>, List<DashboardDistrictCitizenCountPercentageDTO>, List<DashboardTehsilCitizenCountPercentageDTO>>()
-                {
-                    ProvinceWise = provinceCitizenGroups,
-                    remarks = "Success",
-                    success = true
-                };
+             
                 #endregion
                 #region District Query
                 var districtsQuery = db.tbl_districts.Include(x => x.tbl_province).AsQueryable();                    
@@ -222,9 +217,10 @@ namespace BISPAPIORA.Repositories.DashboardServicesRepo
                 }).ToList();
                 #endregion
                 #region Response
-                return new ResponseModel<List<DashboardProvinceCitizenCountPercentageDTO>, List<DashboardDistrictCitizenCountPercentageDTO>, List<DashboardTehsilCitizenCountPercentageDTO>>()
+                return new ResponseModel<List<DashboardProvinceCitizenCountPercentageDTO>, List<DashboardDistrictCitizenCountPercentageDTO>, List<DashboardTehsilCitizenCountPercentageDTO>, List<DashboardCitizenEducationalPercentageStatDTO>>()
                 {
-                    ProvinceWise = null,
+                    educationalWise= educationGroups,
+                    ProvinceWise = provinceCitizenGroups,
                     DistrictWise = districtCitizenGroups,
                     TehsilWise = tehsilCitizenGroups,
                     remarks = "Success",
@@ -234,7 +230,7 @@ namespace BISPAPIORA.Repositories.DashboardServicesRepo
             }
             catch (Exception ex)
             {
-                return new ResponseModel<List<DashboardProvinceCitizenCountPercentageDTO>, List<DashboardDistrictCitizenCountPercentageDTO>, List<DashboardTehsilCitizenCountPercentageDTO>>()
+                return new ResponseModel<List<DashboardProvinceCitizenCountPercentageDTO>, List<DashboardDistrictCitizenCountPercentageDTO>, List<DashboardTehsilCitizenCountPercentageDTO>, List<DashboardCitizenEducationalPercentageStatDTO>>()
                 {
                     remarks = $"There was a fatal error {ex.ToString()}",
                     success = false,

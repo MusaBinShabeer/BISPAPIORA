@@ -89,7 +89,7 @@ namespace BISPAPIORA.Controllers
         }
 
         [HttpGet("GetWebDesktopApplicantDistributionLocationBased")]
-        public async Task<ActionResult<ResponseModel<List<DashboardProvinceCitizenCountPercentageDTO>, List<DashboardDistrictCitizenCountPercentageDTO>, List<DashboardTehsilCitizenCountPercentageDTO>>>> GetWebDesktopApplicantDistributionLocationBased( string dateStart = null, string dateEnd = null, string provinceId = null, string districtId = null, string tehsilId = null)
+        public async Task<ActionResult<ResponseModel<List<DashboardProvinceCitizenCountPercentageDTO>, List<DashboardDistrictCitizenCountPercentageDTO>, List<DashboardTehsilCitizenCountPercentageDTO>,List<DashboardCitizenEducationalPercentageStatDTO>>>> GetWebDesktopApplicantDistributionLocationBased( string dateStart = null, string dateEnd = null, string provinceId = null, string districtId = null, string tehsilId = null)
         {
             if ((string.IsNullOrEmpty(dateStart) && string.IsNullOrEmpty(dateEnd)) || (dateStart != null && dateEnd != null))
             {
