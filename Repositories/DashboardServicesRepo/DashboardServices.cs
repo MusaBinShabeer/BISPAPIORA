@@ -102,7 +102,7 @@ namespace BISPAPIORA.Repositories.DashboardServicesRepo
             }
         }
 
-        public async Task<ResponseModel<List<DashboardProvinceCitizenCountPercentageDTO>, List<DashboardDistrictCitizenCountPercentageDTO>, List<DashboardTehsilCitizenCountPercentageDTO>, List<DashboardCitizenGenderPercentageDTO>, List<DashboardCitizenMaritalStatusPercentageDTO>>> GetWebDesktopApplicantDistributionLocationBased( string dateStart, string dateEnd, string provinceId, string districtId, string tehsilId)
+        public async Task<ResponseModel<List<DashboardProvinceCitizenCountPercentageDTO>, List<DashboardDistrictCitizenCountPercentageDTO>, List<DashboardTehsilCitizenCountPercentageDTO>, List<DashboardCitizenGenderPercentageDTO>, List<DashboardCitizenMaritalStatusPercentageDTO>, List<DashboardCitizenEmploymentPercentageStatDTO>>> GetWebDesktopApplicantDistributionLocationBased( string dateStart, string dateEnd, string provinceId, string districtId, string tehsilId)
         {
             try
             {
@@ -116,6 +116,8 @@ namespace BISPAPIORA.Repositories.DashboardServicesRepo
                     .Include(x => x.tbl_enrollment).ThenInclude(x => x.enrolled_by)
                     .Include(x => x.tbl_citizen_tehsil).ThenInclude(x => x.tbl_district).ThenInclude(x => x.tbl_province)
                     .Include(x => x.tbl_citizen_education)
+                    .Include(x => x.tbl_citizen_employment)
+                    .Include(x => x.tbl_citizen_scheme)
                     .ProjectTo<DashboardCitizenLocationModel>(mapper.ConfigurationProvider);              
                 #region Filters                    
                 if (!string.IsNullOrEmpty(dateStart) && !string.IsNullOrEmpty(dateEnd))
@@ -162,12 +164,6 @@ namespace BISPAPIORA.Repositories.DashboardServicesRepo
                         citizenPercentage = citizenPercentage
                     };
                 }).ToList();
-                return new ResponseModel<List<DashboardProvinceCitizenCountPercentageDTO>, List<DashboardDistrictCitizenCountPercentageDTO>, List<DashboardTehsilCitizenCountPercentageDTO>, List<DashboardCitizenGenderPercentageDTO>, List<DashboardCitizenMaritalStatusPercentageDTO>>()
-                {
-                    ProvinceWise = provinceCitizenGroups,
-                    remarks = "Success",
-                    success = true
-                };
                 #endregion
                 #region District Query
                 var districtsQuery = db.tbl_districts.Include(x => x.tbl_province).AsQueryable();                    
@@ -253,12 +249,47 @@ namespace BISPAPIORA.Repositories.DashboardServicesRepo
                     };
                 }).ToList();
                 #endregion
-                #region Response
-                return new ResponseModel<List<DashboardProvinceCitizenCountPercentageDTO>, List<DashboardDistrictCitizenCountPercentageDTO>, List<DashboardTehsilCitizenCountPercentageDTO>, List<DashboardCitizenGenderPercentageDTO>, List<DashboardCitizenMaritalStatusPercentageDTO>>()
+
+
+                #region Citizen Employement Background Group By
+                var employments = await db.tbl_employments.ToListAsync();
+                var employmentGroups = employments.Select(employment =>
                 {
-                    ProvinceWise = null,
+                    var citizensGroupedByEmployment = filteredCitizens.Where(citizen => citizen.employmentId == employment.employment_id).ToList();
+                    var citizensGroupedByEmploymentCount = citizensGroupedByEmployment.Count;
+                    //var citizenPercentage = citizensGroupedByEmploymentCount > 0 ? (double)citizensGroupedByEmploymentCount / filteredCitizens.Count * 100 : 0;
+                    return new DashboardCitizenEmploymentPercentageStatDTO
+                    {
+                        employmentBackground = employment.employment_name,
+                        employmentBackgroundPercentage = citizensGroupedByEmploymentCount,
+                    };
+                }).ToList();
+                #endregion
+
+
+                #region Citizen Group By Scheme Saving Amount
+                var citizenSchemes = await db.tbl_citizen_schemes.ToListAsync();
+                var citizenSchemeGroups = citizenSchemes.Select(citizenScheme =>
+                {
+                    var citizensGroupedBySavingAoount = filteredCitizens.Where(citizen => citizen.saving_amount == citizenScheme.citizen_scheme_saving_amount).ToList();
+                    var citizensGroupedBySavingAoountCount = citizensGroupedBySavingAoount.Count;
+                    //var citizenPercentage = citizensGroupedByEmploymentCount > 0 ? (double)citizensGroupedByEmploymentCount / filteredCitizens.Count * 100 : 0;
+                    return new DashboardCitizenCountSavingAmountDTO
+                    {
+                        totalCitzenCount = citizensGroupedBySavingAoountCount,
+                        savingAmount = citizenScheme.citizen_scheme_saving_amount,
+                    };
+                }).ToList();
+                #endregion
+
+                #region Response
+                return new ResponseModel<List<DashboardProvinceCitizenCountPercentageDTO>, List<DashboardDistrictCitizenCountPercentageDTO>, List<DashboardTehsilCitizenCountPercentageDTO>, List<DashboardCitizenGenderPercentageDTO>, List<DashboardCitizenMaritalStatusPercentageDTO>, List<DashboardCitizenEmploymentPercentageStatDTO>>()
+                {
+                    ProvinceWise = provinceCitizenGroups,
                     DistrictWise = districtCitizenGroups,
                     TehsilWise = tehsilCitizenGroups,
+                    GenderWise = genderGroupsWithPercenntage,
+                    MaritalStatusWise = maritalStatusGroupsWithPercentage,
                     remarks = "Success",
                     success = true
                 };
@@ -266,7 +297,7 @@ namespace BISPAPIORA.Repositories.DashboardServicesRepo
             }
             catch (Exception ex)
             {
-                return new ResponseModel<List<DashboardProvinceCitizenCountPercentageDTO>, List<DashboardDistrictCitizenCountPercentageDTO>, List<DashboardTehsilCitizenCountPercentageDTO>, List<DashboardCitizenGenderPercentageDTO>, List<DashboardCitizenMaritalStatusPercentageDTO>>()
+                return new ResponseModel<List<DashboardProvinceCitizenCountPercentageDTO>, List<DashboardDistrictCitizenCountPercentageDTO>, List<DashboardTehsilCitizenCountPercentageDTO>, List<DashboardCitizenGenderPercentageDTO>, List<DashboardCitizenMaritalStatusPercentageDTO>, List<DashboardCitizenEmploymentPercentageStatDTO>>()
                 {
                     remarks = $"There was a fatal error {ex.ToString()}",
                     success = false,
