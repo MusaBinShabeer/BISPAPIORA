@@ -11,6 +11,18 @@
         public double educationalBackgroundPercentage { get; set; } = 0;
     }
 
+    public class DashboardCitizenGenderPercentageDTO
+    {
+        public string citizenGender { get; set; }
+        public double citizenGenderPercentage { get; set; }
+    }
+
+    public class DashboardCitizenMaritalStatusPercentageDTO
+    {
+        public string citizenMaritalStatus { get; set; }
+        public double citizenMaritalStatusPercentage { get; set; }
+    }
+
     public class DashboardProvinceCitizenCountPercentageDTO
     {
         public string provinceName { get; set; } = string.Empty;

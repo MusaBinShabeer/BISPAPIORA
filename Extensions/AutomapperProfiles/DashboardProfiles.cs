@@ -31,7 +31,9 @@ namespace BISPAPIORA.Extensions.AutomapperProfiles
                 .ForMember(d => d.district_name, opt => opt.MapFrom(src => src.tbl_citizen_tehsil != null ? src.tbl_citizen_tehsil.tbl_district.district_name : ""))
                 .ForMember(d => d.district_id, opt => opt.MapFrom(src => src.tbl_citizen_tehsil.fk_district))
                 .ForMember(d => d.tehsil_name, opt => opt.MapFrom(src => src.tbl_citizen_tehsil != null ? src.tbl_citizen_tehsil.tehsil_name : ""))
-                .ForMember(d => d.tehsil_id, opt => opt.MapFrom(src => src.fk_tehsil));
+                .ForMember(d => d.tehsil_id, opt => opt.MapFrom(src => src.fk_tehsil))
+                .ForMember(d => d.citizen_gender, opt => opt.MapFrom(src => src.citizen_gender))
+                .ForMember(d => d.citizen_martial_status, opt => opt.MapFrom(src => src.citizen_martial_status));
             CreateMap<(List<DashboardCitizenBaseModel>, List<DashboardCitizenBaseModel>), DashboardUserPerformanceResponseDTO>()
                 .ForMember(dest => dest.registeredCount, opt => opt.MapFrom(src => src.Item1.Count))
                 .ForMember(dest => dest.enrolledCount, opt => opt.MapFrom(src => src.Item2.Count));
