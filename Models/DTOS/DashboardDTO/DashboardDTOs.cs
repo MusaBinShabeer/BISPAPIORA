@@ -11,10 +11,34 @@
         public double educationalBackgroundPercentage { get; set; } = 0;
     }
 
+    public class DashboardCitizenEmploymentPercentageStatDTO
+    {
+        public string employmentBackground { get; set; } = default!;
+        public double employmentBackgroundPercentage { get; set; } = 0;
+    }
+
+    public class DashboardCitizenGenderPercentageDTO
+    {
+        public string citizenGender { get; set; }
+        public double citizenGenderPercentage { get; set; }
+    }
+
+    public class DashboardCitizenMaritalStatusPercentageDTO
+    {
+        public string citizenMaritalStatus { get; set; }
+        public double citizenMaritalStatusPercentage { get; set; }
+    }
+
     public class DashboardProvinceCitizenCountPercentageDTO
     {
         public string provinceName { get; set; } = string.Empty;
         public double citizenPercentage { get; set; } = 0;
+    }
+
+    public class DashboardCitizenCountSavingAmountDTO
+    {
+        public decimal totalCitzenCount { get; set; } = 0;
+        public decimal? savingAmount { get; set; } = 0;
     }
     public class DashboardDistrictCitizenCountPercentageDTO : DashboardProvinceCitizenCountPercentageDTO
     {
@@ -40,6 +64,14 @@
         public DateTime? enrolled_date { get; set; } = default!;
         public string educationName { get; set; } = default!;
         public Guid? educationId { get; set; } = default!;
+        public string employmentName { get; set; } = default!;
+        public Guid? employmentId { get; set; } = default!;
+
+        public string citizen_gender { get; set; } = string.Empty;
+        public string citizen_martial_status { get; set; } = string.Empty;
+
+        public decimal? saving_amount { get; set; } = 0;
+        public Guid? citizen_scheme_id { get; set; } = default!;
     }
     public class DashboardCitizenLocationModel : DashboardCitizenBaseModel
     {
