@@ -5,6 +5,12 @@
         public double registeredPercentage { get; set; } = 0;
         public double enrolledPercentage { get; set; } = 0;
     }
+    public class DashboardCitizenEducationalPercentageStatDTO
+    {
+        public string educationalBackground { get; set; } = default!;
+        public double educationalBackgroundPercentage { get; set; } = 0;
+    }
+
     public class DashboardProvinceCitizenCountPercentageDTO
     {
         public string provinceName { get; set; } = string.Empty;
@@ -32,6 +38,8 @@
         public DateTime? registered_date { get; set; } = default!;
         public Guid? enrolled_by { get; set; } = default!;
         public DateTime? enrolled_date { get; set; } = default!;
+        public string educationName { get; set; } = default!;
+        public Guid? educationId { get; set; } = default!;
 
         public string citizen_gender { get; set; } = string.Empty;
         public string citizen_martial_status { get; set; } = string.Empty;
