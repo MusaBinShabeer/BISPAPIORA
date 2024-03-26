@@ -41,6 +41,7 @@ namespace BISPAPIORA.Models.DTOS.CitizenDTO
         public string maritalStatusName { get; set; } = string.Empty;
         public string accountTypeName { get; set; } = string.Empty;
         public string fkBank { get; set; } = string.Empty;
+        public string fkCitizenBank { get; set; } = string.Empty;
         public string enrolledDate { get; set; } = string.Empty;
         public string enrolledByUser { get; set; } = string.Empty;
         public string ibanNo { get; set; } = string.Empty;
