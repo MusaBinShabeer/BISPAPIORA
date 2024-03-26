@@ -23,6 +23,7 @@ namespace BISPAPIORA.Extensions.AutomapperProfiles
                 //.ForMember(d => d.enrolled_date, opt => opt.MapFrom(src => src.tbl_enrollment != null ? src.tbl_enrollment.enrolled_date : default!))
                 //.ForMember(d => d.enrolled_by, opt => opt.MapFrom(src => src.tbl_enrollment != null ? src.tbl_enrollment.enrolled_by.user_id : default!))
                 //.ForMember(d => d.registered_by, opt => opt.MapFrom(src => src.tbl_citizen_registration != null ? src.tbl_citizen_registration.registered_by.user_id : default!))
+                .ForMember(d => d.citizen_id, opt => opt.MapFrom(src => src.citizen_id))
                 .ForMember(d => d.citizen_name, opt => opt.MapFrom(src => src.citizen_name))
                 .ForMember(d => d.user_name, opt => opt.MapFrom(src => src.tbl_citizen_registration != null ? src.tbl_citizen_registration.registered_by.user_name : src.tbl_enrollment != null ? src.tbl_enrollment.enrolled_by.user_name : ""))
                 .ForMember(d => d.citizen_id, opt => opt.MapFrom(src => src.citizen_id))
@@ -33,7 +34,16 @@ namespace BISPAPIORA.Extensions.AutomapperProfiles
                 .ForMember(d => d.tehsil_name, opt => opt.MapFrom(src => src.tbl_citizen_tehsil != null ? src.tbl_citizen_tehsil.tehsil_name : ""))
                 .ForMember(d => d.tehsil_id, opt => opt.MapFrom(src => src.fk_tehsil))
                 .ForMember(d => d.citizen_gender, opt => opt.MapFrom(src => src.citizen_gender))
-                .ForMember(d => d.citizen_martial_status, opt => opt.MapFrom(src => src.citizen_martial_status));
+                .ForMember(d => d.citizen_martial_status, opt => opt.MapFrom(src => src.citizen_martial_status))
+                .ForMember(d => d.educationId, opt => opt.MapFrom(src => src.fk_citizen_education))
+                .ForMember(d => d.educationName, opt => opt.MapFrom(src => src.tbl_citizen_education.education_name))
+                .ForMember(d => d.employmentId, opt => opt.MapFrom(src => src.fk_citizen_employment))
+                .ForMember(d => d.employmentName, opt => opt.MapFrom(src => src.tbl_citizen_employment.employment_name))
+                .ForMember(d => d.citizen_scheme_id, opt => opt.MapFrom(src => src.tbl_citizen_scheme.citizen_scheme_id))
+                .ForMember(d => d.saving_amount, opt => opt.MapFrom(src => src.tbl_citizen_scheme.citizen_scheme_saving_amount))
+                .ForMember(d => d.insertion_date, opt => opt.MapFrom(src => src.insertion_date))
+                .ForMember(d => d.registration, opt => opt.MapFrom(src => src.tbl_citizen_registration))
+                .ForMember(d => d.enrollment, opt => opt.MapFrom(src => src.tbl_enrollment));
             CreateMap<(List<DashboardCitizenBaseModel>, List<DashboardCitizenBaseModel>), DashboardUserPerformanceResponseDTO>()
                 .ForMember(dest => dest.registeredCount, opt => opt.MapFrom(src => src.Item1.Count))
                 .ForMember(dest => dest.enrolledCount, opt => opt.MapFrom(src => src.Item2.Count));

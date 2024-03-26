@@ -1,4 +1,6 @@
-﻿namespace BISPAPIORA.Models.DTOS.DashboardDTO
+﻿using BISPAPIORA.Models.DBModels.Dbtables;
+
+namespace BISPAPIORA.Models.DTOS.DashboardDTO
 {
     public class DashboardCitizenCountPercentageDTO
     {
@@ -37,9 +39,16 @@
 
     public class DashboardCitizenCountSavingAmountDTO
     {
-        public decimal totalCitzenCount { get; set; } = 0;
+        public decimal totalCitizenCount { get; set; } = 0;
         public decimal? savingAmount { get; set; } = 0;
     }
+
+    public class DashboardCitizenTrendDTO
+    {
+        public decimal totalCitizenCount { get; set; } = 0;
+        public DateTime? insertionMonth { get; set; } = default!;
+    }
+
     public class DashboardDistrictCitizenCountPercentageDTO : DashboardProvinceCitizenCountPercentageDTO
     {
         public string districtName { get; set; } = string.Empty;
@@ -72,6 +81,12 @@
 
         public decimal? saving_amount { get; set; } = 0;
         public Guid? citizen_scheme_id { get; set; } = default!;
+
+        public DateTime? insertion_date { get; set; } = default!;
+
+        public tbl_enrollment? enrollment { get; set; } = default!;
+
+        public tbl_registration? registration { get; set; } = default!;
     }
     public class DashboardCitizenLocationModel : DashboardCitizenBaseModel
     {
