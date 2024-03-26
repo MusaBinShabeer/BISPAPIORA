@@ -103,8 +103,7 @@ namespace BISPAPIORA.Repositories.DashboardServicesRepo
         }
 
         //public async Task<ResponseModel<List<DashboardProvinceCitizenCountPercentageDTO>, List<DashboardDistrictCitizenCountPercentageDTO>, List<DashboardTehsilCitizenCountPercentageDTO>, List<DashboardCitizenGenderPercentageDTO>, List<DashboardCitizenMaritalStatusPercentageDTO>, List<DashboardCitizenEmploymentPercentageStatDTO>>> GetWebDesktopApplicantDistributionLocationBased( string dateStart, string dateEnd, string provinceId, string districtId, string tehsilId)
-        public async Task<ResponseModel<List<DashboardProvinceCitizenCountPercentageDTO>, List<DashboardDistrictCitizenCountPercentageDTO>, List<DashboardTehsilCitizenCountPercentageDTO>, List<DashboardCitizenEducationalPercentageStatDTO>, List<DashboardCitizenGenderPercentageDTO>, List<DashboardCitizenMaritalStatusPercentageDTO>, List<DashboardCitizenEmploymentPercentageStatDTO>>> GetWebDesktopApplicantDistributionLocationBased( string dateStart, string dateEnd, string provinceId, string districtId, string tehsilId)
-        public async Task<ResponseModel<List<DashboardProvinceCitizenCountPercentageDTO>, List<DashboardDistrictCitizenCountPercentageDTO>, List<DashboardTehsilCitizenCountPercentageDTO>, List<DashboardCitizenGenderPercentageDTO>, List<DashboardCitizenMaritalStatusPercentageDTO>, List<DashboardCitizenEducationalPercentageStatDTO>, List<DashboardCitizenEmploymentPercentageStatDTO>, List<DashboardCitizenCountSavingAmountDTO>, List<DashboardCitizenTrendDTO>>> GetWebDesktopApplicantDistributionLocationBased( string dateStart, string dateEnd, string provinceId, string districtId, string tehsilId, bool registration, bool enrollment)
+        public async Task<ResponseModel<List<DashboardProvinceCitizenCountPercentageDTO>, List<DashboardDistrictCitizenCountPercentageDTO>, List<DashboardTehsilCitizenCountPercentageDTO>, List<DashboardCitizenEducationalPercentageStatDTO>, List<DashboardCitizenGenderPercentageDTO>, List<DashboardCitizenMaritalStatusPercentageDTO>, List<DashboardCitizenEmploymentPercentageStatDTO>, List<DashboardCitizenCountSavingAmountDTO>, List<DashboardCitizenTrendDTO>>> GetWebDesktopApplicantDistributionLocationBased( string dateStart, string dateEnd, string provinceId, string districtId, string tehsilId, bool registration, bool enrollment)
         {
             try
             {
@@ -290,11 +289,14 @@ namespace BISPAPIORA.Repositories.DashboardServicesRepo
                         totalCitizenCount = citizensGroupedBySavingAoountCount,
                         savingAmount = citizenScheme.citizen_scheme_saving_amount,
                     };
-                }).ToList();
+                }).GroupBy(citizenScheme => citizenScheme.savingAmount)
+                .Select(group => group.First())
+                .ToList();
                 #endregion
 
                 #region Citizen Trend
-                var citizenTrendGroups = filteredCitizens.GroupBy(citizen => new DateTime(citizen.insertion_date!.Value.Year, citizen.insertion_date!.Value.Month, 1)) // Grouping citizens by insertion month
+                var citizenTrendGroups = filteredCitizens.Where(citizen => citizen.insertion_date != null) // Filter out citizens with null insertion_date
+                                                         .GroupBy(citizen => new DateTime(citizen.insertion_date!.Value.Year, citizen.insertion_date.Value.Month, 1)) // Grouping citizens by insertion month
                                                          .Select(group =>
                                                          {
                                                              var insertionMonth = new DateTime(group.Key.Year, group.Key.Month, 1); // The insertion month for the current group
@@ -317,19 +319,17 @@ namespace BISPAPIORA.Repositories.DashboardServicesRepo
 
 
                 #region Response
-                return new ResponseModel<List<DashboardProvinceCitizenCountPercentageDTO>, List<DashboardDistrictCitizenCountPercentageDTO>, List<DashboardTehsilCitizenCountPercentageDTO>, List<DashboardCitizenGenderPercentageDTO>, List<DashboardCitizenMaritalStatusPercentageDTO>, List<DashboardCitizenEducationalPercentageStatDTO>, List<DashboardCitizenEmploymentPercentageStatDTO>, List<DashboardCitizenCountSavingAmountDTO>, List<DashboardCitizenTrendDTO>>()
-                 return new ResponseModel<List<DashboardProvinceCitizenCountPercentageDTO>, List<DashboardDistrictCitizenCountPercentageDTO>, List<DashboardTehsilCitizenCountPercentageDTO>,List<DashboardCitizenEducationalPercentageStatDTO>, List<DashboardCitizenGenderPercentageDTO>, List<DashboardCitizenMaritalStatusPercentageDTO>, List<DashboardCitizenEmploymentPercentageStatDTO>> ()
+                 return new ResponseModel<List<DashboardProvinceCitizenCountPercentageDTO>, List<DashboardDistrictCitizenCountPercentageDTO>, List<DashboardTehsilCitizenCountPercentageDTO>,List<DashboardCitizenEducationalPercentageStatDTO>, List<DashboardCitizenGenderPercentageDTO>, List<DashboardCitizenMaritalStatusPercentageDTO>, List<DashboardCitizenEmploymentPercentageStatDTO>, List<DashboardCitizenCountSavingAmountDTO>, List<DashboardCitizenTrendDTO>>()
                 {
-                    ProvinceWise = provinceCitizenGroups,
+                    provinceWise = provinceCitizenGroups,
                     educationalWise= educationGroups,
-                    DistrictWise = districtCitizenGroups,
-                    TehsilWise = tehsilCitizenGroups,
-                    GenderWise = genderGroupsWithPercenntage,
-                    MaritalStatusWise = maritalStatusGroupsWithPercentage,
-                    EducationalWise = educationGroups,
-                    EmployementWise = employmentGroups,
-                    SavingAmountWise = citizenSchemeGroups,
-                    CitizenTrendWise = citizenTrendGroupslatestSixMonths,
+                    districtWise = districtCitizenGroups,
+                    tehsilWise = tehsilCitizenGroups,
+                    genderWise = genderGroupsWithPercenntage,
+                    maritalStatusWise = maritalStatusGroupsWithPercentage,
+                    employementWise = employmentGroups,
+                    savingAmountWise = citizenSchemeGroups,
+                    citizenTrendWise = citizenTrendGroupslatestSixMonths,
                     remarks = "Success",
                     success = true
                 };
@@ -337,8 +337,7 @@ namespace BISPAPIORA.Repositories.DashboardServicesRepo
             }
             catch (Exception ex)
             {
-                return new ResponseModel<List<DashboardProvinceCitizenCountPercentageDTO>, List<DashboardDistrictCitizenCountPercentageDTO>, List<DashboardTehsilCitizenCountPercentageDTO>, List<DashboardCitizenGenderPercentageDTO>, List<DashboardCitizenMaritalStatusPercentageDTO>, List<DashboardCitizenEducationalPercentageStatDTO>, List<DashboardCitizenEmploymentPercentageStatDTO>, List<DashboardCitizenCountSavingAmountDTO>, List<DashboardCitizenTrendDTO>>()
-                return new ResponseModel<List<DashboardProvinceCitizenCountPercentageDTO>, List<DashboardDistrictCitizenCountPercentageDTO>, List<DashboardTehsilCitizenCountPercentageDTO>, List<DashboardCitizenEducationalPercentageStatDTO>, List<DashboardCitizenGenderPercentageDTO>, List<DashboardCitizenMaritalStatusPercentageDTO>, List<DashboardCitizenEmploymentPercentageStatDTO>>()
+               return new ResponseModel<List<DashboardProvinceCitizenCountPercentageDTO>, List<DashboardDistrictCitizenCountPercentageDTO>, List<DashboardTehsilCitizenCountPercentageDTO>, List<DashboardCitizenEducationalPercentageStatDTO>, List<DashboardCitizenGenderPercentageDTO>, List<DashboardCitizenMaritalStatusPercentageDTO>, List<DashboardCitizenEmploymentPercentageStatDTO>, List<DashboardCitizenCountSavingAmountDTO>, List<DashboardCitizenTrendDTO>>()
                 {
                     remarks = $"There was a fatal error {ex.ToString()}",
                     success = false,
