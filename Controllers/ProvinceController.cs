@@ -8,8 +8,8 @@ using Microsoft.AspNetCore.Mvc;
 namespace BISPAPIORA.Controllers
 {
     // Controller for managing province-related operations
-    // Requires user authentication
-    [AppVersion]
+    //// Requires user authentication
+    //[AppVersion]
     [Route("api/[controller]")]
     [ApiController]
     public class ProvinceController : ControllerBase
