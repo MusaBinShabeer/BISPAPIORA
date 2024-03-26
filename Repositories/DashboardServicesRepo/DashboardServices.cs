@@ -102,7 +102,7 @@ namespace BISPAPIORA.Repositories.DashboardServicesRepo
             }
         }
 
-        public async Task<ResponseModel<List<DashboardProvinceCitizenCountPercentageDTO>, List<DashboardDistrictCitizenCountPercentageDTO>, List<DashboardTehsilCitizenCountPercentageDTO>, List<DashboardCitizenGenderPercentageDTO>, List<DashboardCitizenMaritalStatusPercentageDTO>, List<DashboardCitizenEmploymentPercentageStatDTO>>> GetWebDesktopApplicantDistributionLocationBased( string dateStart, string dateEnd, string provinceId, string districtId, string tehsilId)
+        public async Task<ResponseModel<List<DashboardProvinceCitizenCountPercentageDTO>, List<DashboardDistrictCitizenCountPercentageDTO>, List<DashboardTehsilCitizenCountPercentageDTO>, List<DashboardCitizenGenderPercentageDTO>, List<DashboardCitizenMaritalStatusPercentageDTO>, List<DashboardCitizenEducationalPercentageStatDTO>, List<DashboardCitizenEmploymentPercentageStatDTO>, List<DashboardCitizenCountSavingAmountDTO>, List<DashboardCitizenTrendDTO>>> GetWebDesktopApplicantDistributionLocationBased( string dateStart, string dateEnd, string provinceId, string districtId, string tehsilId, bool registration, bool enrollment)
         {
             try
             {
@@ -118,8 +118,16 @@ namespace BISPAPIORA.Repositories.DashboardServicesRepo
                     .Include(x => x.tbl_citizen_education)
                     .Include(x => x.tbl_citizen_employment)
                     .Include(x => x.tbl_citizen_scheme)
-                    .ProjectTo<DashboardCitizenLocationModel>(mapper.ConfigurationProvider);              
-                #region Filters                    
+                    .ProjectTo<DashboardCitizenLocationModel>(mapper.ConfigurationProvider);
+                #region Filters
+                if (registration == true)
+                {
+                    predicateCitizen = predicateCitizen.And(x => x.registration != null);
+                }
+                if(enrollment == true)
+                {
+                    predicateCitizen = predicateCitizen.And(x => x.enrollment != null);
+                }
                 if (!string.IsNullOrEmpty(dateStart) && !string.IsNullOrEmpty(dateEnd))
                 {
                     predicateCitizen = predicateCitizen.And(x => x.registered_date >= DateTime.Parse(dateStart) && x.registered_date <= DateTime.Parse(dateEnd));
@@ -147,7 +155,7 @@ namespace BISPAPIORA.Repositories.DashboardServicesRepo
                         predicateTehsil = predicateTehsil.And(x => x.tbl_district.fk_province == Guid.Parse(provinceId));
                     }
                 }                
-                var filteredCitizens =await totalCitizenQuery.Where(predicateCitizen).ToListAsync();
+                var filteredCitizens = await totalCitizenQuery.Where(predicateCitizen).ToListAsync();
                 #endregion
                 #region Location Base Group By               
                 #region Province Query
@@ -276,20 +284,47 @@ namespace BISPAPIORA.Repositories.DashboardServicesRepo
                     //var citizenPercentage = citizensGroupedByEmploymentCount > 0 ? (double)citizensGroupedByEmploymentCount / filteredCitizens.Count * 100 : 0;
                     return new DashboardCitizenCountSavingAmountDTO
                     {
-                        totalCitzenCount = citizensGroupedBySavingAoountCount,
+                        totalCitizenCount = citizensGroupedBySavingAoountCount,
                         savingAmount = citizenScheme.citizen_scheme_saving_amount,
                     };
                 }).ToList();
                 #endregion
 
+                #region Citizen Trend
+                var citizenTrendGroups = filteredCitizens.GroupBy(citizen => new DateTime(citizen.insertion_date!.Value.Year, citizen.insertion_date!.Value.Month, 1)) // Grouping citizens by insertion month
+                                                         .Select(group =>
+                                                         {
+                                                             var insertionMonth = new DateTime(group.Key.Year, group.Key.Month, 1); // The insertion month for the current group
+                                                             var citizenCount = group.Count(); // Counting the number of citizens for the current insertion month
+                                                             return new DashboardCitizenTrendDTO
+                                                             {
+                                                                 insertionMonth = insertionMonth,
+                                                                 totalCitizenCount = citizenCount
+                                                             };
+                                                         })
+                                                         .ToList();
+
+                // Sort the citizenTrendGroups list by InsertionMonth in descending order
+                citizenTrendGroups = citizenTrendGroups.OrderByDescending(x => x.insertionMonth).ToList();
+
+                // Select the latest 6 months
+                var citizenTrendGroupslatestSixMonths = citizenTrendGroups.Take(6).ToList();
+                #endregion
+
+
+
                 #region Response
-                return new ResponseModel<List<DashboardProvinceCitizenCountPercentageDTO>, List<DashboardDistrictCitizenCountPercentageDTO>, List<DashboardTehsilCitizenCountPercentageDTO>, List<DashboardCitizenGenderPercentageDTO>, List<DashboardCitizenMaritalStatusPercentageDTO>, List<DashboardCitizenEmploymentPercentageStatDTO>>()
+                return new ResponseModel<List<DashboardProvinceCitizenCountPercentageDTO>, List<DashboardDistrictCitizenCountPercentageDTO>, List<DashboardTehsilCitizenCountPercentageDTO>, List<DashboardCitizenGenderPercentageDTO>, List<DashboardCitizenMaritalStatusPercentageDTO>, List<DashboardCitizenEducationalPercentageStatDTO>, List<DashboardCitizenEmploymentPercentageStatDTO>, List<DashboardCitizenCountSavingAmountDTO>, List<DashboardCitizenTrendDTO>>()
                 {
                     ProvinceWise = provinceCitizenGroups,
                     DistrictWise = districtCitizenGroups,
                     TehsilWise = tehsilCitizenGroups,
                     GenderWise = genderGroupsWithPercenntage,
                     MaritalStatusWise = maritalStatusGroupsWithPercentage,
+                    EducationalWise = educationGroups,
+                    EmployementWise = employmentGroups,
+                    SavingAmountWise = citizenSchemeGroups,
+                    CitizenTrendWise = citizenTrendGroupslatestSixMonths,
                     remarks = "Success",
                     success = true
                 };
@@ -297,7 +332,7 @@ namespace BISPAPIORA.Repositories.DashboardServicesRepo
             }
             catch (Exception ex)
             {
-                return new ResponseModel<List<DashboardProvinceCitizenCountPercentageDTO>, List<DashboardDistrictCitizenCountPercentageDTO>, List<DashboardTehsilCitizenCountPercentageDTO>, List<DashboardCitizenGenderPercentageDTO>, List<DashboardCitizenMaritalStatusPercentageDTO>, List<DashboardCitizenEmploymentPercentageStatDTO>>()
+                return new ResponseModel<List<DashboardProvinceCitizenCountPercentageDTO>, List<DashboardDistrictCitizenCountPercentageDTO>, List<DashboardTehsilCitizenCountPercentageDTO>, List<DashboardCitizenGenderPercentageDTO>, List<DashboardCitizenMaritalStatusPercentageDTO>, List<DashboardCitizenEducationalPercentageStatDTO>, List<DashboardCitizenEmploymentPercentageStatDTO>, List<DashboardCitizenCountSavingAmountDTO>, List<DashboardCitizenTrendDTO>>()
                 {
                     remarks = $"There was a fatal error {ex.ToString()}",
                     success = false,
