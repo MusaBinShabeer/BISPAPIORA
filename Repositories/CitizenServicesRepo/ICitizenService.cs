@@ -24,6 +24,6 @@ namespace BISPAPIORA.Repositories.CitizenServicesRepo
         #endregion
         public Task<ResponseModel<RegistrationResponseDTO>> DeleteCitizen(string CitizenId);
         public Task<ResponseModel<RegistrationResponseDTO>> GetCitizen(string CitizenId);
-        public Task<ResponseModel<CitizenResponseDTO>> GetCitizenByCnic(string CitizenCnic);
+        public Task<ResponseModel<CitizenResponseDTO>> GetCitizenByCnicForApp(string CitizenCnic);
     }
 }

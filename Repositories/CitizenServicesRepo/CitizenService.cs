@@ -189,7 +189,7 @@ namespace BISPAPIORA.Repositories.CitizenServicesRepo
                 };
             }
         }
-
+        #endregion
         #region Enrolled Citizen
 
         // Adds a new enrolled citizen to the database
@@ -364,8 +364,6 @@ namespace BISPAPIORA.Repositories.CitizenServicesRepo
 
         #endregion
 
-        #endregion
-
         // Deletes a citizen from the database based on the provided CitizenId
         public async Task<ResponseModel<RegistrationResponseDTO>> DeleteCitizen(string CitizenId)
         {
@@ -451,7 +449,7 @@ namespace BISPAPIORA.Repositories.CitizenServicesRepo
             }
         }
 
-        public async Task<ResponseModel<CitizenResponseDTO>> GetCitizenByCnic(string CitizenCnic)
+        public async Task<ResponseModel<CitizenResponseDTO>> GetCitizenByCnicForApp(string CitizenCnic)
         {
             try
             {

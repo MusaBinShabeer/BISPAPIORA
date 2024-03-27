@@ -19,10 +19,6 @@ namespace BISPAPIORA.Extensions.AutomapperProfiles
                 .ForMember(d => d.user_name, opt => opt.MapFrom(src => src.tbl_citizen_registration != null ? src.tbl_citizen_registration.registered_by.user_name : src.tbl_enrollment != null ? src.tbl_enrollment.enrolled_by.user_name : ""))
                 .ForMember(d => d.citizen_id, opt => opt.MapFrom(src => src.citizen_id));
             CreateMap<tbl_citizen, DashboardCitizenLocationModel>()
-                //.ForMember(d => d.registered_date, opt => opt.MapFrom(src => src.tbl_citizen_registration != null ? src.tbl_citizen_registration.registered_date : default!))
-                //.ForMember(d => d.enrolled_date, opt => opt.MapFrom(src => src.tbl_enrollment != null ? src.tbl_enrollment.enrolled_date : default!))
-                //.ForMember(d => d.enrolled_by, opt => opt.MapFrom(src => src.tbl_enrollment != null ? src.tbl_enrollment.enrolled_by.user_id : default!))
-                //.ForMember(d => d.registered_by, opt => opt.MapFrom(src => src.tbl_citizen_registration != null ? src.tbl_citizen_registration.registered_by.user_id : default!))
                 .ForMember(d => d.citizen_id, opt => opt.MapFrom(src => src.citizen_id))
                 .ForMember(d => d.citizen_name, opt => opt.MapFrom(src => src.citizen_name))
                 .ForMember(d => d.user_name, opt => opt.MapFrom(src => src.tbl_citizen_registration != null ? src.tbl_citizen_registration.registered_by.user_name : src.tbl_enrollment != null ? src.tbl_enrollment.enrolled_by.user_name : ""))
@@ -49,7 +45,13 @@ namespace BISPAPIORA.Extensions.AutomapperProfiles
                 .ForMember(dest => dest.enrolledCount, opt => opt.MapFrom(src => src.Item2.Count));
             CreateMap<(double registeredPerc, double enrolledPerc), DashboardCitizenCountPercentageDTO>()
                 .ForMember(dest => dest.registeredPercentage, opt => opt.MapFrom(src => src.registeredPerc))
-                .ForMember(dest => dest.enrolledPercentage, opt => opt.MapFrom(src => src.enrolledPerc));
+                .ForMember(dest => dest.enrolledPercentage, opt => opt.MapFrom(src => src.enrolledPerc));       
+            CreateMap<(string name, int statCount), WebDashboardStats>()
+                .ForMember(dest => dest.StatName, opt => opt.MapFrom(src => src.name))
+                .ForMember(dest => dest.StatCount, opt => opt.MapFrom(src => src.statCount)); 
+            CreateMap<(string name, decimal? statCount), WebDashboardStats>()
+                .ForMember(dest => dest.StatName, opt => opt.MapFrom(src => src.name))
+                .ForMember(dest => dest.StatCount, opt => opt.MapFrom(src => src.statCount));
             CreateMap<DashboardDistrictCitizenCountPercentageDTO, DashboardTehsilCitizenCountPercentageDTO>()
                 .ForMember(dest => dest.tehsilName, opt => opt.Ignore())
                 .ForMember(dest => dest.districtName, opt => opt.MapFrom(src => src.districtName))

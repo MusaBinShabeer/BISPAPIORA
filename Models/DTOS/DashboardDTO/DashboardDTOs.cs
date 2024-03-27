@@ -62,6 +62,11 @@ namespace BISPAPIORA.Models.DTOS.DashboardDTO
         public int registeredCount { get; set; } = 0;
         public int enrolledCount { get; set; } = 0;
     }
+    public class WebDashboardStats
+    {
+        public string StatName { get; set; } = string.Empty;
+        public double StatCount { get; set; } = 0;
+    }
     public class DashboardCitizenBaseModel
     {
         public Guid citizen_id { get; set; }

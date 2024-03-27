@@ -21,6 +21,16 @@
         public bool success { get; set; }
         public string remarks { get; set; } = string.Empty;
     }
+    public class ResponseModel<T1, T2, T3, T4, T5>
+    {
+        public T1? totalApplicants { get; set; }
+        public T2? totalEnrollments { get; set; }
+        public T3? totalSavings { get; set; }
+        public T4? complaintApplicants { get; set; }
+        public T5? matchingGrants { get; set; }      
+        public bool success { get; set; }
+        public string remarks { get; set; } = string.Empty;
+    }
     public class ResponseModel
     {
         public bool success { get; set; }

@@ -20,7 +20,7 @@ namespace BISPAPIORA.Repositories.DashboardServicesRepo
             this.db = db;
             this.mapper = mapper;
         }
-        public async Task<ResponseModel<DashboardUserPerformanceResponseDTO>> GetUserPerformanceStats(string userName, string dateStart, string dateEnd)
+        public async Task<ResponseModel<DashboardUserPerformanceResponseDTO>> GetUserPerformanceStatsForApp(string userName, string dateStart, string dateEnd)
         {
             try
             {
@@ -59,50 +59,59 @@ namespace BISPAPIORA.Repositories.DashboardServicesRepo
                 };
             }
         }
-
-        public async Task<ResponseModel<DashboardCitizenCountPercentageDTO>> GetWebDesktopApplicantDistribution()
+        public async Task<ResponseModel<WebDashboardStats,WebDashboardStats,WebDashboardStats,WebDashboardStats,WebDashboardStats>> GetWebDashboardStats()
         {
             try
             {
-                var registeredCitizenQuery = db.tbl_citizens
+               
+                #region Predicates
+                var predicateRegisteredApplicants = PredicateBuilder.New<DashboardCitizenBaseModel>(true);
+                var predicateEnrolledApplicants = PredicateBuilder.New<DashboardCitizenBaseModel>(true);
+                var predicateCitizenSavings = PredicateBuilder.New<DashboardCitizenBaseModel>(true);
+                #endregion
+                #region Querry
+                var citizenQuery = db.tbl_citizens
                     .Include(x => x.tbl_citizen_registration).ThenInclude(x => x.registered_by)
-                    .Where(x => x.tbl_citizen_registration != null && x.tbl_enrollment == null)
+                    .Include(x=>x.tbl_citizen_scheme)
+                    //.Where(x => x.tbl_citizen_registration != null && x.tbl_enrollment == null)
                     .ProjectTo<DashboardCitizenBaseModel>(mapper.ConfigurationProvider);
-                var enrolledCitizenQuery = db.tbl_citizens
-                   .Include(x => x.tbl_enrollment).ThenInclude(x => x.enrolled_by)
-                   .Where(x => x.tbl_enrollment != null)
-                   .ProjectTo<DashboardCitizenBaseModel>(mapper.ConfigurationProvider);
-                
-                var registeredCitizen = registeredCitizenQuery.ToList();
-                var enrolledCitizen = enrolledCitizenQuery.ToList();
-
+                #endregion
+                #region Filters
+                predicateRegisteredApplicants = predicateRegisteredApplicants.And(x => x.registration != null && x.enrollment == null);
+                predicateEnrolledApplicants = predicateEnrolledApplicants.And(x =>  x.enrollment != null);
+                predicateCitizenSavings = predicateCitizenSavings.And(x =>  x.saving_amount != null);
+                #endregion
+                #region Executing Querry
+                var registeredCitizen = await citizenQuery.Where(predicateRegisteredApplicants).ToListAsync();
+                var enrolledCitizen = await citizenQuery.Where(predicateEnrolledApplicants).ToListAsync();
+                var citizensSavings = await citizenQuery.Where(predicateCitizenSavings).ToListAsync();
+                #endregion
+                #region Calculating Stats
                 var totalRegisteredCount = registeredCitizen.Count;
                 var totalEnrolledCount = enrolledCitizen.Count;
-
+                var totalCitizenSavings = citizensSavings.Select(x=>x.saving_amount).Sum();
                 var totalCitizenCount = totalRegisteredCount + totalEnrolledCount;
-
-                var registeredPercentage = totalCitizenCount > 0 ? (double)totalRegisteredCount / totalCitizenCount * 100 : 0;
-                var enrolledPercentage = totalCitizenCount > 0 ? (double)totalEnrolledCount / totalCitizenCount * 100 : 0;
-
-
-                return new ResponseModel<DashboardCitizenCountPercentageDTO>()
+                #endregion
+                #region Generating Response
+                return new ResponseModel<WebDashboardStats, WebDashboardStats, WebDashboardStats, WebDashboardStats, WebDashboardStats>()
                 {
-                    data = mapper.Map<DashboardCitizenCountPercentageDTO>((registeredPercentage, enrolledPercentage)),
+                    totalApplicants = mapper.Map<WebDashboardStats>(("Total Applicants", totalRegisteredCount)),
+                    totalEnrollments = mapper.Map<WebDashboardStats>(("Total Enrollments",totalEnrolledCount)),
+                    totalSavings = mapper.Map<WebDashboardStats>(("Total Savings", totalCitizenSavings)),
                     remarks = "Success",
                     success = true
                 };
+                #endregion
             }
             catch (Exception ex)
             {
-                return new ResponseModel<DashboardCitizenCountPercentageDTO>()
+                return new ResponseModel<WebDashboardStats, WebDashboardStats, WebDashboardStats, WebDashboardStats, WebDashboardStats>()
                 {
                     remarks = $"There was a fatal error {ex.ToString()}",
                     success = false,
                 };
             }
         }
-
-        //public async Task<ResponseModel<List<DashboardProvinceCitizenCountPercentageDTO>, List<DashboardDistrictCitizenCountPercentageDTO>, List<DashboardTehsilCitizenCountPercentageDTO>, List<DashboardCitizenGenderPercentageDTO>, List<DashboardCitizenMaritalStatusPercentageDTO>, List<DashboardCitizenEmploymentPercentageStatDTO>>> GetWebDesktopApplicantDistributionLocationBased( string dateStart, string dateEnd, string provinceId, string districtId, string tehsilId)
         public async Task<ResponseModel<List<DashboardProvinceCitizenCountPercentageDTO>, List<DashboardDistrictCitizenCountPercentageDTO>, List<DashboardTehsilCitizenCountPercentageDTO>, List<DashboardCitizenEducationalPercentageStatDTO>, List<DashboardCitizenGenderPercentageDTO>, List<DashboardCitizenMaritalStatusPercentageDTO>, List<DashboardCitizenEmploymentPercentageStatDTO>, List<DashboardCitizenCountSavingAmountDTO>, List<DashboardCitizenTrendDTO>>> GetWebDesktopApplicantDistributionLocationBased( string dateStart, string dateEnd, string provinceId, string districtId, string tehsilId, bool registration, bool enrollment)
         {
             try
@@ -343,141 +352,8 @@ namespace BISPAPIORA.Repositories.DashboardServicesRepo
                     success = false,
                 };
             }
-        }
-
-        public async Task<ResponseModel<List<TehsilStatusResponseDTO>>> GetTehsilStatusResponses()
-        {
-            try
-            {
-                var totalCitizens = await db.tbl_citizens.Include(x => x.tbl_citizen_registration).Include(x => x.tbl_enrollment).ToListAsync();
-                var totalCitizensCount = totalCitizens.Count();
-                if (totalCitizensCount > 0)
-                {
-                    var tehsils = await db.tbl_tehsils.ToListAsync();
-                    var tehsilStatusResponseDTOs = tehsils.Select(tehsil => new TehsilStatusResponseDTO
-                    {
-                        tehsilName = tehsil.tehsil_name,
-                        totalCitizenCount = totalCitizens.Count(citizen => citizen.fk_tehsil == tehsil.tehsil_id),
-                        registeredCount = totalCitizens.Count(citizen => citizen.tbl_citizen_registration != null && citizen.tbl_enrollment == null && citizen.fk_tehsil == tehsil.tehsil_id),
-                        enrolledCount = totalCitizens.Count(citizen => citizen.tbl_enrollment != null && citizen.fk_tehsil == tehsil.tehsil_id)
-                    }).ToList();
-
-                    return new ResponseModel<List<TehsilStatusResponseDTO>>()
-                    {
-                        success = true,
-                        remarks = "Citizen counts based on tehsil retrieved successfully.",
-                        data = tehsilStatusResponseDTOs
-                    };
-
-                }
-                else
-                {
-                    return new ResponseModel<List<TehsilStatusResponseDTO>>()
-                    {
-                        success = false,
-                        remarks = "There is no citizen."
-                    };
-                }
-            }
-            catch (Exception ex)
-            {
-                return new ResponseModel<List<TehsilStatusResponseDTO>>()
-                {
-                    success = false,
-                    remarks = $"There Was Fatal Error {ex.Message.ToString()}"
-                };
-            }
-        }
-
-        public async Task<ResponseModel<List<DistrictStatusResponseDTO>>> GetDistrictStatusResponses()
-        {
-            try
-            {
-                var totalCitizens = await db.tbl_citizens.Include(x => x.tbl_citizen_registration).Include(x => x.tbl_enrollment).Include(x => x.tbl_citizen_tehsil).ToListAsync();
-                var totalCitizensCount = totalCitizens.Count();
-                if (totalCitizensCount > 0)
-                {
-                    var districts = await db.tbl_districts.ToListAsync();
-                    var districtStatusResponseDTOs = districts.Select(district => new DistrictStatusResponseDTO
-                    {
-                        districtName = district.district_name,
-                        totalCitizenCount = totalCitizens.Count(citizen => citizen.tbl_citizen_tehsil.fk_district == district.district_id),
-                        registeredCount = totalCitizens.Count(citizen => citizen.tbl_citizen_registration != null && citizen.tbl_enrollment == null && citizen.tbl_citizen_tehsil.fk_district == district.district_id),
-                        enrolledCount = totalCitizens.Count(citizen => citizen.tbl_enrollment != null && citizen.tbl_citizen_tehsil.fk_district == district.district_id)
-                    }).ToList();
-
-                    return new ResponseModel<List<DistrictStatusResponseDTO>>()
-                    {
-                        success = true,
-                        remarks = "Citizen counts based on District retrieved successfully.",
-                        data = districtStatusResponseDTOs
-                    };
-
-                }
-                else
-                {
-                    return new ResponseModel<List<DistrictStatusResponseDTO>>()
-                    {
-                        success = false,
-                        remarks = "There is no citizen."
-                    };
-                }
-            }
-            catch (Exception ex)
-            {
-                return new ResponseModel<List<DistrictStatusResponseDTO>>()
-                {
-                    success = false,
-                    remarks = $"There Was Fatal Error {ex.Message.ToString()}"
-                };
-            }
-        }
-
-        public async Task<ResponseModel<List<ProvinceStatusResponseDTO>>> GetProvinceStatusResponses()
-        {
-            try
-            {
-                var totalCitizens = await db.tbl_citizens.Include(x => x.tbl_citizen_registration).Include(x => x.tbl_enrollment).Include(x => x.tbl_citizen_tehsil).ThenInclude(x => x.tbl_district).ToListAsync();
-                var totalCitizensCount = totalCitizens.Count();
-                if (totalCitizensCount > 0)
-                {
-                    var provinces = await db.tbl_provinces.ToListAsync();
-                    var provinceStatusResponseDTOs = provinces.Select(province => new ProvinceStatusResponseDTO
-                    {
-                        provinceName = province.province_name,
-                        totalCitizenCount = totalCitizens.Count(citizen => citizen.tbl_citizen_tehsil.tbl_district.fk_province == province.province_id),
-                        registeredCount = totalCitizens.Count(citizen => citizen.tbl_citizen_registration != null && citizen.tbl_enrollment == null && citizen.tbl_citizen_tehsil.tbl_district.fk_province == province.province_id),
-                        enrolledCount = totalCitizens.Count(citizen => citizen.tbl_enrollment != null && citizen.tbl_citizen_tehsil.tbl_district.fk_province == province.province_id)
-                    }).ToList();
-
-                    return new ResponseModel<List<ProvinceStatusResponseDTO>>()
-                    {
-                        success = true,
-                        remarks = "Citizen counts based on Province retrieved successfully.",
-                        data = provinceStatusResponseDTOs
-                    };
-
-                }
-                else
-                {
-                    return new ResponseModel<List<ProvinceStatusResponseDTO>>()
-                    {
-                        success = false,
-                        remarks = "There is no citizen."
-                    };
-                }
-            }
-            catch (Exception ex)
-            {
-                return new ResponseModel<List<ProvinceStatusResponseDTO>>()
-                {
-                    success = false,
-                    remarks = $"There Was Fatal Error {ex.Message.ToString()}"
-                };
-            }
-        }
-
-        public async Task<ResponseModel<DashboardDTO>> GetTotalCitizenAndEnrolled()
+        }  
+        public async Task<ResponseModel<DashboardDTO>> GetTotalCitizenAndEnrolledForApp()
         {
             try
             {
@@ -520,133 +396,6 @@ namespace BISPAPIORA.Repositories.DashboardServicesRepo
             }
         }
 
-        //public async Task<ResponseModel<DashboardDTO>> GetTotalCompliantApplicants()
-        //{
-        //    try
-        //    {
-        //        var totalCitizens = await db.tbl_citizens.Include(x => x.tbl_citizen_registration).Include(x => x.tbl_enrollment).ToListAsync();
-        //        var totalCitizensCount = totalCitizens.Count();
-        //        if (totalCitizensCount > 0)
-        //        {
-
-        //            var dashboardResponseDto = new DashboardDTO
-        //            {
-        //                totalCitizenCount = totalCitizensCount,
-        //                registeredCount = totalCitizens.Count(citizen => citizen.tbl_citizen_registration != null && citizen.tbl_enrollment == null),
-        //                enrolledCount = totalCitizens.Count(citizen => citizen.tbl_enrollment != null)
-        //            };
-
-        //            return new ResponseModel<DashboardDTO>()
-        //            {
-        //                success = true,
-        //                remarks = "Citizen counts retrieved successfully.",
-        //                data = dashboardResponseDto
-        //            };
-
-        //        }
-        //        else
-        //        {
-        //            return new ResponseModel<DashboardDTO>()
-        //            {
-        //                success = false,
-        //                remarks = "There is no citizen."
-        //            };
-        //        }
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        return new ResponseModel<DashboardDTO>()
-        //        {
-        //            success = false,
-        //            remarks = $"There Was Fatal Error {ex.Message.ToString()}"
-        //        };
-        //    }
-        //}
-
-        //public async Task<ResponseModel<DashboardDTO>> GetTotalSavings()
-        //{
-        //    try
-        //    {
-        //        var totalCitizens = await db.tbl_citizens.Include(x => x.tbl_citizen_registration).Include(x => x.tbl_enrollment).ToListAsync();
-        //        var totalCitizensCount = totalCitizens.Count();
-        //        if (totalCitizensCount > 0)
-        //        {
-
-        //            var dashboardResponseDto = new DashboardDTO
-        //            {
-        //                totalCitizenCount = totalCitizensCount,
-        //                registeredCount = totalCitizens.Count(citizen => citizen.tbl_citizen_registration != null && citizen.tbl_enrollment == null),
-        //                enrolledCount = totalCitizens.Count(citizen => citizen.tbl_enrollment != null)
-        //            };
-
-        //            return new ResponseModel<DashboardDTO>()
-        //            {
-        //                success = true,
-        //                remarks = "Citizen counts retrieved successfully.",
-        //                data = dashboardResponseDto
-        //            };
-
-        //        }
-        //        else
-        //        {
-        //            return new ResponseModel<DashboardDTO>()
-        //            {
-        //                success = false,
-        //                remarks = "There is no citizen."
-        //            };
-        //        }
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        return new ResponseModel<DashboardDTO>()
-        //        {
-        //            success = false,
-        //            remarks = $"There Was Fatal Error {ex.Message.ToString()}"
-        //        };
-        //    }
-        //}
-
-        //public async Task<ResponseModel<DashboardDTO>> GetTotalMatchingGrants()
-        //{
-        //    try
-        //    {
-        //        var totalCitizens = await db.tbl_citizens.Include(x => x.tbl_citizen_registration).Include(x => x.tbl_enrollment).ToListAsync();
-        //        var totalCitizensCount = totalCitizens.Count();
-        //        if (totalCitizensCount > 0)
-        //        {
-
-        //            var dashboardResponseDto = new DashboardDTO
-        //            {
-        //                totalCitizenCount = totalCitizensCount,
-        //                registeredCount = totalCitizens.Count(citizen => citizen.tbl_citizen_registration != null && citizen.tbl_enrollment == null),
-        //                enrolledCount = totalCitizens.Count(citizen => citizen.tbl_enrollment != null)
-        //            };
-
-        //            return new ResponseModel<DashboardDTO>()
-        //            {
-        //                success = true,
-        //                remarks = "Citizen counts retrieved successfully.",
-        //                data = dashboardResponseDto
-        //            };
-
-        //        }
-        //        else
-        //        {
-        //            return new ResponseModel<DashboardDTO>()
-        //            {
-        //                success = false,
-        //                remarks = "There is no citizen."
-        //            };
-        //        }
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        return new ResponseModel<DashboardDTO>()
-        //        {
-        //            success = false,
-        //            remarks = $"There Was Fatal Error {ex.Message.ToString()}"
-        //        };
-        //    }
-        //}
+       
     }
 }
