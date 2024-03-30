@@ -30,7 +30,7 @@ namespace BISPAPIORA.Extensions.AutomapperProfiles
               .ForMember(d => d.tbl_citizen_family_bank_info, opt => opt.MapFrom(src => src.tbl_citizen_family_bank_info))
               .ForMember(d => d.tbl_citizen_bank_info, opt => opt.MapFrom(src => src.tbl_citizen_bank_info))
               .ForMember(d => d.citizen_name, opt => opt.MapFrom(src => src.citizen_name))
-              .ForMember(d => d.tbl_citizen_compliance, opt => opt.MapFrom(src => src.tbl_citizen_compliance))
+              .ForMember(d => d.tbl_citizen_compliance, opt => opt.MapFrom(src => src.tbl_citizen_compliances))
               .ForMember(d => d.tbl_citizen_education, opt => opt.MapFrom(src => src.tbl_citizen_education))
               .ForMember(d => d.tbl_citizen_employment, opt => opt.MapFrom(src => src.tbl_citizen_employment))
               .ForMember(d => d.tbl_citizen_scheme, opt => opt.MapFrom(src => src.tbl_citizen_scheme))

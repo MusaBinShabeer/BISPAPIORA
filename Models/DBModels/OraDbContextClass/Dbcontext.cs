@@ -621,10 +621,11 @@ public partial class Dbcontext : DbContext
                 .HasDefaultValueSql("0.0")
                 .HasColumnType("NUMBER(10,2)")
                 .HasColumnName("STARTING_BALANCE_ON_QUARTERLY_BANK_STATEMENT");
-            entity.HasOne(d => d.tbl_citizen).WithOne(p => p.tbl_citizen_compliance)
-             .HasForeignKey<tbl_citizen_compliance>(d => d.fk_citizen)
-             .OnDelete(DeleteBehavior.Cascade)
-             .HasConstraintName("Fk_CITIZEN_COMPLIANCE_CITIZEN");         
+            entity.HasOne(d => d.tbl_citizen)
+                .WithMany(p => p.tbl_citizen_compliances) // Assuming tbl_citizen has a collection navigation property for compliance records
+                .HasForeignKey(d => d.fk_citizen)
+                .OnDelete(DeleteBehavior.Cascade)
+                .HasConstraintName("Fk_CITIZEN_COMPLIANCE_CITIZEN");
         });
 
         modelBuilder.Entity<tbl_employment_other_specification>(entity =>
