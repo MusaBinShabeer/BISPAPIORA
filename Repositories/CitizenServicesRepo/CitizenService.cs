@@ -18,6 +18,9 @@ using BISPAPIORA.Repositories.ImageCitizenFingePrintServicesRepo;
 using BISPAPIORA.Repositories.InnerServicesRepo;
 using BISPAPIORA.Models.DTOS.VerificationResponseDTO;
 using BISPAPIORA.Models.DTOS.CitizenDTO;
+using AutoMapper.QueryableExtensions;
+using BISPAPIORA.Models.DTOS.DashboardDTO;
+using LinqKit;
 
 namespace BISPAPIORA.Repositories.CitizenServicesRepo
 {
@@ -492,6 +495,99 @@ namespace BISPAPIORA.Repositories.CitizenServicesRepo
             {
                 // Return a failure response model if an exception occurs during the process
                 return new ResponseModel<CitizenResponseDTO>()
+                {
+                    success = false,
+                    remarks = $"There Was Fatal Error {ex.Message.ToString()}"
+                };
+            }
+        }
+        public async Task<ResponseModel<List<CitizenResponseDTO>>> GetCitizensDataForWeb(string dateStart, string dateEnd, string provinceId, string districtId, string tehsilId, bool registration, bool enrollment)
+        {
+            try
+            {
+                #region Predicates
+                var predicateCitizen = PredicateBuilder.New<CitizenBaseModel>(true);
+                #endregion
+                #region Query
+                // Find the existing citizen in the database based on the provided citizen ID
+                var totalCitizenQuery =  db.tbl_citizens
+                    .Include(x => x.tbl_citizen_tehsil).ThenInclude(x => x.tbl_district).ThenInclude(x => x.tbl_province)
+                    .Include(x => x.tbl_citizen_employment)
+                    .Include(x => x.tbl_citizen_education)
+                    .Include(x => x.tbl_citizen_scheme)
+                    .Include(x => x.tbl_citizen_registration)
+                    .Include(x => x.tbl_enrollment)
+                    .Include(x => x.tbl_citizen_bank_info).ThenInclude(x => x.tbl_bank)
+                    .Include(x => x.tbl_citizen_family_bank_info).ThenInclude(x => x.tbl_bank_other_specification)
+                    .Include(x => x.tbl_image_citizen_attachment)
+                    .Include(x => x.tbl_image_citizen_finger_print)
+                    .ProjectTo<CitizenBaseModel>(_mapper.ConfigurationProvider);
+                #endregion
+                #region Filters
+                if (registration == true)
+                {
+                    predicateCitizen = predicateCitizen.And(x => x.tbl_citizen_registration != null && x.tbl_enrollment==null);
+                    if (!string.IsNullOrEmpty(dateStart) && !string.IsNullOrEmpty(dateEnd))
+                    {
+                        predicateCitizen = predicateCitizen.And(x => x.tbl_citizen_registration.registered_date >= DateTime.Parse(dateStart) && x.tbl_citizen_registration.registered_date <= DateTime.Parse(dateEnd));
+                    }
+                }
+                if (enrollment == true)
+                {
+                    predicateCitizen = predicateCitizen.And(x => x.tbl_enrollment != null);
+                    if (!string.IsNullOrEmpty(dateStart) && !string.IsNullOrEmpty(dateEnd))
+                    {
+                        predicateCitizen = predicateCitizen.And(x => x.tbl_enrollment.enrolled_date >= DateTime.Parse(dateStart) && x.tbl_enrollment.enrolled_date <= DateTime.Parse(dateEnd));
+                    }
+                }
+              
+                if (!string.IsNullOrEmpty(provinceId))
+                {
+                    if (!string.IsNullOrEmpty(districtId))
+                    {
+                        if (!string.IsNullOrEmpty(tehsilId))
+                        {
+                            predicateCitizen = predicateCitizen.And(x => x.tbl_citizen_tehsil.tehsil_id == Guid.Parse(tehsilId));
+                        }
+                        else
+                        {
+                            predicateCitizen = predicateCitizen.And(x => x.tbl_citizen_tehsil.fk_district == Guid.Parse(districtId));
+                          
+                        }
+                    }
+                    else
+                    {
+                        predicateCitizen = predicateCitizen.And(x => x.tbl_citizen_tehsil.tbl_district.fk_province == Guid.Parse(provinceId));
+                     
+                    }
+                }
+                var filteredCitizens = await totalCitizenQuery.Where(predicateCitizen).ToListAsync();
+                #endregion
+
+                if (filteredCitizens.Count()>0)
+                {
+                    // Return a success response model with the details of the found citizen
+                    return new ResponseModel<List<CitizenResponseDTO>>()
+                    {
+                        data = _mapper.Map<List<CitizenResponseDTO>>(filteredCitizens),
+                        remarks = "Citizen found successfully",
+                        success = true,
+                    };
+                }
+                else
+                {
+                    // Return a failure response model if no record is found for the provided citizen ID
+                    return new ResponseModel<List<CitizenResponseDTO>>()
+                    {
+                        success = false,
+                        remarks = "No Record"
+                    };
+                }
+            }
+            catch (Exception ex)
+            {
+                // Return a failure response model if an exception occurs during the process
+                return new ResponseModel<List<CitizenResponseDTO>>()
                 {
                     success = false,
                     remarks = $"There Was Fatal Error {ex.Message.ToString()}"

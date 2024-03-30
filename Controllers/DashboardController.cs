@@ -43,6 +43,16 @@ namespace BISPAPIORA.Controllers
                 return BadRequest(response);
             }
         }
+        [HttpGet("GetByCnicForWeb")]
+        public async Task<ActionResult<ResponseModel<List<CitizenResponseDTO>>>> GetByCnicForWeb(string dateStart = null, string dateEnd = null, string provinceId = null, string districtId = null, string tehsilId = null, bool registration = false, bool enrollment = false)
+        {
+            // Check if the CNIC parameter is not null or empty
+           
+                // Get the registration information by CNIC and return the response
+                var response = citizenService.GetCitizensDataForWeb(dateStart, dateEnd, provinceId, districtId, tehsilId, registration, enrollment);
+                return Ok(await response);
+           
+        }
         [HttpGet("GetUserPerformanceStatsForApp")]
         public async Task<ActionResult<ResponseModel<DashboardUserPerformanceResponseDTO>>> GetUserPerformanceStatsForApp(string userName, string dateStart = null, string dateEnd = null)
         {
@@ -68,21 +78,13 @@ namespace BISPAPIORA.Controllers
 
         [HttpGet("GetWebDashboardGraphsFiltered")]
         public async Task<ActionResult<ResponseModel<List<DashboardProvinceCitizenCountPercentageDTO>, List<DashboardDistrictCitizenCountPercentageDTO>, List<DashboardTehsilCitizenCountPercentageDTO>, List<DashboardCitizenEducationalPercentageStatDTO>, List<DashboardCitizenGenderPercentageDTO>, List<DashboardCitizenMaritalStatusPercentageDTO>, List<DashboardCitizenEmploymentPercentageStatDTO>, List<DashboardCitizenCountSavingAmountDTO>, List<DashboardCitizenTrendDTO>>>> GetWebDashboardGraphsFiltered( string dateStart = null, string dateEnd = null, string provinceId = null, string districtId = null, string tehsilId = null, bool registration = false, bool enrollment = false)
-        {
-            if ((string.IsNullOrEmpty(dateStart) && string.IsNullOrEmpty(dateEnd)) || (dateStart != null && dateEnd != null))
-            {
-                var response = dashboardServices.GetWebDesktopApplicantDistributionLocationBased(dateStart, dateEnd, provinceId, districtId, tehsilId, registration, enrollment);
-                return Ok(await response);
-            }
-            else
-            {
-                return BadRequest("Both dateStart and dateEnd must be provided.");
-            }
-
+        {   
+            var response = dashboardServices.GetWebDesktopApplicantDistributionLocationBased(dateStart, dateEnd, provinceId, districtId, tehsilId, registration, enrollment);
+            return Ok(await response);
         }
 
         [HttpGet("GetTotalCitizenAndEnrolledForApp")]
-        public async Task<ActionResult<ResponseModel<List<ProvinceStatusResponseDTO>>>> GetTotalCitizenAndEnrolledForApp()
+        public async Task<ActionResult<ResponseModel<List<DashboardDTO>>>> GetTotalCitizenAndEnrolledForApp()
         {
             var response = dashboardServices.GetTotalCitizenAndEnrolledForApp();
             return Ok(await response);

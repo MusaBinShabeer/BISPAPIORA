@@ -132,16 +132,21 @@ namespace BISPAPIORA.Repositories.DashboardServicesRepo
                 #region Filters
                 if (registration == true)
                 {
-                    predicateCitizen = predicateCitizen.And(x => x.registration != null);
+                    predicateCitizen = predicateCitizen.And(x => x.registration != null && x.enrollment == null);
+                    if (!string.IsNullOrEmpty(dateStart) && !string.IsNullOrEmpty(dateEnd))
+                    {
+                        predicateCitizen = predicateCitizen.And(x => x.registered_date >= DateTime.Parse(dateStart) && x.registered_date <= DateTime.Parse(dateEnd));
+                    }
                 }
                 if(enrollment == true)
                 {
                     predicateCitizen = predicateCitizen.And(x => x.enrollment != null);
+                    if (!string.IsNullOrEmpty(dateStart) && !string.IsNullOrEmpty(dateEnd))
+                    {
+                        predicateCitizen = predicateCitizen.And(x => x.enrolled_date >= DateTime.Parse(dateStart) && x.enrolled_date <= DateTime.Parse(dateEnd));
+                    }
                 }
-                if (!string.IsNullOrEmpty(dateStart) && !string.IsNullOrEmpty(dateEnd))
-                {
-                    predicateCitizen = predicateCitizen.And(x => x.registered_date >= DateTime.Parse(dateStart) && x.registered_date <= DateTime.Parse(dateEnd));
-                }
+              
                 if (!string.IsNullOrEmpty(provinceId))
                 {                   
                     if (!string.IsNullOrEmpty(districtId)) 
