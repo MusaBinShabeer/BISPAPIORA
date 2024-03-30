@@ -43,8 +43,8 @@ namespace BISPAPIORA.Controllers
                 return BadRequest(response);
             }
         }
-        [HttpGet("GetByCnicForWeb")]
-        public async Task<ActionResult<ResponseModel<List<CitizenResponseDTO>>>> GetByCnicForWeb(string dateStart = null, string dateEnd = null, string provinceId = null, string districtId = null, string tehsilId = null, bool registration = false, bool enrollment = false)
+        [HttpGet("GetCitizensForWeb")]
+        public async Task<ActionResult<ResponseModel<List<CitizenResponseDTO>>>> GetCitizensForWeb(string dateStart = null, string dateEnd = null, string provinceId = null, string districtId = null, string tehsilId = null, bool registration = false, bool enrollment = false)
         {
             // Check if the CNIC parameter is not null or empty
            

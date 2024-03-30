@@ -19,7 +19,11 @@ namespace BISPAPIORA.Extensions.AutomapperProfiles
                 .ForMember(d => d.registered_by, opt => opt.MapFrom(src => src.tbl_citizen_registration != null ? src.tbl_citizen_registration.registered_by.user_id : default!))
                 .ForMember(d => d.citizen_name, opt => opt.MapFrom(src => src.citizen_name))
                 .ForMember(d => d.user_name, opt => opt.MapFrom(src => src.tbl_citizen_registration != null ? src.tbl_citizen_registration.registered_by.user_name : src.tbl_enrollment != null ? src.tbl_enrollment.enrolled_by.user_name : ""))
-                .ForMember(d => d.citizen_id, opt => opt.MapFrom(src => src.citizen_id));
+                .ForMember(d => d.citizen_id, opt => opt.MapFrom(src => src.citizen_id))
+                .ForMember(d => d.citizen_scheme_id, opt => opt.MapFrom(src => src.tbl_citizen_scheme.citizen_scheme_id))
+                .ForMember(d => d.saving_amount, opt => opt.MapFrom(src => src.tbl_citizen_scheme.citizen_scheme_saving_amount))
+                .ForMember(d => d.registration, opt => opt.MapFrom(src => src.tbl_citizen_registration))
+                .ForMember(d => d.enrollment, opt => opt.MapFrom(src => src.tbl_enrollment)); 
             CreateMap<tbl_citizen, CitizenBaseModel>()
               .ForMember(d => d.tbl_citizen_registration, opt => opt.MapFrom(src => src.tbl_citizen_registration ))
               .ForMember(d => d.tbl_enrollment, opt => opt.MapFrom(src => src.tbl_enrollment))
