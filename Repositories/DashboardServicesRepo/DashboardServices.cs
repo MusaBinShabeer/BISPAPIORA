@@ -112,7 +112,7 @@ namespace BISPAPIORA.Repositories.DashboardServicesRepo
                 };
             }
         }
-        public async Task<ResponseModel<List<DashboardProvinceCitizenCountPercentageDTO>, List<DashboardDistrictCitizenCountPercentageDTO>, List<DashboardTehsilCitizenCountPercentageDTO>, List<DashboardCitizenEducationalPercentageStatDTO>, List<DashboardCitizenGenderPercentageDTO>, List<DashboardCitizenMaritalStatusPercentageDTO>, List<DashboardCitizenEmploymentPercentageStatDTO>, List<DashboardCitizenCountSavingAmountDTO>, List<DashboardCitizenTrendDTO>>> GetWebDesktopApplicantDistributionLocationBased( string dateStart, string dateEnd, string provinceId, string districtId, string tehsilId, bool registration, bool enrollment)
+        public async Task<ResponseModel<List<DashboardProvinceCitizenCountPercentageDTO>, List<DashboardDistrictCitizenCountPercentageDTO>, List<DashboardTehsilCitizenCountPercentageDTO>, List<DashboardCitizenEducationalPercentageStatDTO>, List<DashboardCitizenGenderPercentageDTO>, List<DashboardCitizenMaritalStatusPercentageDTO>, List<DashboardCitizenEmploymentPercentageStatDTO>, List<DashboardCitizenCountSavingAmountDTO>, List<DashboardCitizenTrendDTO>, DashboardDTO>> GetWebDesktopApplicantDistributionLocationBased( string dateStart, string dateEnd, string provinceId, string districtId, string tehsilId, bool registration, bool enrollment)
         {
             try
             {
@@ -138,7 +138,7 @@ namespace BISPAPIORA.Repositories.DashboardServicesRepo
                         predicateCitizen = predicateCitizen.And(x => x.registered_date >= DateTime.Parse(dateStart) && x.registered_date <= DateTime.Parse(dateEnd));
                     }
                 }
-                if(enrollment == true)
+                if (enrollment == true)
                 {
                     predicateCitizen = predicateCitizen.And(x => x.enrollment != null);
                     if (!string.IsNullOrEmpty(dateStart) && !string.IsNullOrEmpty(dateEnd))
@@ -146,12 +146,12 @@ namespace BISPAPIORA.Repositories.DashboardServicesRepo
                         predicateCitizen = predicateCitizen.And(x => x.enrolled_date >= DateTime.Parse(dateStart) && x.enrolled_date <= DateTime.Parse(dateEnd));
                     }
                 }
-              
+
                 if (!string.IsNullOrEmpty(provinceId))
-                {                   
-                    if (!string.IsNullOrEmpty(districtId)) 
-                    {                       
-                        if(!string.IsNullOrEmpty(tehsilId)) 
+                {
+                    if (!string.IsNullOrEmpty(districtId))
+                    {
+                        if (!string.IsNullOrEmpty(tehsilId))
                         {
                             predicateCitizen = predicateCitizen.And(x => x.tehsil_id == Guid.Parse(tehsilId));
                             predicateTehsil = predicateTehsil.And(x => x.tehsil_id == Guid.Parse(tehsilId));
@@ -169,9 +169,19 @@ namespace BISPAPIORA.Repositories.DashboardServicesRepo
                         predicateDistrict = predicateDistrict.And(x => x.fk_province == Guid.Parse(provinceId));
                         predicateTehsil = predicateTehsil.And(x => x.tbl_district.fk_province == Guid.Parse(provinceId));
                     }
-                }                
+                }
                 var filteredCitizens = await totalCitizenQuery.Where(predicateCitizen).ToListAsync();
                 #endregion
+
+                #region Citizen Count Wise
+                var totalCitizensCountResponse = new DashboardDTO()
+                {
+                    totalCitizenCount = filteredCitizens.Count(),
+                    registeredCount = filteredCitizens.Count(citizen => citizen.registration != null && citizen.enrollment == null),
+                    enrolledCount = filteredCitizens.Count(citizen => citizen.enrollment != null)
+                };
+                #endregion
+
                 #region Location Base Group By               
                 #region Province Query
                 var provinces = await db.tbl_provinces.ToListAsync();
@@ -333,7 +343,7 @@ namespace BISPAPIORA.Repositories.DashboardServicesRepo
 
 
                 #region Response
-                 return new ResponseModel<List<DashboardProvinceCitizenCountPercentageDTO>, List<DashboardDistrictCitizenCountPercentageDTO>, List<DashboardTehsilCitizenCountPercentageDTO>,List<DashboardCitizenEducationalPercentageStatDTO>, List<DashboardCitizenGenderPercentageDTO>, List<DashboardCitizenMaritalStatusPercentageDTO>, List<DashboardCitizenEmploymentPercentageStatDTO>, List<DashboardCitizenCountSavingAmountDTO>, List<DashboardCitizenTrendDTO>>()
+                 return new ResponseModel<List<DashboardProvinceCitizenCountPercentageDTO>, List<DashboardDistrictCitizenCountPercentageDTO>, List<DashboardTehsilCitizenCountPercentageDTO>,List<DashboardCitizenEducationalPercentageStatDTO>, List<DashboardCitizenGenderPercentageDTO>, List<DashboardCitizenMaritalStatusPercentageDTO>, List<DashboardCitizenEmploymentPercentageStatDTO>, List<DashboardCitizenCountSavingAmountDTO>, List<DashboardCitizenTrendDTO>, DashboardDTO>()
                 {
                     provinceWise = provinceCitizenGroups,
                     educationalWise= educationGroups,
@@ -344,6 +354,7 @@ namespace BISPAPIORA.Repositories.DashboardServicesRepo
                     employementWise = employmentGroups,
                     savingAmountWise = citizenSchemeGroups,
                     citizenTrendWise = citizenTrendGroupslatestSixMonths,
+                    citizenCountWise = totalCitizensCountResponse,
                     remarks = "Success",
                     success = true
                 };
@@ -351,7 +362,7 @@ namespace BISPAPIORA.Repositories.DashboardServicesRepo
             }
             catch (Exception ex)
             {
-               return new ResponseModel<List<DashboardProvinceCitizenCountPercentageDTO>, List<DashboardDistrictCitizenCountPercentageDTO>, List<DashboardTehsilCitizenCountPercentageDTO>, List<DashboardCitizenEducationalPercentageStatDTO>, List<DashboardCitizenGenderPercentageDTO>, List<DashboardCitizenMaritalStatusPercentageDTO>, List<DashboardCitizenEmploymentPercentageStatDTO>, List<DashboardCitizenCountSavingAmountDTO>, List<DashboardCitizenTrendDTO>>()
+               return new ResponseModel<List<DashboardProvinceCitizenCountPercentageDTO>, List<DashboardDistrictCitizenCountPercentageDTO>, List<DashboardTehsilCitizenCountPercentageDTO>, List<DashboardCitizenEducationalPercentageStatDTO>, List<DashboardCitizenGenderPercentageDTO>, List<DashboardCitizenMaritalStatusPercentageDTO>, List<DashboardCitizenEmploymentPercentageStatDTO>, List<DashboardCitizenCountSavingAmountDTO>, List<DashboardCitizenTrendDTO>, DashboardDTO>()
                 {
                     remarks = $"There was a fatal error {ex.ToString()}",
                     success = false,
