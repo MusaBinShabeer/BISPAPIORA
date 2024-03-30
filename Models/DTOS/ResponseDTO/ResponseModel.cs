@@ -7,7 +7,7 @@
         public string remarks { get; set; } = string.Empty;
     }
     
-    public class ResponseModel<T1,T2,T3, T4, T5, T6, T7, T8, T9>
+    public class ResponseModel<T1,T2,T3, T4, T5, T6, T7, T8, T9, T10>
     {
         public T1? provinceWise { get; set; }
         public T2? districtWise { get; set; }
@@ -18,6 +18,7 @@
         public T7? employementWise { get; set; }
         public T8? savingAmountWise { get; set; }
         public T9? citizenTrendWise { get; set; }
+        public T10? citizenCountWise { get; set; }
         public bool success { get; set; }
         public string remarks { get; set; } = string.Empty;
     }
