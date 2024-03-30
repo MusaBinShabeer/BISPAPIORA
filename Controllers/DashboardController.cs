@@ -22,14 +22,14 @@ namespace BISPAPIORA.Controllers
             this.citizenService = citizenService;
             this.dashboardServices = dashboardServices;
         }
-        [HttpGet("GetByCnic")]
-        public async Task<ActionResult<ResponseModel<CitizenResponseDTO>>> GetByCnic(string cnic)
+        [HttpGet("GetByCnicForApp")]
+        public async Task<ActionResult<ResponseModel<CitizenResponseDTO>>> GetByCnicForApp(string cnic)
         {
             // Check if the CNIC parameter is not null or empty
             if (!string.IsNullOrEmpty(cnic))
             {
                 // Get the registration information by CNIC and return the response
-                var response = citizenService.GetCitizenByCnic(cnic);
+                var response = citizenService.GetCitizenByCnicForApp(cnic);
                 return Ok(await response);
             }
             else
@@ -43,34 +43,22 @@ namespace BISPAPIORA.Controllers
                 return BadRequest(response);
             }
         }
-
-        [HttpGet("GetTehsilStatus")]
-        public async Task<ActionResult<ResponseModel<List<TehsilStatusResponseDTO>>>> GetTehsilStatus()
+        [HttpGet("GetByCnicForWeb")]
+        public async Task<ActionResult<ResponseModel<List<CitizenResponseDTO>>>> GetByCnicForWeb(string dateStart = null, string dateEnd = null, string provinceId = null, string districtId = null, string tehsilId = null, bool registration = false, bool enrollment = false)
         {
-            var response = dashboardServices.GetTehsilStatusResponses();
-            return Ok(await response);
+            // Check if the CNIC parameter is not null or empty
+           
+                // Get the registration information by CNIC and return the response
+                var response = citizenService.GetCitizensDataForWeb(dateStart, dateEnd, provinceId, districtId, tehsilId, registration, enrollment);
+                return Ok(await response);
+           
         }
-
-        [HttpGet("GetDistrictStatus")]
-        public async Task<ActionResult<ResponseModel<List<DistrictStatusResponseDTO>>>> GetDistrictStatus()
-        {
-            var response = dashboardServices.GetDistrictStatusResponses();
-            return Ok(await response);
-        }
-
-        [HttpGet("GetProvinceStatus")]
-        public async Task<ActionResult<ResponseModel<List<ProvinceStatusResponseDTO>>>> GetProvinceStatus()
-        {
-            var response = dashboardServices.GetProvinceStatusResponses();
-            return Ok(await response);
-        }
-
-        [HttpGet("GetUserPerformanceStats")]
-        public async Task<ActionResult<ResponseModel<DashboardUserPerformanceResponseDTO>>> GetUserPerformanceStats(string userName, string dateStart = null, string dateEnd = null)
+        [HttpGet("GetUserPerformanceStatsForApp")]
+        public async Task<ActionResult<ResponseModel<DashboardUserPerformanceResponseDTO>>> GetUserPerformanceStatsForApp(string userName, string dateStart = null, string dateEnd = null)
         {
             if ((string.IsNullOrEmpty(dateStart) && string.IsNullOrEmpty(dateEnd)) || (dateStart != null && dateEnd != null))
             {
-                var response = dashboardServices.GetUserPerformanceStats(userName, dateStart, dateEnd);
+                var response = dashboardServices.GetUserPerformanceStatsForApp(userName, dateStart, dateEnd);
                 return Ok(await response);
             }
             else
@@ -80,55 +68,26 @@ namespace BISPAPIORA.Controllers
 
         }
 
-        [HttpGet("GetWebDesktopApplicantDistribution")]
-        public async Task<ActionResult<ResponseModel<DashboardUserPerformanceResponseDTO>>> GetWebDesktopApplicantDistribution()
+        [HttpGet("GetWebDashboardStats")]
+        public async Task<ActionResult<ResponseModel<WebDashboardStats, WebDashboardStats, WebDashboardStats, WebDashboardStats, WebDashboardStats>>> GetWebDashboardStats()
         {
             
-                var response = dashboardServices.GetWebDesktopApplicantDistribution();
+                var response = dashboardServices.GetWebDashboardStats();
                 return Ok(await response);            
         }
 
-        [HttpGet("GetWebDesktopApplicantDistributionLocationBased")]
-        public async Task<ActionResult<ResponseModel<List<DashboardProvinceCitizenCountPercentageDTO>, List<DashboardDistrictCitizenCountPercentageDTO>, List<DashboardTehsilCitizenCountPercentageDTO>, List<DashboardCitizenEducationalPercentageStatDTO>, List<DashboardCitizenGenderPercentageDTO>, List<DashboardCitizenMaritalStatusPercentageDTO>, List<DashboardCitizenEmploymentPercentageStatDTO>, List<DashboardCitizenCountSavingAmountDTO>, List<DashboardCitizenTrendDTO>>>> GetWebDesktopApplicantDistributionLocationBased( string dateStart = null, string dateEnd = null, string provinceId = null, string districtId = null, string tehsilId = null, bool registration = false, bool enrollment = false)
-        {
-            if ((string.IsNullOrEmpty(dateStart) && string.IsNullOrEmpty(dateEnd)) || (dateStart != null && dateEnd != null))
-            {
-                var response = dashboardServices.GetWebDesktopApplicantDistributionLocationBased(dateStart, dateEnd, provinceId, districtId, tehsilId, registration, enrollment);
-                return Ok(await response);
-            }
-            else
-            {
-                return BadRequest("Both dateStart and dateEnd must be provided.");
-            }
-
-        }
-
-        [HttpGet("GetTotalCitizens")]
-        public async Task<ActionResult<ResponseModel<List<ProvinceStatusResponseDTO>>>> GetTotalCitizens()
-        {
-            var response = dashboardServices.GetTotalCitizenAndEnrolled();
+        [HttpGet("GetWebDashboardGraphsFiltered")]
+        public async Task<ActionResult<ResponseModel<List<DashboardProvinceCitizenCountPercentageDTO>, List<DashboardDistrictCitizenCountPercentageDTO>, List<DashboardTehsilCitizenCountPercentageDTO>, List<DashboardCitizenEducationalPercentageStatDTO>, List<DashboardCitizenGenderPercentageDTO>, List<DashboardCitizenMaritalStatusPercentageDTO>, List<DashboardCitizenEmploymentPercentageStatDTO>, List<DashboardCitizenCountSavingAmountDTO>, List<DashboardCitizenTrendDTO>>>> GetWebDashboardGraphsFiltered( string dateStart = null, string dateEnd = null, string provinceId = null, string districtId = null, string tehsilId = null, bool registration = false, bool enrollment = false)
+        {   
+            var response = dashboardServices.GetWebDesktopApplicantDistributionLocationBased(dateStart, dateEnd, provinceId, districtId, tehsilId, registration, enrollment);
             return Ok(await response);
         }
 
-        //[HttpGet("GetTotalCompliantApplicants")]
-        //public async Task<ActionResult<ResponseModel<List<ProvinceStatusResponseDTO>>>> GetTotalCompliantApplicants()
-        //{
-        //    var response = dashboardServices.GetTotalCompliantApplicants();
-        //    return Ok(await response);
-        //}
-
-        //[HttpGet("GetTotalSavings")]
-        //public async Task<ActionResult<ResponseModel<List<ProvinceStatusResponseDTO>>>> GetTotalSavings()
-        //{
-        //    var response = dashboardServices.GetTotalSavings();
-        //    return Ok(await response);
-        //}
-
-        //[HttpGet("GetTotalMatchingGrants")]
-        //public async Task<ActionResult<ResponseModel<List<ProvinceStatusResponseDTO>>>> GetTotalMatchingGrants()
-        //{
-        //    var response = dashboardServices.GetTotalCitizenAndEnrolled();
-        //    return Ok(await response);
-        //}
+        [HttpGet("GetTotalCitizenAndEnrolledForApp")]
+        public async Task<ActionResult<ResponseModel<List<DashboardDTO>>>> GetTotalCitizenAndEnrolledForApp()
+        {
+            var response = dashboardServices.GetTotalCitizenAndEnrolledForApp();
+            return Ok(await response);
+        }        
     }
 }
