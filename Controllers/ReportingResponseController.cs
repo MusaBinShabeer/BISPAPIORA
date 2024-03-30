@@ -1,4 +1,5 @@
-﻿using BISPAPIORA.Models.DTOS.ReportingResponseDTO;
+﻿using BISPAPIORA.Extensions.Middleware;
+using BISPAPIORA.Models.DTOS.ReportingResponseDTO;
 using BISPAPIORA.Models.DTOS.ResponseDTO;
 using BISPAPIORA.Repositories.ReportingResponseServicesRepo;
 using Microsoft.AspNetCore.Authorization;
@@ -7,6 +8,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace BISPAPIORA.Controllers
 {
+    [AppVersion]
     [Route("api/[controller]")]
     [ApiController]
     public class ReportingResponseController : ControllerBase

@@ -77,7 +77,7 @@ namespace BISPAPIORA.Repositories.DashboardServicesRepo
                     .ProjectTo<DashboardCitizenBaseModel>(mapper.ConfigurationProvider);
                 #endregion
                 #region Filters
-                predicateRegisteredApplicants = predicateRegisteredApplicants.And(x => x.registration != null && x.enrollment == null);
+                predicateRegisteredApplicants = predicateRegisteredApplicants.And(x => x.registration != null /*&& x.enrollment == null*/);
                 predicateEnrolledApplicants = predicateEnrolledApplicants.And(x =>  x.enrollment != null);
                 predicateCitizenSavings = predicateCitizenSavings.And(x =>  x.saving_amount != null);
                 #endregion

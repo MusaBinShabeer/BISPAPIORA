@@ -20,7 +20,7 @@ using static System.Net.Mime.MediaTypeNames;
 
 namespace BISPAPIORA.Controllers
 {
-    //[UserAuthorize]
+    [AppVersion]
     [Route("api/[controller]")]
     [ApiController]
     public class FileManagerController : ControllerBase
