@@ -46,7 +46,7 @@ namespace BISPAPIORA.Models.DTOS.DashboardDTO
     public class DashboardCitizenTrendDTO
     {
         public decimal totalCitizenCount { get; set; } = 0;
-        public DateTime? insertionMonth { get; set; } = default!;
+        public string insertionMonth { get; set; } = string.Empty!;
     }
 
     public class DashboardDistrictCitizenCountPercentageDTO : DashboardProvinceCitizenCountPercentageDTO
