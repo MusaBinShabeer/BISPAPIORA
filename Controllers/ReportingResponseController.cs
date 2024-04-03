@@ -18,6 +18,8 @@ namespace BISPAPIORA.Controllers
         {
             this.reportingResponseService = reportingResponseService;
         }
+
+        // Retrieves reporting response data.
         [HttpGet]
         public async Task<ActionResult<ResponseModel<ReportingResponseDTO>>> Get()
         {
