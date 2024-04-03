@@ -18,56 +18,64 @@ namespace BISPAPIORA.Repositories.ReportingResponseServicesRepo
             _mapper = mapper;
             this.db = db;
         }
+
+
+        // Retrieves reporting response data including total citizen count, registered citizen count, and enrolled citizen count.
         public async Task<ResponseModel<ReportingResponseDTO>> GetReportingResponse()
         {
             try
             {
+                // Retrieve total citizens
                 var totalCitizens = await db.tbl_citizens.ToListAsync();
                 var totalCitizensCount = totalCitizens.Count();
+
+                // Check if there are any citizens
                 if (totalCitizensCount > 0)
                 {
+                    // Retrieve registered citizens and count
                     var registeredCitizens = await db.tbl_registrations.ToListAsync();
                     var registeredCitizensCount = registeredCitizens.Count();
 
+                    // Retrieve enrolled citizens and count
                     var enrolledCitizens = await db.tbl_enrollments.ToListAsync();
                     var enrolledCitizensCount = enrolledCitizens.Count();
 
-                    //var percentageCitizenEnrolled = (double)enrolledCitizensCount / totalCitizensCount * 100;
-                    //var percentageCitizenRegistered = (double)registeredCitizensCount / totalCitizensCount * 100;
-
-                    var reportResponseDto = new ReportingResponseDTO() 
+                    // Create ReportingResponseDTO object with retrieved counts
+                    var reportResponseDto = new ReportingResponseDTO()
                     {
                         totalCount = totalCitizensCount,
                         enrolledCount = enrolledCitizensCount,
                         registeredCount = registeredCitizensCount
-                        //, percentageEnrolled = percentageCitizenEnrolled,
-                        //percentageRegistered = percentageCitizenRegistered
                     };
+
+                    // Return response model with success status and retrieved data
                     return new ResponseModel<ReportingResponseDTO>()
                     {
                         success = true,
-                        remarks = "Enrolled and registed Citizens found.",
+                        remarks = "Enrolled and registered citizens found.",
                         data = reportResponseDto
                     };
-
                 }
                 else
                 {
+                    // Return response model indicating no citizens are registered or enrolled
                     return new ResponseModel<ReportingResponseDTO>()
                     {
                         success = false,
-                        remarks = "There is no citizen registered or enrolled."
+                        remarks = "There are no registered or enrolled citizens."
                     };
                 }
             }
             catch (Exception ex)
             {
+                // Return response model indicating a fatal error occurred
                 return new ResponseModel<ReportingResponseDTO>()
                 {
                     success = false,
-                    remarks = $"There Was Fatal Error {ex.Message.ToString()}"
+                    remarks = $"A fatal error occurred: {ex.Message}"
                 };
             }
         }
+
     }
 }
