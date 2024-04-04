@@ -621,6 +621,10 @@ public partial class Dbcontext : DbContext
                 .HasDefaultValueSql("0.0")
                 .HasColumnType("NUMBER(10,2)")
                 .HasColumnName("STARTING_BALANCE_ON_QUARTERLY_BANK_STATEMENT");
+            entity.Property(e => e.citizen_compliance_quarter_code)
+                .HasPrecision(10)
+                .HasDefaultValueSql("0")
+                .HasColumnName("CITIZEN_COMPLIANCE_QUARTER_CODE");
             entity.HasOne(d => d.tbl_citizen)
                 .WithMany(p => p.tbl_citizen_compliances) // Assuming tbl_citizen has a collection navigation property for compliance records
                 .HasForeignKey(d => d.fk_citizen)
@@ -671,6 +675,10 @@ public partial class Dbcontext : DbContext
                 .IsUnicode(false)
                 .HasDefaultValueSql("''")
                 .HasColumnName("TRANSACTION_TYPE");
+            entity.Property(e => e.transaction_quarter_code)
+                .HasPrecision(10)
+                .HasDefaultValueSql("0")
+                .HasColumnName("TRANSACTION_QUARTER_CODE");
             entity.HasOne(d => d.tbl_citizen).WithMany(p => p.tbl_transactions)
                  .HasForeignKey(d => d.fk_citizen)
                  .OnDelete(DeleteBehavior.Cascade)
