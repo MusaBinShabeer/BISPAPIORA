@@ -13,6 +13,8 @@ public partial class tbl_citizen_compliance
 
     public decimal? citizen_compliance_actual_saving_amount { get; set; } = 0;
 
+    public int? citizen_compliance_quarter_code { get; set; } = 0;
+
     public Guid? fk_citizen { get; set; } = new Guid();
     public virtual tbl_citizen? tbl_citizen { get; set; }
 

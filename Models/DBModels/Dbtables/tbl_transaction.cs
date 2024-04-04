@@ -13,6 +13,8 @@ public partial class tbl_transaction
 
     public decimal? transaction_amount { get; set; } = default;
 
+    public int? transaction_quarter_code { get; set; } = 0;
+
     public Guid? fk_citizen { get; set; } = default(Guid?);
 
     public virtual tbl_citizen? tbl_citizen { get; set; } = default!;

@@ -10,7 +10,7 @@ using BISPAPIORA.Extensions.Middleware;
 namespace BISPAPIORA.Controllers
 {
     // Custom authorization attribute for user authentication
-    //[AppVersion]
+    [AppVersion]
     //[UserAuthorize]
     [Route("api/[controller]")]
     [ApiController]
