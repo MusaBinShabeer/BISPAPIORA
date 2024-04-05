@@ -133,7 +133,7 @@ namespace BISPAPIORA.Models.DTOS.DashboardDTO
 
         public virtual tbl_citizen_scheme? tbl_citizen_scheme { get; set; }
 
-        public virtual tbl_citizen_compliance? tbl_citizen_compliance { get; set; }
+        public virtual ICollection<tbl_citizen_compliance> tbl_citizen_compliances { get; set; } = new List<tbl_citizen_compliance>();
 
         public virtual tbl_enrollment? tbl_enrollment { get; set; }
 
