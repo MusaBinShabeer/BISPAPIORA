@@ -139,6 +139,8 @@ namespace BISPAPIORA.Repositories.DashboardServicesRepo
                 var predicateDistrict = PredicateBuilder.New<tbl_district>(true);
                 var predicateTehsil = PredicateBuilder.New<tbl_tehsil>(true);
                 var predicateCitizen = PredicateBuilder.New<DashboardCitizenLocationModel>(true);
+                var predicateRegisteredCitizen= PredicateBuilder.New<DashboardCitizenLocationModel>(true);
+                var predicateEnrolledCitizen= PredicateBuilder.New<DashboardCitizenLocationModel>(true);
                 #endregion
 
                 // Query to fetch citizens with related data
@@ -152,6 +154,8 @@ namespace BISPAPIORA.Repositories.DashboardServicesRepo
                     .ProjectTo<DashboardCitizenLocationModel>(mapper.ConfigurationProvider);
 
                 #region Filters
+                predicateRegisteredCitizen = predicateRegisteredCitizen.And(x => x.registration != null && x.enrollment == null);
+                predicateEnrolledCitizen = predicateEnrolledCitizen.And(x =>x.enrollment != null);
                 // Applying filters based on registration and enrollment statuses
                 if (registration == true)
                 {
@@ -210,6 +214,18 @@ namespace BISPAPIORA.Repositories.DashboardServicesRepo
 
                 // Fetching filtered citizens
                 var filteredCitizens = await totalCitizenQuery.Where(predicateCitizen).ToListAsync();
+                var onlyRegisteredCitizens = await totalCitizenQuery.Where(predicateRegisteredCitizen).ToListAsync();              
+                var onlyEnrolledCitizens = await totalCitizenQuery.Where(predicateEnrolledCitizen).ToListAsync();
+                double onlyRegisteredCitizensPercentage = 0.0;
+                double onlyEnrolledCitizensPercentage = 0.0;
+                if(onlyRegisteredCitizens.Count > 0) 
+                {
+                    onlyRegisteredCitizensPercentage = (double)onlyRegisteredCitizens.Count() / filteredCitizens.Count * 100;
+                }
+                if (onlyEnrolledCitizens.Count() > 0)
+                {
+                    onlyEnrolledCitizensPercentage = (double)onlyEnrolledCitizens.Count() / filteredCitizens.Count * 100;
+                }
                 #endregion
 
                 #region Citizen Count Wise
@@ -222,12 +238,12 @@ namespace BISPAPIORA.Repositories.DashboardServicesRepo
                 }); 
                 citizenStats.Add(new WebDashboardStats()
                 {
-                    StatCount = filteredCitizens.Count(citizen => citizen.registration != null && citizen.enrollment == null)>0? filteredCitizens.Count(citizen => citizen.registration != null && citizen.enrollment == null) / filteredCitizens.Count * 100:0,
+                    StatCount = onlyRegisteredCitizensPercentage,
                     StatName = "Registered Only"
                 }); 
                 citizenStats.Add(new WebDashboardStats()
                 {
-                    StatCount = filteredCitizens.Count(citizen => citizen.enrollment != null) > 0 ? filteredCitizens.Count(citizen => citizen.enrollment != null) / filteredCitizens.Count * 100 : 0,
+                    StatCount = onlyEnrolledCitizensPercentage,
                     StatName = "Enrolled Only"
                 });
                 citizenStats.Add(new WebDashboardStats()
@@ -402,11 +418,11 @@ namespace BISPAPIORA.Repositories.DashboardServicesRepo
                // Grouping citizens by scheme saving amount
                 var citizenSchemeGroups = savingAmountEnum.Select(savingAmount =>
                 {
-                    // Filtering citizens by scheme saving amount
-                    var citizensGroupedBySavingAmount = filteredCitizens.Where(citizen => citizen.saving_amount == savingAmount).ToList();
-                    var citizensGroupedBySavingAmountCount = citizensGroupedBySavingAmount.Count;
                     var savingAmountName = (SavingAmountEnum)Enum.Parse(typeof(SavingAmountEnum), savingAmount.ToString());
                     var x = savingAmountName.ToString().Split('A');
+                    // Filtering citizens by scheme saving amount
+                    var citizensGroupedBySavingAmount = filteredCitizens.Where(citizen => citizen.saving_amount == decimal.Parse(x[1])).ToList();
+                    var citizensGroupedBySavingAmountCount = citizensGroupedBySavingAmount.Count;
                     // Creating DTO for scheme saving amount-wise distribution
                     return new DashboardCitizenCountSavingAmountDTO
                     {

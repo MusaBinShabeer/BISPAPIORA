@@ -25,37 +25,52 @@ namespace BISPAPIORA.Repositories.CitizenComplianceServicesRepo
             {
                 // Check if the citizen compliance already exists
                 var citizenCompliance = await db.tbl_citizen_compliances
-                    .Where(x => x.fk_citizen.Equals(Guid.Parse(model.fkCitizen)))
+                    .Where(x => x.fk_citizen.Equals(Guid.Parse(model.fkCitizen)) && x.citizen_compliance_quarter_code.Equals(model.quarterCode))
                     .FirstOrDefaultAsync();
-
-                if (citizenCompliance == null)
+                var citizenSavingAmount = await db.tbl_citizen_schemes.Where(x => x.fk_citizen.Equals(Guid.Parse(model.fkCitizen))).FirstOrDefaultAsync();
+                var savingsDecimal = citizenSavingAmount.citizen_scheme_saving_amount * 3;
+                var savings = double.Parse(savingsDecimal.ToString());
+                var actualSavings = model.closingBalanceOnQuarterlyBankStatement - model.startingBalanceOnQuarterlyBankStatement;
+                if (actualSavings >= savings)
                 {
-                    // If not, create a new citizen compliance
-                    var newCitizenCompliance = new tbl_citizen_compliance();
-                    newCitizenCompliance = _mapper.Map<tbl_citizen_compliance>(model);
-                    db.tbl_citizen_compliances.Add(newCitizenCompliance);
-                    await db.SaveChangesAsync();
-
-                    return new ResponseModel<CitizenComplianceResponseDTO>()
+                    if (citizenCompliance == null)
                     {
-                        success = true,
-                        remarks = $"Citizen Compliance has been added successfully",
-                        data = _mapper.Map<CitizenComplianceResponseDTO>(newCitizenCompliance),
-                    };
+                        // If not, create a new citizen compliance
+                        var newCitizenCompliance = new tbl_citizen_compliance();
+                        newCitizenCompliance = _mapper.Map<tbl_citizen_compliance>(model);
+                        db.tbl_citizen_compliances.Add(newCitizenCompliance);
+                        await db.SaveChangesAsync();
+
+                        return new ResponseModel<CitizenComplianceResponseDTO>()
+                        {
+                            success = true,
+                            remarks = $"Citizen Compliance has been added successfully",
+                            data = _mapper.Map<CitizenComplianceResponseDTO>(newCitizenCompliance),
+                        };
+                    }
+                    else
+                    {
+                        // If it exists, update the existing citizen compliance
+                        var existingCitizenCompliance = _mapper.Map<UpdateCitizenComplianceDTO>(model);
+                        existingCitizenCompliance.citizenComplianceId = citizenCompliance.citizen_compliance_id.ToString();
+                        var response = await UpdateCitizenCompliance(existingCitizenCompliance);
+
+                        return new ResponseModel<CitizenComplianceResponseDTO>()
+                        {
+                            success = response.success,
+                            remarks = response.remarks
+                        };
+                    }
                 }
                 else
                 {
-                    // If it exists, update the existing citizen compliance
-                    var existingCitizenCompliance = _mapper.Map<UpdateCitizenComplianceDTO>(model);
-                    existingCitizenCompliance.citizenComplianceId = citizenCompliance.citizen_compliance_id.ToString();
-                    var response = await UpdateCitizenCompliance(existingCitizenCompliance);
-
                     return new ResponseModel<CitizenComplianceResponseDTO>()
                     {
-                        success = response.success,
-                        remarks = response.remarks
+                        success = false,
+                        remarks = "Not Complaint with our scheme this quarter"
                     };
                 }
+
             }
             catch (Exception ex)
             {

@@ -632,14 +632,16 @@ namespace BISPAPIORA.Repositories.CitizenServicesRepo
                     if (verifyCitizen.success)
                     {
                         response.data = _mapper.Map<RegistrationResponseDTO>((verifyCitizen.data, true));
+                        response.remarks = "Applicant Not Registered";
+                        response.success = true;
                     }
                     else
                     {
                         response.data = verifyCitizen.data != null ? _mapper.Map<RegistrationResponseDTO>((verifyCitizen.data, false)) : null;
+                        response.remarks = "Applicant Not Found";
                     }
 
-                    response.remarks = "Applicant Not Registered";
-                    response.success = true;
+                   
 
                     return response;
                 }
