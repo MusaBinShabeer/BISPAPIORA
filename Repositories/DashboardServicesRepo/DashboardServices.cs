@@ -164,6 +164,7 @@ namespace BISPAPIORA.Repositories.DashboardServicesRepo
                     {
                         // Applying date range filter for registration
                         predicateCitizen = predicateCitizen.And(x => x.registered_date >= DateTime.Parse(dateStart) && x.registered_date <= DateTime.Parse(dateEnd));
+                        
                     }
                 }
                 else if (enrollment == true)
@@ -181,6 +182,8 @@ namespace BISPAPIORA.Repositories.DashboardServicesRepo
                     {
                         // Applying date range filter for enrollment
                         predicateCitizen = predicateCitizen.And(x => x.insertion_date >= DateTime.Parse(dateStart) && x.insertion_date <= DateTime.Parse(dateEnd));
+                        predicateRegisteredCitizen = predicateRegisteredCitizen.And(x => x.insertion_date >= DateTime.Parse(dateStart) && x.insertion_date <= DateTime.Parse(dateEnd));
+                        predicateEnrolledCitizen = predicateEnrolledCitizen.And(x => x.insertion_date >= DateTime.Parse(dateStart) && x.insertion_date <= DateTime.Parse(dateEnd));
                     }
                 }
 
@@ -454,7 +457,8 @@ namespace BISPAPIORA.Repositories.DashboardServicesRepo
                 citizenTrendGroups = citizenTrendGroups.OrderByDescending(x => DateTime.ParseExact(x.insertionMonth, "MM/dd/yyyy HH:mm:ss", CultureInfo.InvariantCulture)).ToList();
 
                 // Select the latest 6 months
-                var citizenTrendGroupslatestSixMonths = citizenTrendGroups.Count()>0? citizenTrendGroups.Take(6).ToList():new List<DashboardCitizenTrendDTO>();
+                
+                var citizenTrendGroupslatestSixMonths = citizenTrendGroups.Take(6).ToList();
                 
                 #endregion
 
