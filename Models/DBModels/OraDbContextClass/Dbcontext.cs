@@ -616,6 +616,11 @@ public partial class Dbcontext : DbContext
                 .HasDefaultValueSql("0.0")
                 .HasColumnType("NUMBER(10,2)")
                 .HasColumnName("CLOSING_BALANCE_ON_QUARTERLY_BANK_STATEMENT");
+            entity.Property(e => e.is_compliant)
+                .IsRequired()
+                .HasPrecision(1)
+                .HasDefaultValueSql("1 ")
+                .HasColumnName("IS_COMPLIANT");
             entity.Property(e => e.fk_citizen).HasColumnName("FK_CITIZEN");
             entity.Property(e => e.starting_balance_on_quarterly_bank_statement)
                 .HasDefaultValueSql("0.0")

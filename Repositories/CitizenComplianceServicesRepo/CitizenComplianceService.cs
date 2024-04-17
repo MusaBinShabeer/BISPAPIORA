@@ -18,7 +18,7 @@ namespace BISPAPIORA.Repositories.CitizenComplianceServicesRepo
         private readonly Dbcontext db;
         private readonly IInnerServices innerServices;
         private readonly ITransactionService transactionService;
-        public CitizenComplianceService(IMapper mapper, Dbcontext db,IInnerServices innerServices,TransactionService transactionService)
+        public CitizenComplianceService(IMapper mapper, Dbcontext db,IInnerServices innerServices,ITransactionService transactionService)
         {
             _mapper = mapper;
             this.db = db;

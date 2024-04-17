@@ -10,6 +10,7 @@ namespace BISPAPIORA.Models.DTOS.CitizenComplianceDTO
         public double citizenComplianceActualSavingAmount { get; set; } = 0.0;
         public int quarterCode { get; set; } = 0;
         public string fkCitizen { get; set; } = string.Empty;
+        public bool isCompliant { get; set; } = true;
     }
     public class AddCitizenComplianceDTO : CitizenComplianceDTO
     {

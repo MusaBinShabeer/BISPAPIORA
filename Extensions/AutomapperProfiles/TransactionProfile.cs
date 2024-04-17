@@ -11,7 +11,7 @@ namespace BISPAPIORA.Extensions.AutomapperProfiles
         public TransactionProfile()
         {
             CreateMap<AddTransactionDTO, tbl_transaction>()
-             .ForMember(d => d.transaction_date, opt => opt.MapFrom(src => src.transactionDate))
+             .ForMember(d => d.transaction_date, opt => opt.MapFrom(src => DateTime.Parse(src.transactionDate)))
              .ForMember(d => d.transaction_amount, opt => opt.MapFrom(src => src.transactionAmount))
              .ForMember(d => d.transaction_type, opt => opt.MapFrom(src => src.transactionType))
              .ForMember(d => d.transaction_quarter_code, opt => opt.MapFrom(src => src.quarterCode))
