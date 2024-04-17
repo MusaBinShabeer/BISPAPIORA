@@ -17,5 +17,6 @@ public partial class tbl_citizen_compliance
 
     public Guid? fk_citizen { get; set; } = new Guid();
     public virtual tbl_citizen? tbl_citizen { get; set; }
+    public virtual ICollection<tbl_transaction>? tbl_transactions { get; set; }
 
 }

@@ -6,6 +6,9 @@ using Microsoft.EntityFrameworkCore;
 using System.Security.Claims;
 using BISPAPIORA.Models.DTOS.ResponseDTO;
 using BISPAPIORA.Models.DTOS.CitizenComplianceDTO;
+using BISPAPIORA.Extensions;
+using BISPAPIORA.Repositories.InnerServicesRepo;
+using BISPAPIORA.Repositories.TransactionServicesRepo;
 
 namespace BISPAPIORA.Repositories.CitizenComplianceServicesRepo
 {
@@ -13,10 +16,14 @@ namespace BISPAPIORA.Repositories.CitizenComplianceServicesRepo
     {
         private readonly IMapper _mapper;
         private readonly Dbcontext db;
-        public CitizenComplianceService(IMapper mapper, Dbcontext db)
+        private readonly IInnerServices innerServices;
+        private readonly ITransactionService transactionService;
+        public CitizenComplianceService(IMapper mapper, Dbcontext db,IInnerServices innerServices,TransactionService transactionService)
         {
             _mapper = mapper;
             this.db = db;
+            this.innerServices = innerServices;
+            this.transactionService = transactionService;
         }
         // Adds a new citizen compliance
         public async Task<ResponseModel<CitizenComplianceResponseDTO>> AddCitizenCompliance(AddCitizenComplianceDTO model)
@@ -27,20 +34,27 @@ namespace BISPAPIORA.Repositories.CitizenComplianceServicesRepo
                 var citizenCompliance = await db.tbl_citizen_compliances
                     .Where(x => x.fk_citizen.Equals(Guid.Parse(model.fkCitizen)) && x.citizen_compliance_quarter_code.Equals(model.quarterCode))
                     .FirstOrDefaultAsync();
-                var citizenSavingAmount = await db.tbl_citizen_schemes.Where(x => x.fk_citizen.Equals(Guid.Parse(model.fkCitizen))).FirstOrDefaultAsync();
-                var savingsDecimal = citizenSavingAmount.citizen_scheme_saving_amount * 3;
-                var savings = double.Parse(savingsDecimal.ToString());
-                var actualSavings = model.closingBalanceOnQuarterlyBankStatement - model.startingBalanceOnQuarterlyBankStatement;
-                if (actualSavings >= savings)
+                if (citizenCompliance == null)
                 {
+                    var citizenScheme = await db.tbl_citizen_schemes.Where(x => x.fk_citizen.Equals(Guid.Parse(model.fkCitizen))).FirstOrDefaultAsync();
+                    var betweenquarters= innerServices.GetQuarterCodesBetween(citizenScheme.citizen_scheme_quarter_code.Value, model.quarterCode );
+                    var expectedSavingsPerQuarterDecimal = citizenScheme.citizen_scheme_saving_amount * 3;
+                    var expectedSavingsPerQuarter = double.Parse(expectedSavingsPerQuarterDecimal.ToString());
+                    var expectedSaving = await innerServices.GetTotalExpectedSavingAmount(betweenquarters, Guid.Parse(model.fkCitizen), expectedSavingsPerQuarter);
+                    var actualSavings = model.transactionDTO.Sum(x => x.transactionAmount);                   
                     if (citizenCompliance == null)
                     {
                         // If not, create a new citizen compliance
                         var newCitizenCompliance = new tbl_citizen_compliance();
                         newCitizenCompliance = _mapper.Map<tbl_citizen_compliance>(model);
-                        db.tbl_citizen_compliances.Add(newCitizenCompliance);
+                        await db.tbl_citizen_compliances.AddAsync(newCitizenCompliance);
+                        if (actualSavings >= expectedSaving)
+                        { }
                         await db.SaveChangesAsync();
-
+                        foreach (var transaction in model.transactionDTO)
+                        {
+                            var transactionResponse = await transactionService.AddTransaction(transaction);
+                        }
                         return new ResponseModel<CitizenComplianceResponseDTO>()
                         {
                             success = true,
@@ -61,16 +75,16 @@ namespace BISPAPIORA.Repositories.CitizenComplianceServicesRepo
                             remarks = response.remarks
                         };
                     }
+
                 }
                 else
                 {
                     return new ResponseModel<CitizenComplianceResponseDTO>()
                     {
                         success = false,
-                        remarks = "Not Complaint with our scheme this quarter"
+                        remarks = "Already Added"
                     };
                 }
-
             }
             catch (Exception ex)
             {
@@ -294,6 +308,7 @@ namespace BISPAPIORA.Repositories.CitizenComplianceServicesRepo
                 };
             }
         }
+       
 
     }
 }

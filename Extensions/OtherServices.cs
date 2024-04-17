@@ -1,5 +1,6 @@
 ﻿using System.Text;
 using System.Security.Cryptography;
+using BISPAPIORA.Models.ENUMS;
 
 namespace BISPAPIORA.Extensions
 {
@@ -59,5 +60,6 @@ namespace BISPAPIORA.Extensions
 
             return otp;
         }
+      
     }
 }

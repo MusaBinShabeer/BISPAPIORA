@@ -16,6 +16,8 @@ public partial class tbl_transaction
     public int? transaction_quarter_code { get; set; } = 0;
 
     public Guid? fk_citizen { get; set; } = default(Guid?);
+    public Guid? fk_compliance { get; set; } = default(Guid?);
 
     public virtual tbl_citizen? tbl_citizen { get; set; } = default!;
+    public virtual tbl_citizen_compliance? tbl_citizen_compliance { get; set; } = default!;
 }

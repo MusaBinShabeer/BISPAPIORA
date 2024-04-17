@@ -663,6 +663,7 @@ public partial class Dbcontext : DbContext
                 .HasDefaultValueSql("SYS_GUID() ")
                 .HasColumnName("TRANSACTION_ID");
             entity.Property(e => e.fk_citizen).HasColumnName("FK_CITIZEN");
+            entity.Property(e => e.fk_compliance).HasColumnName("FK_COMPLIANCE");
             entity.Property(e => e.transaction_amount)
                 .HasDefaultValueSql("0.0")
                 .HasColumnType("NUMBER(10,2)")
@@ -683,6 +684,10 @@ public partial class Dbcontext : DbContext
                  .HasForeignKey(d => d.fk_citizen)
                  .OnDelete(DeleteBehavior.Cascade)
                  .HasConstraintName("FK_TRANSACTION_CITIZEN");
+            entity.HasOne(d => d.tbl_citizen_compliance).WithMany(p => p.tbl_transactions)
+               .HasForeignKey(d => d.fk_compliance)
+               .OnDelete(DeleteBehavior.Cascade)
+               .HasConstraintName("FK_COMPLIANCE");
         });
 
         modelBuilder.Entity<tbl_image_citizen_attachment>(entity =>

@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using BISPAPIORA.Models.DTOS.TransactionDTO;
+using System.ComponentModel.DataAnnotations;
 
 namespace BISPAPIORA.Models.DTOS.CitizenComplianceDTO
 {
@@ -22,6 +23,7 @@ namespace BISPAPIORA.Models.DTOS.CitizenComplianceDTO
         public new string fkCitizen { get; set; } = string.Empty;
         [Required]
         public new int quarterCode { get; set; } = 0;
+        public List<AddTransactionDTO> transactionDTO { get; set; } = new List<AddTransactionDTO>();
     }
     public class UpdateCitizenComplianceDTO : CitizenComplianceDTO
     {
