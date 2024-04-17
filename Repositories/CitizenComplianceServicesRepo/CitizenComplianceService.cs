@@ -42,40 +42,25 @@ namespace BISPAPIORA.Repositories.CitizenComplianceServicesRepo
                     var expectedSavingsPerQuarter = double.Parse(expectedSavingsPerQuarterDecimal.ToString());
                     var expectedSaving = await innerServices.GetTotalExpectedSavingAmount(betweenquarters, Guid.Parse(model.fkCitizen), expectedSavingsPerQuarter);
                     var actualSavings = model.transactionDTO.Sum(x => x.transactionAmount);                   
-                    if (citizenCompliance == null)
+                    var newCitizenCompliance = new tbl_citizen_compliance();
+                    newCitizenCompliance = _mapper.Map<tbl_citizen_compliance>(model);
+                    await db.tbl_citizen_compliances.AddAsync(newCitizenCompliance);
+                    if (actualSavings >= expectedSaving)
                     {
-                        // If not, create a new citizen compliance
-                        var newCitizenCompliance = new tbl_citizen_compliance();
-                        newCitizenCompliance = _mapper.Map<tbl_citizen_compliance>(model);
-                        await db.tbl_citizen_compliances.AddAsync(newCitizenCompliance);
-                        if (actualSavings >= expectedSaving)
-                        { }
-                        await db.SaveChangesAsync();
-                        foreach (var transaction in model.transactionDTO)
-                        {
-                            var transactionResponse = await transactionService.AddTransaction(transaction);
-                        }
-                        return new ResponseModel<CitizenComplianceResponseDTO>()
-                        {
-                            success = true,
-                            remarks = $"Citizen Compliance has been added successfully",
-                            data = _mapper.Map<CitizenComplianceResponseDTO>(newCitizenCompliance),
-                        };
+                        newCitizenCompliance.is_compliant = true; 
                     }
-                    else
+                    await db.SaveChangesAsync();
+                    foreach (var transaction in model.transactionDTO)
                     {
-                        // If it exists, update the existing citizen compliance
-                        var existingCitizenCompliance = _mapper.Map<UpdateCitizenComplianceDTO>(model);
-                        existingCitizenCompliance.citizenComplianceId = citizenCompliance.citizen_compliance_id.ToString();
-                        var response = await UpdateCitizenCompliance(existingCitizenCompliance);
-
-                        return new ResponseModel<CitizenComplianceResponseDTO>()
-                        {
-                            success = response.success,
-                            remarks = response.remarks
-                        };
+                        transaction.fkCompliance= newCitizenCompliance.citizen_compliance_id.ToString();
+                        var transactionResponse = await transactionService.AddTransaction(transaction);
                     }
-
+                    return new ResponseModel<CitizenComplianceResponseDTO>()
+                    {
+                        success = true,
+                        remarks = $"Citizen Compliance has been added successfully",
+                        data = _mapper.Map<CitizenComplianceResponseDTO>(newCitizenCompliance),
+                    };
                 }
                 else
                 {
