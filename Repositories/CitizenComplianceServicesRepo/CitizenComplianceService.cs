@@ -9,6 +9,8 @@ using BISPAPIORA.Models.DTOS.CitizenComplianceDTO;
 using BISPAPIORA.Extensions;
 using BISPAPIORA.Repositories.InnerServicesRepo;
 using BISPAPIORA.Repositories.TransactionServicesRepo;
+using BISPAPIORA.Repositories.ComplexMappersRepo;
+using BISPAPIORA.Models.DTOS.AuthDTO;
 
 namespace BISPAPIORA.Repositories.CitizenComplianceServicesRepo
 {
@@ -18,12 +20,14 @@ namespace BISPAPIORA.Repositories.CitizenComplianceServicesRepo
         private readonly Dbcontext db;
         private readonly IInnerServices innerServices;
         private readonly ITransactionService transactionService;
-        public CitizenComplianceService(IMapper mapper, Dbcontext db,IInnerServices innerServices,ITransactionService transactionService)
+        private readonly IComplexMapperServices complexMapperServices;
+        public CitizenComplianceService(IMapper mapper, Dbcontext db, IInnerServices innerServices, ITransactionService transactionService, IComplexMapperServices complexMapperServices)
         {
             _mapper = mapper;
             this.db = db;
             this.innerServices = innerServices;
             this.transactionService = transactionService;
+            this.complexMapperServices = complexMapperServices;
         }
         // Adds a new citizen compliance
         public async Task<ResponseModel<CitizenComplianceResponseDTO>> AddCitizenCompliance(AddCitizenComplianceDTO model)
@@ -37,22 +41,22 @@ namespace BISPAPIORA.Repositories.CitizenComplianceServicesRepo
                 if (citizenCompliance == null)
                 {
                     var citizenScheme = await db.tbl_citizen_schemes.Where(x => x.fk_citizen.Equals(Guid.Parse(model.fkCitizen))).FirstOrDefaultAsync();
-                    var betweenquarters= innerServices.GetQuarterCodesBetween(citizenScheme.citizen_scheme_quarter_code.Value, model.quarterCode );
+                    var betweenquarters = innerServices.GetQuarterCodesBetween(citizenScheme.citizen_scheme_quarter_code.Value, model.quarterCode);
                     var expectedSavingsPerQuarterDecimal = citizenScheme.citizen_scheme_saving_amount * 3;
                     var expectedSavingsPerQuarter = double.Parse(expectedSavingsPerQuarterDecimal.ToString());
                     var expectedSaving = await innerServices.GetTotalExpectedSavingAmount(betweenquarters, Guid.Parse(model.fkCitizen), expectedSavingsPerQuarter);
-                    var actualSavings = model.transactionDTO.Sum(x => x.transactionAmount);                   
+                    var actualSavings = model.transactionDTO.Sum(x => x.transactionAmount);
                     var newCitizenCompliance = new tbl_citizen_compliance();
                     newCitizenCompliance = _mapper.Map<tbl_citizen_compliance>(model);
                     await db.tbl_citizen_compliances.AddAsync(newCitizenCompliance);
                     if (actualSavings >= expectedSaving)
                     {
-                        newCitizenCompliance.is_compliant = true; 
+                        newCitizenCompliance.is_compliant = true;
                     }
                     await db.SaveChangesAsync();
                     foreach (var transaction in model.transactionDTO)
                     {
-                        transaction.fkCompliance= newCitizenCompliance.citizen_compliance_id.ToString();
+                        transaction.fkCompliance = newCitizenCompliance.citizen_compliance_id.ToString();
                         var transactionResponse = await transactionService.AddTransaction(transaction);
                     }
                     return new ResponseModel<CitizenComplianceResponseDTO>()
@@ -131,14 +135,14 @@ namespace BISPAPIORA.Repositories.CitizenComplianceServicesRepo
                 // Retrieve all citizen compliances from the database
                 var citizenCompliances = await db.tbl_citizen_compliances
                     .Include(x => x.tbl_citizen)
+                    .Include(x => x.tbl_transactions)
                     .ToListAsync();
-
                 if (citizenCompliances.Count() > 0)
                 {
                     // Create a success response model with the list of citizen compliances
                     return new ResponseModel<List<CitizenComplianceResponseDTO>>()
                     {
-                        data = _mapper.Map<List<CitizenComplianceResponseDTO>>(citizenCompliances),
+                        data = complexMapperServices.ComplexAutomapperForCompliance().Map<List<CitizenComplianceResponseDTO>>(citizenCompliances),
                         remarks = "Success",
                         success = true,
                     };
@@ -172,6 +176,7 @@ namespace BISPAPIORA.Repositories.CitizenComplianceServicesRepo
                 // Find the existing citizen compliance in the database based on the provided ID
                 var existingCitizenCompliance = await db.tbl_citizen_compliances
                     .Include(x => x.tbl_citizen)
+                    .Include(x => x.tbl_transactions)
                     .Where(x => x.citizen_compliance_id == Guid.Parse(citizenComplianceId))
                     .FirstOrDefaultAsync();
 
@@ -180,7 +185,7 @@ namespace BISPAPIORA.Repositories.CitizenComplianceServicesRepo
                     // Return a success response model with the found citizen compliance
                     return new ResponseModel<CitizenComplianceResponseDTO>()
                     {
-                        data = _mapper.Map<CitizenComplianceResponseDTO>(existingCitizenCompliance),
+                        data = complexMapperServices.ComplexAutomapperForCompliance().Map<CitizenComplianceResponseDTO>(existingCitizenCompliance),
                         remarks = "Citizen Compliance found successfully",
                         success = true,
                     };
@@ -260,6 +265,7 @@ namespace BISPAPIORA.Repositories.CitizenComplianceServicesRepo
                 // Find all citizen compliances in the database based on the provided citizen ID
                 var existingDistricts = await db.tbl_citizen_compliances
                     .Include(x => x.tbl_citizen)
+                    .Include(x => x.tbl_transactions)
                     .Where(x => x.fk_citizen == Guid.Parse(citizenId))
                     .ToListAsync();
 
@@ -268,7 +274,7 @@ namespace BISPAPIORA.Repositories.CitizenComplianceServicesRepo
                     // Return a success response model with the list of citizen compliances
                     return new ResponseModel<List<CitizenComplianceResponseDTO>>()
                     {
-                        data = _mapper.Map<List<CitizenComplianceResponseDTO>>(existingDistricts),
+                        data = complexMapperServices.ComplexAutomapperForCompliance().Map<List<CitizenComplianceResponseDTO>>(existingDistricts),
                         remarks = "Citizen Compliances found successfully",
                         success = true,
                     };
@@ -293,7 +299,51 @@ namespace BISPAPIORA.Repositories.CitizenComplianceServicesRepo
                 };
             }
         }
-       
+
+        // Retrieves a list of citizen compliances based on citizen CNIC
+        public async Task<ResponseModel<List<CitizenComplianceResponseDTO>>> GetCitizenComplianceByCitizenCnic(string citizenCnic)
+        {
+            try
+            {
+                // Find all citizen compliances in the database based on the provided citizen CNIC
+                var existingDistricts = await db.tbl_citizen_compliances
+                    .Include(x => x.tbl_citizen)
+                    .Include(x => x.tbl_transactions)
+                    .Where(x => x.tbl_citizen.citizen_cnic == citizenCnic)
+                    .ToListAsync();
+
+                if (existingDistricts.Count > 0)
+                {
+                    // Return a success response model with the list of citizen compliances
+                    return new ResponseModel<List<CitizenComplianceResponseDTO>>()
+                    {
+                        data = complexMapperServices.ComplexAutomapperForCompliance().Map<List<CitizenComplianceResponseDTO>>(existingDistricts),
+                        remarks = "Citizen Compliances found successfully",
+                        success = true,
+                    };
+                }
+                else
+                {
+                    // Return a failure response model if no records are found for the provided citizen CNIC
+                    return new ResponseModel<List<CitizenComplianceResponseDTO>>()
+                    {
+                        success = false,
+                        remarks = "No Record"
+                    };
+                }
+            }
+            catch (Exception ex)
+            {
+                // Return a failure response model if an exception occurs during the process
+                return new ResponseModel<List<CitizenComplianceResponseDTO>>()
+                {
+                    success = false,
+                    remarks = $"There Was Fatal Error {ex.Message.ToString()}"
+                };
+            }
+        }
+
+
 
     }
 }
