@@ -65,6 +65,8 @@ public partial class Dbcontext : DbContext
 
     public virtual DbSet<tbl_app_version> tbl_app_versions { get; set; }
 
+    public virtual DbSet<tbl_payment> tbl_payments { get; set; }
+
     //    protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     //#warning To protect potentially sensitive information in your connection string, you should move it out of source code. You can avoid scaffolding the connection string by using the Name= syntax to read it from configuration - see https://go.microsoft.com/fwlink/?linkid=2131148. For more guidance on storing connection strings, see https://go.microsoft.com/fwlink/?LinkId=723263.
     //        => optionsBuilder.UseOracle("User Id=admin;Password=vNrGBdITbyvVQtTspIx1;Data Source=oracle-database.cfgeu0k04wh6.us-east-1.rds.amazonaws.com:1521/bispdb;");
@@ -263,6 +265,7 @@ public partial class Dbcontext : DbContext
         });
 
         modelBuilder.Entity<tbl_citizen_bank_info>(entity =>
+
         {
             entity.HasKey(e => e.citizen_bank_info_id).HasName("SYS_C006043");
 
@@ -874,6 +877,41 @@ public partial class Dbcontext : DbContext
                 .IsUnicode(false)
                 .HasDefaultValueSql("''")
                 .HasColumnName("APP_VERSION");
+        });
+
+        modelBuilder.Entity<tbl_payment>(entity =>
+        {
+            entity.HasKey(e => e.payment_id).HasName("SYS_C006917");
+
+            entity.ToTable("TBL_PAYMENT");
+
+            entity.Property(e => e.payment_id)
+                .HasDefaultValueSql("SYS_GUID() ")
+                .HasColumnName("PAYMENT_ID");
+            entity.Property(e => e.due_amount)
+                .HasDefaultValueSql("0")
+                .HasColumnType("NUMBER(19,2)")
+                .HasColumnName("DUE_AMOUNT");
+            entity.Property(e => e.fk_citizen).HasColumnName("FK_CITIZEN");
+            entity.Property(e => e.fk_compliance).HasColumnName("FK_COMPLIANCE");
+            entity.Property(e => e.paid_amount)
+                .HasDefaultValueSql("0")
+                .HasColumnType("NUMBER(19,2)")
+                .HasColumnName("PAID_AMOUNT");
+            entity.Property(e => e.payment_quarter_code)
+                .HasPrecision(10)
+                .HasDefaultValueSql("0")
+                .HasColumnName("PAYMENT_QUARTER_CODE");
+
+            entity.HasOne(d => d.tbl_citizen).WithMany(p => p.tbl_payments)
+                .HasForeignKey(d => d.fk_citizen)
+                .OnDelete(DeleteBehavior.Cascade)
+                .HasConstraintName("FK_PAYMENT_CITIZEN");
+
+            entity.HasOne(d => d.tbl_citizen_compliance).WithMany(p => p.tbl_payments)
+                .HasForeignKey(d => d.fk_compliance)
+                .OnDelete(DeleteBehavior.Cascade)
+                .HasConstraintName("FK_PAYMENT_CITIZEN_COMPLIANCE");
         });
 
         OnModelCreatingPartial(modelBuilder);

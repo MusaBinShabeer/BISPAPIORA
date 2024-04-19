@@ -59,6 +59,8 @@ public partial class tbl_citizen
 
     public virtual ICollection<tbl_transaction> tbl_transactions { get; set; } = new List<tbl_transaction>();
 
+    public virtual ICollection<tbl_payment> tbl_payments { get; set; } = new List<tbl_payment>();
+
     public bool? is_valid_beneficiary { get; set; }
 
     public decimal? unique_hh_id { get; set; } // Unique HouseholdId

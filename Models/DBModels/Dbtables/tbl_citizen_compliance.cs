@@ -21,6 +21,6 @@ public partial class tbl_citizen_compliance
     public virtual tbl_citizen? tbl_citizen { get; set; }
     public virtual ICollection<tbl_transaction>? tbl_transactions { get; set; }
 
-    public virtual ICollection<tbl_paymenmt> tbl_paymenmts { get; set; } = new List<tbl_paymenmt>();
+    public virtual ICollection<tbl_payment> tbl_payments { get; set; } = new List<tbl_payment>();
 
 }
