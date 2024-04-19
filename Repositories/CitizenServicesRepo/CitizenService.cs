@@ -737,7 +737,67 @@ namespace BISPAPIORA.Repositories.CitizenServicesRepo
                 };
             }
         }
+        public async Task<ResponseModel<RegistrationResponseDTO>> VerifyCitizenEnrollmentStatusWithCNIC(string citizenCnic)
+        {
+            try
+            {
+                // Find the existing citizen in the database based on the provided CNIC
+                var existingCitizen = await db.tbl_citizens
+                    .Where(x => x.citizen_cnic == citizenCnic)
+                    .Include(x => x.tbl_citizen_tehsil).ThenInclude(x => x.tbl_district).ThenInclude(x => x.tbl_province)
+                    .Include(x => x.tbl_citizen_employment)
+                    .Include(x => x.tbl_citizen_education)
+                    .Include(x => x.tbl_citizen_scheme)
+                    .Include(x => x.tbl_citizen_registration)
+                    .Include(x => x.tbl_enrollment)
+                    .Include(x => x.tbl_citizen_bank_info).ThenInclude(x => x.tbl_bank)
+                    .Include(x => x.tbl_citizen_family_bank_info).ThenInclude(x => x.tbl_bank_other_specification)
+                    .FirstOrDefaultAsync();
 
+                if (existingCitizen != null)
+                {
+                    if (existingCitizen.tbl_enrollment != null)
+                    {                        
+                        var response = new ResponseModel<RegistrationResponseDTO>();
+                        // Map the verification result to the response model
+                        
+                        // Check if the citizen is already registered
+                        return new ResponseModel<RegistrationResponseDTO>()
+                        {
+                            data = _mapper.Map<RegistrationResponseDTO>(existingCitizen),
+                            remarks = "Enrolled",
+                            success = true,
+                        };
+                    }
+                    else
+                    {
+                        return new ResponseModel<RegistrationResponseDTO>()
+                        {
+                            remarks = "Not Enrolled",
+                            success = false,
+                        };
+                    }
+                }
+                else
+                {
+                   
+                    return new ResponseModel<RegistrationResponseDTO>()
+                    {
+                        remarks="Not Found",
+                        success = false,
+                    };
+                }
+            }
+            catch (Exception ex)
+            {
+                // Return a failure response model if an exception occurs during the process
+                return new ResponseModel<RegistrationResponseDTO>()
+                {
+                    success = false,
+                    remarks = $"There Was Fatal Error {ex.Message.ToString()}"
+                };
+            }
+        }
         // Retrieves details of a registered citizen based on the provided CNIC
         public async Task<ResponseModel<RegistrationResponseDTO>> GetRegisteredCitizenByCnic(string citizenCnic)
         {

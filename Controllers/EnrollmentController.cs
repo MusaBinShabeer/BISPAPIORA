@@ -159,6 +159,27 @@ namespace BISPAPIORA.Controllers
                 return BadRequest(response);
             }
         }
+        [HttpGet("VerifyEnrollmentByCnic")]
+        public async Task<ActionResult<ResponseModel<EnrollmentResponseDTO>>> VerifyEnrollmentByCnic(string cnic)
+        {
+            // Check if the CNIC parameter is not null or empty
+            if (!string.IsNullOrEmpty(cnic))
+            {
+                // Get the enrollment information by CNIC and return the response
+                var response = citizenService.VerifyCitizenEnrollmentStatusWithCNIC(cnic);
+                return Ok(await response);
+            }
+            else
+            {
+                // Return a bad request response if the CNIC parameter is missing
+                var response = new ResponseModel<EnrollmentResponseDTO>()
+                {
+                    remarks = "Parameter missing",
+                    success = false
+                };
+                return BadRequest(response);
+            }
+        }
 
 
         // Get the list of all enrolled citizens

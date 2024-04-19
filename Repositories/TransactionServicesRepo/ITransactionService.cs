@@ -11,5 +11,6 @@ namespace BISPAPIORA.Repositories.TransactionServicesRepo
         public Task<ResponseModel<TransactionResponseDTO>> GetTransaction(string bankId);
         public Task<ResponseModel<TransactionResponseDTO>> UpdateTransaction(UpdateTransactionDTO model);
         public Task<ResponseModel<List<TransactionResponseDTO>>> GetTransactionByCitizenId(string citizenId);
+        public Task<ResponseModel<List<TransactionResponseDTO>>> GetTransactionByCitizenCnic(string citizenCnic);
     }
 }

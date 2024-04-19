@@ -11,6 +11,7 @@ using BISPAPIORA.Repositories.InnerServicesRepo;
 using BISPAPIORA.Repositories.TransactionServicesRepo;
 using BISPAPIORA.Repositories.ComplexMappersRepo;
 using BISPAPIORA.Models.DTOS.AuthDTO;
+using BISPAPIORA.Models.ENUMS;
 
 namespace BISPAPIORA.Repositories.CitizenComplianceServicesRepo
 {
@@ -45,7 +46,21 @@ namespace BISPAPIORA.Repositories.CitizenComplianceServicesRepo
                     var expectedSavingsPerQuarterDecimal = citizenScheme.citizen_scheme_saving_amount * 3;
                     var expectedSavingsPerQuarter = double.Parse(expectedSavingsPerQuarterDecimal.ToString());
                     var expectedSaving = await innerServices.GetTotalExpectedSavingAmount(betweenquarters, Guid.Parse(model.fkCitizen), expectedSavingsPerQuarter);
-                    var actualSavings = model.transactionDTO.Sum(x => x.transactionAmount);
+                    var actualSavings = model.transactionDTO.Sum(transaction =>
+                    {
+                        if (Enum.TryParse(transaction.transactionType, out TransactionTypeEnum transactionType))
+                        {
+                            
+                                return transactionType == TransactionTypeEnum.Debit ? +transaction.transactionAmount : -transaction.transactionAmount;
+                           
+                        }
+                        else
+                        {
+                            // Handle parsing error for transaction type
+                            Console.WriteLine("Invalid transaction type: " + transaction.transactionType);
+                            return 0; // or any default value
+                        }
+                    });
                     var newCitizenCompliance = new tbl_citizen_compliance();
                     newCitizenCompliance = _mapper.Map<tbl_citizen_compliance>(model);
                     await db.tbl_citizen_compliances.AddAsync(newCitizenCompliance);

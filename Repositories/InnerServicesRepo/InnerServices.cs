@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.WebUtilities;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using Microsoft.EntityFrameworkCore;
+using BISPAPIORA.Models.ENUMS;
 
 namespace BISPAPIORA.Repositories.InnerServicesRepo
 {
@@ -321,7 +322,28 @@ namespace BISPAPIORA.Repositories.InnerServicesRepo
             {
                 if (compliance.tbl_transactions.Count() > 0)
                 {
-                    var amountSavedDecimal = compliance.tbl_transactions.Sum(x => x.transaction_amount);
+                    var amountSavedDecimal = compliance.tbl_transactions.Sum(transaction =>
+                    {
+                        if (Enum.TryParse(transaction.transaction_type, out TransactionTypeEnum transactionType))
+                        {
+                            if (double.TryParse(transaction.transaction_amount.ToString(), out double transactionAmount))
+                            {
+                                return transactionType == TransactionTypeEnum.Debit ? +transactionAmount : -transactionAmount;
+                            }
+                            else
+                            {
+                                // Handle parsing error for transaction amount
+                                Console.WriteLine("Invalid transaction amount: " + transaction.transaction_amount);
+                                return 0; // or any default value
+                            }
+                        }
+                        else
+                        {
+                            // Handle parsing error for transaction type
+                            Console.WriteLine("Invalid transaction type: " + transaction.transaction_type);
+                            return 0; // or any default value
+                        }
+                    });
                     var amountSaved = double.Parse(amountSavedDecimal.ToString());
                     if (amountSaved == expectedSavingAmountPerQuarter && amountSaved> expectedSavingAmountPerQuarter)
                     {

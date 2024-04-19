@@ -103,6 +103,12 @@ namespace BISPAPIORA.Controllers
             var response = citizenComplianceService.GetCitizenCompliancesList();
             return Ok(await response);
         }
+        [HttpGet("GetByCnic")]
+        public async Task<ActionResult<ResponseModel<List<CitizenComplianceResponseDTO>>>> GetByCnic(string citizenCnic)
+        {
+            var response = citizenComplianceService.GetCitizenComplianceByCitizenCnic(citizenCnic);
+            return Ok(await response);
+        }
         //Get Citizen By Id Method
         [HttpGet("GetByCitizenId")]
         public async Task<ActionResult<ResponseModel<List<CitizenComplianceResponseDTO>>>> GetByCitizenId(string id)
