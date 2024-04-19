@@ -6,9 +6,10 @@ namespace BISPAPIORA.Models.DTOS.TransactionDTO
     {
         public string transactionDate { get; set; } = string.Empty;
         public string transactionType { get; set; } = string.Empty;
-        public double transactionAmmount { get; set; } = 0.0;
+        public double transactionAmount { get; set; } = 0.0;
         public int quarterCode { get; set; } = 0;
         public string fkCitizen { get; set; } = string.Empty;
+        public string fkCompliance { get; set; } = string.Empty;
     }
     public class AddTransactionDTO : TransactionDTO
     {
@@ -17,11 +18,12 @@ namespace BISPAPIORA.Models.DTOS.TransactionDTO
         [Required]
         public new string transactionType { get; set; } = string.Empty;
         [Required]
-        public new double transactionAmmount { get; set; } = 0.0;
+        public new double transactionAmount { get; set; } = 0.0;
         [Required]
         public new int quarterCode { get; set; } = 0;
         [Required]
         public new string fkCitizen { get; set; } = string.Empty;
+        
     }
     public class UpdateTransactionDTO : TransactionDTO
     {

@@ -26,7 +26,26 @@ namespace BISPAPIORA.Extensions.Middleware
         public void OnAuthorization(AuthorizationFilterContext context)
         {
             string appVersion = context.HttpContext.Request.Headers[AppVersionHeaderName];
-            if (appVersionValidatingServices.IsValid(appVersion))
+            if (appVersion != null)
+            {
+                if (appVersionValidatingServices.IsValid(appVersion))
+                {
+                    var allowAnonymous = context.ActionDescriptor.EndpointMetadata.OfType<AllowAnonymousAttribute>().Any();
+                    if (allowAnonymous)
+                        return;
+                    var account = context.HttpContext.Items["User"] as UserResponseDTO;
+                    if (account == null)
+                    {
+                        context.Result = new UnauthorizedObjectResult(StatusCodes.Status401Unauthorized);
+                    }
+                }
+                else
+                {
+                    var url = db.tbl_app_versions.FirstOrDefault().app_update_url;
+                    context.Result = Result(HttpStatusCode.Unauthorized, $"{url}");
+                }
+            }
+            else 
             {
                 var allowAnonymous = context.ActionDescriptor.EndpointMetadata.OfType<AllowAnonymousAttribute>().Any();
                 if (allowAnonymous)
@@ -36,11 +55,6 @@ namespace BISPAPIORA.Extensions.Middleware
                 {
                     context.Result = new UnauthorizedObjectResult(StatusCodes.Status401Unauthorized);
                 }
-            }
-            else
-            {
-                var url = db.tbl_app_versions.FirstOrDefault().app_update_url;
-                context.Result = Result(HttpStatusCode.Unauthorized, $"{url}");
             }
         }
         private static ActionResult Result(HttpStatusCode statusCode, string reason) => new ContentResult

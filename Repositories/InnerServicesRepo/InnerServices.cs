@@ -1,10 +1,14 @@
-﻿using System.Net.Http.Headers;
+﻿
+using System.Net.Http.Headers;
 using System.Text;
+using BISPAPIORA.Models.DBModels.OraDbContextClass;
 using BISPAPIORA.Models.DTOS.ResponseDTO;
 using BISPAPIORA.Models.DTOS.VerificationResponseDTO;
 using Microsoft.AspNetCore.WebUtilities;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
+using Microsoft.EntityFrameworkCore;
+using BISPAPIORA.Models.ENUMS;
 
 namespace BISPAPIORA.Repositories.InnerServicesRepo
 {
@@ -13,11 +17,13 @@ namespace BISPAPIORA.Repositories.InnerServicesRepo
         private readonly IConfiguration _configuration;
         private readonly IHttpContextAccessor _httpContextAccessor;
         private readonly string _managementBaseUrl;
-        public InnerServices(IConfiguration configuration, IHttpContextAccessor httpContextAccessor)
+        private readonly Dbcontext db;
+        public InnerServices(IConfiguration configuration, IHttpContextAccessor httpContextAccessor, Dbcontext db)
         {
             _configuration = configuration;
             _httpContextAccessor = httpContextAccessor;
             _managementBaseUrl = configuration.GetSection("BISPAPI:BaseUrl").Value ?? "";
+            this.db = db;
             
         }
 
@@ -286,7 +292,78 @@ namespace BISPAPIORA.Repositories.InnerServicesRepo
         //        return new ResponseModel() { success = false };
         //    }
         //}
+        public List<int> GetQuarterCodesBetween(int startingQuarterCode, int currentQuarterCode) 
+        {
+            List<int> quarterCodes = new List<int>();
 
+            for (int code = startingQuarterCode; code <= currentQuarterCode; code++)
+            {
+                quarterCodes.Add(code);
+            }
+            return quarterCodes;
+        }
+        public async Task<double> GetTotalExpectedSavingAmount(List<int> quarterCodes, Guid fk_citizen,double expectedSavingAmountPerQuarter) 
+        {
+            double total = 0;
+            foreach(int code in quarterCodes)
+            {
+                var amountSavedPerQuarter = await GetExpectedSavingAmount(code, fk_citizen, expectedSavingAmountPerQuarter);
+ 
+                 total = total + amountSavedPerQuarter;
+            }
+            return total;
 
+            
+        }
+        public async Task<double> GetExpectedSavingAmount(int quarterCode, Guid fk_citizen, double expectedSavingAmountPerQuarter) 
+        { 
+            var compliance= await db.tbl_citizen_compliances.Where(x=>x.fk_citizen==fk_citizen && x.citizen_compliance_quarter_code== quarterCode).Include(x=>x.tbl_transactions).FirstOrDefaultAsync();
+            if(compliance!=null) 
+            {
+                if (compliance.tbl_transactions.Count() > 0)
+                {
+                    var amountSavedDecimal = compliance.tbl_transactions.Sum(transaction =>
+                    {
+                        if (Enum.TryParse(transaction.transaction_type, out TransactionTypeEnum transactionType))
+                        {
+                            if (double.TryParse(transaction.transaction_amount.ToString(), out double transactionAmount))
+                            {
+                                return transactionType == TransactionTypeEnum.Debit ? +transactionAmount : -transactionAmount;
+                            }
+                            else
+                            {
+                                // Handle parsing error for transaction amount
+                                Console.WriteLine("Invalid transaction amount: " + transaction.transaction_amount);
+                                return 0; // or any default value
+                            }
+                        }
+                        else
+                        {
+                            // Handle parsing error for transaction type
+                            Console.WriteLine("Invalid transaction type: " + transaction.transaction_type);
+                            return 0; // or any default value
+                        }
+                    });
+                    var amountSaved = double.Parse(amountSavedDecimal.ToString());
+                    if (amountSaved == expectedSavingAmountPerQuarter && amountSaved> expectedSavingAmountPerQuarter)
+                    {
+                        return 0;
+                    }
+                    else
+                    {
+                        var difference = expectedSavingAmountPerQuarter - amountSaved;
+                        return difference > 0 ? difference : 0;
+                    }
+                }
+                else
+                {
+                    return expectedSavingAmountPerQuarter;
+                }
+            }
+            else 
+            {
+                return expectedSavingAmountPerQuarter;
+            }
+        }
     }
 }

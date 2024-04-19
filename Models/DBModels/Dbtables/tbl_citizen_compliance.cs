@@ -15,7 +15,12 @@ public partial class tbl_citizen_compliance
 
     public int? citizen_compliance_quarter_code { get; set; } = 0;
 
+    public bool? is_compliant { get; set; } = false;
+
     public Guid? fk_citizen { get; set; } = new Guid();
     public virtual tbl_citizen? tbl_citizen { get; set; }
+    public virtual ICollection<tbl_transaction>? tbl_transactions { get; set; }
+
+    public virtual ICollection<tbl_paymenmt> tbl_paymenmts { get; set; } = new List<tbl_paymenmt>();
 
 }

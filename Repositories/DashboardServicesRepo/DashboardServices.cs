@@ -4,6 +4,7 @@ using BISPAPIORA.Models.DBModels.Dbtables;
 using BISPAPIORA.Models.DBModels.OraDbContextClass;
 using BISPAPIORA.Models.DTOS.DashboardDTO;
 using BISPAPIORA.Models.DTOS.ResponseDTO;
+using BISPAPIORA.Models.ENUMS;
 using LinqKit;
 using Microsoft.EntityFrameworkCore;
 using System;
@@ -129,7 +130,7 @@ namespace BISPAPIORA.Repositories.DashboardServicesRepo
         }
 
         // Method to retrieve statistics for the web dashboard
-        public async Task<ResponseModel<List<DashboardProvinceCitizenCountPercentageDTO>, List<DashboardDistrictCitizenCountPercentageDTO>, List<DashboardTehsilCitizenCountPercentageDTO>, List<DashboardCitizenEducationalPercentageStatDTO>, List<DashboardCitizenGenderPercentageDTO>, List<DashboardCitizenMaritalStatusPercentageDTO>, List<DashboardCitizenEmploymentPercentageStatDTO>, List<DashboardCitizenCountSavingAmountDTO>, List<DashboardCitizenTrendDTO>, List<DashboardDTO>>> GetWebDesktopApplicantDistributionLocationBased(string dateStart, string dateEnd, string provinceId, string districtId, string tehsilId, bool registration, bool enrollment)
+        public async Task<ResponseModel<List<DashboardProvinceCitizenCountPercentageDTO>, List<DashboardDistrictCitizenCountPercentageDTO>, List<DashboardTehsilCitizenCountPercentageDTO>, List<DashboardCitizenEducationalPercentageStatDTO>, List<DashboardCitizenGenderPercentageDTO>, List<DashboardCitizenMaritalStatusPercentageDTO>, List<DashboardCitizenEmploymentPercentageStatDTO>, List<DashboardCitizenCountSavingAmountDTO>, List<DashboardCitizenTrendDTO>, List<WebDashboardStats>>> GetWebDesktopApplicantDistributionLocationBased(string dateStart, string dateEnd, string provinceId, string districtId, string tehsilId, bool registration, bool enrollment)
         {
             try
             {
@@ -138,6 +139,8 @@ namespace BISPAPIORA.Repositories.DashboardServicesRepo
                 var predicateDistrict = PredicateBuilder.New<tbl_district>(true);
                 var predicateTehsil = PredicateBuilder.New<tbl_tehsil>(true);
                 var predicateCitizen = PredicateBuilder.New<DashboardCitizenLocationModel>(true);
+                var predicateRegisteredCitizen= PredicateBuilder.New<DashboardCitizenLocationModel>(true);
+                var predicateEnrolledCitizen= PredicateBuilder.New<DashboardCitizenLocationModel>(true);
                 #endregion
 
                 // Query to fetch citizens with related data
@@ -151,6 +154,8 @@ namespace BISPAPIORA.Repositories.DashboardServicesRepo
                     .ProjectTo<DashboardCitizenLocationModel>(mapper.ConfigurationProvider);
 
                 #region Filters
+                predicateRegisteredCitizen = predicateRegisteredCitizen.And(x => x.registration != null && x.enrollment == null);
+                predicateEnrolledCitizen = predicateEnrolledCitizen.And(x =>x.enrollment != null);
                 // Applying filters based on registration and enrollment statuses
                 if (registration == true)
                 {
@@ -159,15 +164,26 @@ namespace BISPAPIORA.Repositories.DashboardServicesRepo
                     {
                         // Applying date range filter for registration
                         predicateCitizen = predicateCitizen.And(x => x.registered_date >= DateTime.Parse(dateStart) && x.registered_date <= DateTime.Parse(dateEnd));
+                        
                     }
                 }
-                if (enrollment == true)
+                else if (enrollment == true)
                 {
                     predicateCitizen = predicateCitizen.And(x => x.enrollment != null);
                     if (!string.IsNullOrEmpty(dateStart) && !string.IsNullOrEmpty(dateEnd))
                     {
                         // Applying date range filter for enrollment
                         predicateCitizen = predicateCitizen.And(x => x.enrolled_date >= DateTime.Parse(dateStart) && x.enrolled_date <= DateTime.Parse(dateEnd));
+                    }
+                }
+                else 
+                {
+                    if (!string.IsNullOrEmpty(dateStart) && !string.IsNullOrEmpty(dateEnd))
+                    {
+                        // Applying date range filter for enrollment
+                        predicateCitizen = predicateCitizen.And(x => x.insertion_date >= DateTime.Parse(dateStart) && x.insertion_date <= DateTime.Parse(dateEnd));
+                        predicateRegisteredCitizen = predicateRegisteredCitizen.And(x => x.insertion_date >= DateTime.Parse(dateStart) && x.insertion_date <= DateTime.Parse(dateEnd));
+                        predicateEnrolledCitizen = predicateEnrolledCitizen.And(x => x.insertion_date >= DateTime.Parse(dateStart) && x.insertion_date <= DateTime.Parse(dateEnd));
                     }
                 }
 
@@ -201,18 +217,47 @@ namespace BISPAPIORA.Repositories.DashboardServicesRepo
 
                 // Fetching filtered citizens
                 var filteredCitizens = await totalCitizenQuery.Where(predicateCitizen).ToListAsync();
+                var onlyRegisteredCitizens = await totalCitizenQuery.Where(predicateRegisteredCitizen).ToListAsync();              
+                var onlyEnrolledCitizens = await totalCitizenQuery.Where(predicateEnrolledCitizen).ToListAsync();
+                double onlyRegisteredCitizensPercentage = 0.0;
+                double onlyEnrolledCitizensPercentage = 0.0;
+                if(onlyRegisteredCitizens.Count > 0) 
+                {
+                    onlyRegisteredCitizensPercentage = (double)onlyRegisteredCitizens.Count() / filteredCitizens.Count * 100;
+                }
+                if (onlyEnrolledCitizens.Count() > 0)
+                {
+                    onlyEnrolledCitizensPercentage = (double)onlyEnrolledCitizens.Count() / filteredCitizens.Count * 100;
+                }
                 #endregion
 
                 #region Citizen Count Wise
-                // Create a list to store DashboardDTO objects
-                List<DashboardDTO> totalCitizensCountResponse = new List<DashboardDTO>();
-
-                // Add the DashboardDTO object to the list
-                totalCitizensCountResponse.Add(new DashboardDTO()
+                // Create a list to store WebDashboardStats objects
+                List<WebDashboardStats> citizenStats = new List<WebDashboardStats>();
+                citizenStats.Add(new WebDashboardStats()
                 {
-                    totalCitizenCount = filteredCitizens.Count(),
-                    registeredCount = filteredCitizens.Count(citizen => citizen.registration != null && citizen.enrollment == null) / filteredCitizens.Count * 100,
-                    enrolledCount = filteredCitizens.Count(citizen => citizen.enrollment != null) / filteredCitizens.Count * 100
+                    //StatCount = filteredCitizens.Count() >0?filteredCitizens.Count() / filteredCitizens.Count * 100:0,
+                    StatName = "Compliant"
+                }); 
+                citizenStats.Add(new WebDashboardStats()
+                {
+                    StatCount = onlyRegisteredCitizensPercentage,
+                    StatName = "Registered Only"
+                }); 
+                citizenStats.Add(new WebDashboardStats()
+                {
+                    StatCount = onlyEnrolledCitizensPercentage,
+                    StatName = "Enrolled Only"
+                });
+                citizenStats.Add(new WebDashboardStats()
+                {
+                    //StatCount = filteredCitizens.Count(citizen => citizen.enrollment != null) > 0 ? filteredCitizens.Count(citizen => citizen.enrollment != null) / filteredCitizens.Count * 100 : 0,
+                    StatName = "Subscribed"
+                });
+                citizenStats.Add(new WebDashboardStats()
+                {
+                    //StatCount = filteredCitizens.Count(citizen => citizen.enrollment != null) > 0 ? filteredCitizens.Count(citizen => citizen.enrollment != null) / filteredCitizens.Count * 100 : 0,
+                    StatName = "Unsubscribed"
                 });
                 #endregion
 
@@ -225,7 +270,7 @@ namespace BISPAPIORA.Repositories.DashboardServicesRepo
                 var provinceCitizenGroups = provinces.Select(province =>
                 {
                     // Filtering citizens for the current province
-                    var provinceFilteredCitizens = filteredCitizens.Where(citizen => citizen.province_name.ToLower() == province.province_name.ToLower()).ToList();
+                    var provinceFilteredCitizens = filteredCitizens.Where(citizen => citizen.province_id == province.province_id).ToList();
                     var provinceCitizenCount = provinceFilteredCitizens.Count;
                     var citizenPercentage = provinceCitizenCount > 0 ? (double)provinceCitizenCount / filteredCitizens.Count * 100 : 0;
 
@@ -288,18 +333,19 @@ namespace BISPAPIORA.Repositories.DashboardServicesRepo
 
                 #region Citizen Gender-Based Region Applicant Distribution
                 // Grouping citizens by gender
-                var genderBasedCitizenGroups = filteredCitizens.GroupBy(citizen => citizen.citizen_gender);
+                var genderListEnum = Enum.GetValues(typeof(GenderEnum)).Cast<GenderEnum>().ToList();
 
                 // Calculating percentage for each gender group
-                var genderGroupsWithPercenntage = genderBasedCitizenGroups.Select(group =>
+                var genderGroupsWithPercenntage = genderListEnum.Select(status =>
                 {
-                    var genderCount = group.Count();
-                    var citizenPercentage = (double)genderCount / filteredCitizens.Count * 100;
+                    var group = filteredCitizens.Where(c => c.citizen_gender == status.ToString());
+                    var statusCount = group.Count();
+                    var citizenPercentage = statusCount > 0 ? (double)statusCount / filteredCitizens.Count * 100 : 0;
 
-                    // Creating DTO for gender-wise distribution
+                    // Creating DTO for marital status-wise distribution
                     return new DashboardCitizenGenderPercentageDTO
                     {
-                        citizenGender = group.Key,
+                        citizenGender = status.ToString(),
                         citizenGenderPercentage = citizenPercentage,
                     };
                 }).ToList();
@@ -307,18 +353,19 @@ namespace BISPAPIORA.Repositories.DashboardServicesRepo
 
                 #region Citizen Marital_Status-Based Region Applicant Distribution
                 // Grouping citizens by marital status
-                var maritalStatusGroups = filteredCitizens.GroupBy(citizen => citizen.citizen_martial_status);
+                var maritalListEnums = Enum.GetValues(typeof(MartialStatusEnum)).Cast<MartialStatusEnum>().ToList();
 
                 // Calculating percentage for each marital status group
-                var maritalStatusGroupsWithPercentage = maritalStatusGroups.Select(group =>
+                var maritalStatusGroupsWithPercentage = maritalListEnums.Select(status =>
                 {
+                    var group = filteredCitizens.Where(c => c.citizen_martial_status == status.ToString());
                     var statusCount = group.Count();
-                    var citizenPercentage = (double)statusCount / filteredCitizens.Count * 100;
+                    var citizenPercentage = statusCount > 0 ? (double)statusCount / filteredCitizens.Count * 100 : 0;
 
                     // Creating DTO for marital status-wise distribution
-                    return new DashboardCitizenMaritalStatusPercentageDTO
+                   return  new DashboardCitizenMaritalStatusPercentageDTO
                     {
-                        citizenMaritalStatus = group.Key,
+                        citizenMaritalStatus = status.ToString(),
                         citizenMaritalStatusPercentage = citizenPercentage,
                     };
                 }).ToList();
@@ -355,32 +402,35 @@ namespace BISPAPIORA.Repositories.DashboardServicesRepo
                     // Filtering citizens by employment background
                     var citizensGroupedByEmployment = filteredCitizens.Where(citizen => citizen.employmentId == employment.employment_id).ToList();
                     var citizensGroupedByEmploymentCount = citizensGroupedByEmployment.Count;
+                    var citizenPercentage = citizensGroupedByEmploymentCount > 0 ? (double)citizensGroupedByEmploymentCount / filteredCitizens.Count * 100 : 0;
 
                     // Creating DTO for employment background-wise distribution
                     return new DashboardCitizenEmploymentPercentageStatDTO
                     {
                         employmentBackground = employment.employment_name,
-                        employmentBackgroundPercentage = citizensGroupedByEmploymentCount,
+                        employmentBackgroundPercentage = citizenPercentage,
                     };
                 }).ToList();
                 #endregion
 
                 #region Citizen Group By Scheme Saving Amount
                 // Fetching citizen schemes
-                var citizenSchemes = await db.tbl_citizen_schemes.ToListAsync();
+                var savingAmountEnum = Enum.GetValues(typeof(SavingAmountEnum))
+                                 .Cast<int>();
 
-                // Grouping citizens by scheme saving amount
-                var citizenSchemeGroups = citizenSchemes.Select(citizenScheme =>
+               // Grouping citizens by scheme saving amount
+                var citizenSchemeGroups = savingAmountEnum.Select(savingAmount =>
                 {
+                    var savingAmountName = (SavingAmountEnum)Enum.Parse(typeof(SavingAmountEnum), savingAmount.ToString());
+                    var x = savingAmountName.ToString().Split('A');
                     // Filtering citizens by scheme saving amount
-                    var citizensGroupedBySavingAmount = filteredCitizens.Where(citizen => citizen.saving_amount == citizenScheme.citizen_scheme_saving_amount).ToList();
+                    var citizensGroupedBySavingAmount = filteredCitizens.Where(citizen => citizen.saving_amount == decimal.Parse(x[1])).ToList();
                     var citizensGroupedBySavingAmountCount = citizensGroupedBySavingAmount.Count;
-
                     // Creating DTO for scheme saving amount-wise distribution
                     return new DashboardCitizenCountSavingAmountDTO
                     {
                         totalCitizenCount = citizensGroupedBySavingAmountCount,
-                        savingAmount = citizenScheme.citizen_scheme_saving_amount,
+                        savingAmount = Decimal.Parse(x[1]),
                     };
                 }).GroupBy(citizenScheme => citizenScheme.savingAmount)
                 .Select(group => group.First())
@@ -407,12 +457,14 @@ namespace BISPAPIORA.Repositories.DashboardServicesRepo
                 citizenTrendGroups = citizenTrendGroups.OrderByDescending(x => DateTime.ParseExact(x.insertionMonth, "MM/dd/yyyy HH:mm:ss", CultureInfo.InvariantCulture)).ToList();
 
                 // Select the latest 6 months
+                
                 var citizenTrendGroupslatestSixMonths = citizenTrendGroups.Take(6).ToList();
+                
                 #endregion
 
                 #region Response
                 // Returning response model with filtered and mapped statistics
-                return new ResponseModel<List<DashboardProvinceCitizenCountPercentageDTO>, List<DashboardDistrictCitizenCountPercentageDTO>, List<DashboardTehsilCitizenCountPercentageDTO>, List<DashboardCitizenEducationalPercentageStatDTO>, List<DashboardCitizenGenderPercentageDTO>, List<DashboardCitizenMaritalStatusPercentageDTO>, List<DashboardCitizenEmploymentPercentageStatDTO>, List<DashboardCitizenCountSavingAmountDTO>, List<DashboardCitizenTrendDTO>, List<DashboardDTO>>()
+                return new ResponseModel<List<DashboardProvinceCitizenCountPercentageDTO>, List<DashboardDistrictCitizenCountPercentageDTO>, List<DashboardTehsilCitizenCountPercentageDTO>, List<DashboardCitizenEducationalPercentageStatDTO>, List<DashboardCitizenGenderPercentageDTO>, List<DashboardCitizenMaritalStatusPercentageDTO>, List<DashboardCitizenEmploymentPercentageStatDTO>, List<DashboardCitizenCountSavingAmountDTO>, List<DashboardCitizenTrendDTO>, List<WebDashboardStats>>()
                 {
                     provinceWise = provinceCitizenGroups,
                     educationalWise = educationGroups,
@@ -423,7 +475,7 @@ namespace BISPAPIORA.Repositories.DashboardServicesRepo
                     employementWise = employmentGroups,
                     savingAmountWise = citizenSchemeGroups,
                     citizenTrendWise = citizenTrendGroupslatestSixMonths,
-                    citizenCountWise = totalCitizensCountResponse,
+                    citizenCountWise = citizenStats,
                     remarks = "Success",
                     success = true
                 };
@@ -432,7 +484,7 @@ namespace BISPAPIORA.Repositories.DashboardServicesRepo
             catch (Exception ex)
             {
                 // Handling exception and returning error response
-                return new ResponseModel<List<DashboardProvinceCitizenCountPercentageDTO>, List<DashboardDistrictCitizenCountPercentageDTO>, List<DashboardTehsilCitizenCountPercentageDTO>, List<DashboardCitizenEducationalPercentageStatDTO>, List<DashboardCitizenGenderPercentageDTO>, List<DashboardCitizenMaritalStatusPercentageDTO>, List<DashboardCitizenEmploymentPercentageStatDTO>, List<DashboardCitizenCountSavingAmountDTO>, List<DashboardCitizenTrendDTO>, List<DashboardDTO>>()
+                return new ResponseModel<List<DashboardProvinceCitizenCountPercentageDTO>, List<DashboardDistrictCitizenCountPercentageDTO>, List<DashboardTehsilCitizenCountPercentageDTO>, List<DashboardCitizenEducationalPercentageStatDTO>, List<DashboardCitizenGenderPercentageDTO>, List<DashboardCitizenMaritalStatusPercentageDTO>, List<DashboardCitizenEmploymentPercentageStatDTO>, List<DashboardCitizenCountSavingAmountDTO>, List<DashboardCitizenTrendDTO>, List<WebDashboardStats>>()
                 {
                     remarks = $"There was a fatal error {ex.ToString()}",
                     success = false,

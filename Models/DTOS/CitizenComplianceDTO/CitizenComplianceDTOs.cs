@@ -1,4 +1,6 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using BISPAPIORA.Models.DTOS.GroupPermissionDTO;
+using BISPAPIORA.Models.DTOS.TransactionDTO;
+using System.ComponentModel.DataAnnotations;
 
 namespace BISPAPIORA.Models.DTOS.CitizenComplianceDTO
 {
@@ -9,6 +11,7 @@ namespace BISPAPIORA.Models.DTOS.CitizenComplianceDTO
         public double citizenComplianceActualSavingAmount { get; set; } = 0.0;
         public int quarterCode { get; set; } = 0;
         public string fkCitizen { get; set; } = string.Empty;
+        public bool isCompliant { get; set; } = true;
     }
     public class AddCitizenComplianceDTO : CitizenComplianceDTO
     {
@@ -22,6 +25,7 @@ namespace BISPAPIORA.Models.DTOS.CitizenComplianceDTO
         public new string fkCitizen { get; set; } = string.Empty;
         [Required]
         public new int quarterCode { get; set; } = 0;
+        public List<AddTransactionDTO> transactionDTO { get; set; } = new List<AddTransactionDTO>();
     }
     public class UpdateCitizenComplianceDTO : CitizenComplianceDTO
     {
@@ -33,6 +37,7 @@ namespace BISPAPIORA.Models.DTOS.CitizenComplianceDTO
         public string citizenComplianceId { get; set; } = string.Empty;
         public string citizenComplianceStartingMonth { get; set; } = string.Empty;
         public double citizenComplianceCommittedSavingAmount { get; set; } = 0.0;
+        public List<TransactionResponseDTO> transactions { get; set; } = new List<TransactionResponseDTO>();
         public int citizenComplianceCode { get; set; } = default!;
     }
 }

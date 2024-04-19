@@ -263,6 +263,43 @@ namespace BISPAPIORA.Repositories.TransactionServicesRepo
                     remarks = $"There Was Fatal Error {ex.Message.ToString()}"
                 };
             }
+        }        
+        public async Task<ResponseModel<List<TransactionResponseDTO>>> GetTransactionByCitizenCnic(string citizenCnic)
+        {
+            try
+            {
+                // Retrieve transactions associated with the specified citizen ID, including citizen details
+                var existingTransactions = await db.tbl_transactions.Include(x => x.tbl_citizen).Where(x => x.tbl_citizen.citizen_cnic == citizenCnic).ToListAsync();
+
+                if (existingTransactions != null)
+                {
+                    // Return a success response model with the mapped list of transactions
+                    return new ResponseModel<List<TransactionResponseDTO>>()
+                    {
+                        data = _mapper.Map<List<TransactionResponseDTO>>(existingTransactions),
+                        remarks = "Transactions found successfully",
+                        success = true,
+                    };
+                }
+                else
+                {
+                    // Return a failure response model if no matching records are found
+                    return new ResponseModel<List<TransactionResponseDTO>>()
+                    {
+                        success = false,
+                        remarks = "No Record"
+                    };
+                }
+            }
+            catch (Exception ex)
+            {
+                // Return a failure response model with details about the exception if an error occurs
+                return new ResponseModel<List<TransactionResponseDTO>>()
+                {
+                    success = false,
+                    remarks = $"There Was Fatal Error {ex.Message.ToString()}"
+                };
+            }
         }
 
     }

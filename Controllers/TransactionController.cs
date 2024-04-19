@@ -117,6 +117,12 @@ namespace BISPAPIORA.Controllers
             var response = transactionService.GetTransactionsList();
             return Ok(await response);
         }
+        [HttpGet("GetByCnic")]
+        public async Task<ActionResult<ResponseModel<List<TransactionResponseDTO>>>> GetByCnic(string citizenCnic)
+        {
+            var response = transactionService.GetTransactionByCitizenCnic(citizenCnic);
+            return Ok(await response);
+        }
 
         // GET api/Transaction/GetByCitizenId
         // Endpoint for getting a list of transactions by citizen ID
