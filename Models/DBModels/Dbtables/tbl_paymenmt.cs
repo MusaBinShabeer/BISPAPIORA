@@ -7,6 +7,6 @@ public partial class tbl_paymenmt
 {
     public Guid paymenmt_id { get; set; } = Guid.NewGuid();
     public string? paymenmt_amount { get; set; } = string.Empty;
-    public bool? fk_compliance { get; set; } = true;
+    public Guid? fk_compliance { get; set; } = new Guid();
     public virtual tbl_citizen_compliance? tbl_citizen_compliance { get; set; }
 }
