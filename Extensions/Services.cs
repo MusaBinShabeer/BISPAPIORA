@@ -38,6 +38,7 @@ using BISPAPIORA.Repositories.AppVersionServicesRepo;
 using BISPAPIORA.Repositories.ComplexMappersRepo;
 using BISPAPIORA.Repositories.AppVersionValidatingServicesRepo;
 using BISPAPIORA.Repositories.DashboardServicesRepo;
+using BISPAPIORA.Repositories.PaymentServicesRepo;
 
 
 
@@ -107,6 +108,7 @@ namespace BISPAPIORA.Extensions
             services.AddTransient<IComplexMapperServices, ComplexMapperServices>();
             services.AddTransient<IAppVersionService, AppVersionService>();
             services.AddTransient<IDashboardServices, DashboardServices>();
+            services.AddTransient<IPaymentService, PaymentService>();
         }
     }
 }
