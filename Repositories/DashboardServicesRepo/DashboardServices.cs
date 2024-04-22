@@ -5,6 +5,7 @@ using BISPAPIORA.Models.DBModels.OraDbContextClass;
 using BISPAPIORA.Models.DTOS.DashboardDTO;
 using BISPAPIORA.Models.DTOS.ResponseDTO;
 using BISPAPIORA.Models.ENUMS;
+using BISPAPIORA.Repositories.InnerServicesRepo;
 using LinqKit;
 using Microsoft.EntityFrameworkCore;
 using System;
@@ -17,10 +18,12 @@ namespace BISPAPIORA.Repositories.DashboardServicesRepo
     {
         private readonly Dbcontext db;
         private readonly IMapper mapper;
-        public DashboardServices(Dbcontext db, IMapper mapper)
+        private readonly IInnerServices innerServices;
+        public DashboardServices(Dbcontext db, IMapper mapper,IInnerServices innerServices)
         {
             this.db = db;
             this.mapper = mapper;
+            this.innerServices = innerServices;
         }
 
         // Method to retrieve user performance statistics for a given user within a specified date range
@@ -197,6 +200,8 @@ namespace BISPAPIORA.Repositories.DashboardServicesRepo
                             // Applying filter for specific tehsil
                             predicateCitizen = predicateCitizen.And(x => x.tehsil_id == Guid.Parse(tehsilId));
                             predicateTehsil = predicateTehsil.And(x => x.tehsil_id == Guid.Parse(tehsilId));
+                            predicateRegisteredCitizen = predicateRegisteredCitizen.And(x => x.tehsil_id == Guid.Parse(tehsilId));
+                            predicateEnrolledCitizen = predicateEnrolledCitizen.And(x => x.tehsil_id == Guid.Parse(tehsilId));
                         }
                         else
                         {
@@ -204,6 +209,8 @@ namespace BISPAPIORA.Repositories.DashboardServicesRepo
                             predicateCitizen = predicateCitizen.And(x => x.district_id == Guid.Parse(districtId));
                             predicateDistrict = predicateDistrict.And(x => x.district_id == Guid.Parse(districtId));
                             predicateTehsil = predicateTehsil.And(x => x.fk_district == Guid.Parse(districtId));
+                            predicateRegisteredCitizen = predicateRegisteredCitizen.And(x => x.district_id == Guid.Parse(districtId));
+                            predicateEnrolledCitizen = predicateEnrolledCitizen.And(x => x.district_id == Guid.Parse(districtId));
                         }
                     }
                     else
@@ -212,6 +219,8 @@ namespace BISPAPIORA.Repositories.DashboardServicesRepo
                         predicateCitizen = predicateCitizen.And(x => x.province_id == Guid.Parse(provinceId));
                         predicateDistrict = predicateDistrict.And(x => x.fk_province == Guid.Parse(provinceId));
                         predicateTehsil = predicateTehsil.And(x => x.tbl_district.fk_province == Guid.Parse(provinceId));
+                        predicateRegisteredCitizen = predicateRegisteredCitizen.And(x => x.province_id == Guid.Parse(provinceId));
+                        predicateEnrolledCitizen = predicateEnrolledCitizen.And(x => x.province_id == Guid.Parse(provinceId));
                     }
                 }
 
@@ -549,6 +558,95 @@ namespace BISPAPIORA.Repositories.DashboardServicesRepo
                 };
             }
         }
+        public async Task<ResponseModel<DashboardCitizenComplianceStatus<List<DashboardQuarterlyStats>>>> GetQuarterlyStatsByCnic(string citizenCnic)
+        {
+            try
+            {
+                var citizen = await db.tbl_citizens
+                    .Include(x=>x.tbl_citizen_compliances).ThenInclude(x=>x.tbl_transactions)
+                    .Include(x=>x.tbl_citizen_scheme)
+                    .Include(x=>x.tbl_enrollment)
+                    .Include(x=>x.tbl_citizen_compliances).ThenInclude(x=>x.tbl_payments)
+                    .Include(x=>x.tbl_payments)
+                    .Where(x => x.citizen_cnic == citizenCnic).FirstOrDefaultAsync();
+                if (citizen != null && citizen.tbl_enrollment != null)
+                {
+                    var quarterCodes = innerServices.GetAllQuarterCodes(citizen.tbl_citizen_scheme.citizen_scheme_quarter_code.Value);
+                    var quarterlyResponse = new List<DashboardQuarterlyStats>();
+                    var response = new DashboardCitizenComplianceStatus<List<DashboardQuarterlyStats>>();
+                    var expectedSavingsPerQuarterDecimal = citizen.tbl_citizen_scheme.citizen_scheme_saving_amount * 3;
+                    foreach (var quarterCode in quarterCodes)
+                    {
+                        var quarterCompliance = citizen.tbl_citizen_compliances
+                            .Where(x => x.citizen_compliance_quarter_code == quarterCode.quarterCode).FirstOrDefault();
+                        quarterlyResponse.Add(new DashboardQuarterlyStats()
+                        {
+                            actualSaving= quarterCompliance!=null?Double.Parse(quarterCompliance.tbl_transactions.Sum(transaction =>
+                            {
+                                if (Enum.TryParse(transaction.transaction_type, out TransactionTypeEnum transactionType))
+                                {
 
+                                    return transactionType == TransactionTypeEnum.Debit ? +transaction.transaction_amount : -transaction.transaction_amount;
+
+                                }
+                                else
+                                {
+                                    // Handle parsing error for transaction type
+                                    Console.WriteLine("Invalid transaction type: " + transaction.transaction_type);
+                                    return 0; // or any default value
+                                }
+                            }).ToString()): 0,
+                            expectedSaving= double.Parse(expectedSavingsPerQuarterDecimal.ToString()),
+                            isCompliant = quarterCompliance!=null? quarterCompliance.is_compliant.Value: false,
+                            quarterCode= quarterCode.quarterCode,
+                            quarterName= quarterCode.quarterCodeName,
+                            paidAmount=quarterCompliance!=null? quarterCompliance.tbl_payments.Count()>0? double.Parse(quarterCompliance.tbl_payments.Sum(x=>x.paid_amount).ToString()):0:0,
+                            duePayment=quarterCompliance!=null? quarterCompliance.tbl_payments.Count()>0? double.Parse(quarterCompliance.tbl_payments.Sum(x=>x.due_amount).ToString()) :0:0,
+                        });
+                    }
+                    response.totalActualSaving = double.Parse(citizen.tbl_transactions.Sum(transaction =>
+                    {
+                        if (Enum.TryParse(transaction.transaction_type, out TransactionTypeEnum transactionType))
+                        {
+
+                            return transactionType == TransactionTypeEnum.Debit ? +transaction.transaction_amount : -transaction.transaction_amount;
+
+                        }
+                        else
+                        {
+                            // Handle parsing error for transaction type
+                            Console.WriteLine("Invalid transaction type: " + transaction.transaction_type);
+                            return 0; // or any default value
+                        }
+                    }).ToString());
+                    response.totalExpectedSaving= await innerServices.GetTotalExpectedSavingAmount(quarterCodes.Select(x=>x.quarterCode).ToList(), citizen.citizen_id, double.Parse(expectedSavingsPerQuarterDecimal.ToString()));
+                    response.totalPaidAmount = double.Parse(citizen.tbl_payments.Sum(x => x.paid_amount).ToString());
+                    response.totalDuePayment = double.Parse(citizen.tbl_payments.Sum(x => x.due_amount).ToString());
+                    response.data = quarterlyResponse;
+                    response.isCompliant = await innerServices.CheckCompliance(quarterCodes.Select(x=>x.quarterCode).ToList(),citizen.citizen_id);
+                    return new ResponseModel<DashboardCitizenComplianceStatus<List<DashboardQuarterlyStats>>>() 
+                    {
+                        data = response,success=true, remarks="Success" 
+                    };
+                }
+                else
+                {
+                    return new ResponseModel<DashboardCitizenComplianceStatus<List<DashboardQuarterlyStats>>>()
+                    {
+                        success = false,
+                        remarks =" No Record"
+                    };
+                }
+            }
+            catch (Exception ex)
+            {
+                // Return a failure response if there is an exception
+                return new ResponseModel<DashboardCitizenComplianceStatus<List<DashboardQuarterlyStats>>>()
+                {
+                    success = false,
+                    remarks = $"There was a fatal error: {ex.Message}"
+                };
+            }
+        }
     }
 }

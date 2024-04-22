@@ -3,6 +3,7 @@ using BISPAPIORA.Models.DTOS.CitizenSchemeDTO;
 using BISPAPIORA.Models.DBModels.Dbtables;
 using BISPAPIORA.Models.DTOS.CitizenBankInfoDTO;
 using BISPAPIORA.Models.DTOS.EnrollmentDTO;
+using BISPAPIORA.Models.DTOS.PaymentDTO;
 
 namespace BISPAPIORA.Extensions.AutomapperProfiles
 {
@@ -41,6 +42,10 @@ namespace BISPAPIORA.Extensions.AutomapperProfiles
             .ForMember(d => d.citizenSchemeStartingMonth, opt => opt.MapFrom((src) => src.citizen_scheme_starting_month))
             .ForMember(d => d.citizenSchemeSavingAmount, opt => opt.MapFrom((src) => src.citizen_scheme_saving_amount))
             .ForMember(d => d.fkCitizen, opt => opt.MapFrom((src) => src.fk_citizen));
+            CreateMap<(tbl_citizen_scheme scheme, int code), AddPaymentDTO>()
+           .ForMember(d => d.dueAmount, opt => opt.MapFrom(src => double.Parse((src.scheme.citizen_scheme_saving_amount * 3).ToString())))
+           .ForMember(d => d.fkCitizen, opt => opt.MapFrom((src) => src.scheme.fk_citizen.Value.ToString()))
+           .ForMember(d => d.quarterCode, opt => opt.MapFrom((src) => src.code));
             CreateMap<AddCitizenSchemeDTO, UpdateCitizenSchemeDTO>()
             .ForMember(d => d.citizenSchemeId, opt => opt.MapFrom((src, dest) => dest.citizenSchemeId))
             .ForMember(d => d.citizenSchemeYear, opt => opt.MapFrom((src, dest) => otherServices.Check(src.citizenSchemeYear) ? src.citizenSchemeYear : dest.citizenSchemeYear))

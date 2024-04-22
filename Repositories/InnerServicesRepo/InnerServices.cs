@@ -9,6 +9,7 @@ using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using Microsoft.EntityFrameworkCore;
 using BISPAPIORA.Models.ENUMS;
+using BISPAPIORA.Models.DTOS.InnerServicesDTO;
 
 namespace BISPAPIORA.Repositories.InnerServicesRepo
 {
@@ -365,5 +366,57 @@ namespace BISPAPIORA.Repositories.InnerServicesRepo
                 return expectedSavingAmountPerQuarter;
             }
         }
+        public List<QuarterCodesReponseDTO> GetAllQuarterCodes(int startingQuarterCode)
+        {
+            List<QuarterCodesReponseDTO> quarterCodes = new List<QuarterCodesReponseDTO>();
+
+            for (int x = 1; x <= 8; x++)
+            {
+                quarterCodes.Add(new QuarterCodesReponseDTO() 
+                {
+                    quarterCode=startingQuarterCode,
+                    quarterCodeName=$"Q{x}",
+                });
+                startingQuarterCode++;
+            }
+            return quarterCodes;
+        }
+        public QuarterEnum GetQuarter(int month)
+        {
+            if (month < 1 || month > 12)
+                throw new ArgumentOutOfRangeException(nameof(month), "Month should be between 1 and 12.");
+
+            if (month >= 1 && month <= 3)
+                return QuarterEnum.Q1;
+            else if (month >= 4 && month <= 6)
+                return QuarterEnum.Q2;
+            else if (month >= 7 && month <= 9)
+                return QuarterEnum.Q3;
+            else
+                return QuarterEnum.Q4;
+        }
+        public async Task<Boolean> CheckCompliance(List<int> quarterCodes,Guid citizenId)
+        {
+            var month=DateTime.Now.Month;
+            var year=DateTime.Now.Year;
+            var currentQuarter= GetQuarter(month);
+            var currentQuarterIndex = (int)Enum.Parse<QuarterIndexEnum>(currentQuarter.ToString());
+            var currentQuarterCode= (year*4) + currentQuarterIndex;
+            if (quarterCodes.Contains(currentQuarterCode))
+            {
+                var compliance= await db.tbl_citizen_compliances
+                    .Where(x=>x.citizen_compliance_quarter_code.Equals(currentQuarterCode) && x.fk_citizen== citizenId)
+                    .FirstOrDefaultAsync();
+                return compliance!=null? compliance.is_compliant.Value : false;
+            }
+            else
+            {
+                var compliance = await db.tbl_citizen_compliances
+                   .Where(x => x.citizen_compliance_quarter_code.Equals(quarterCodes.LastOrDefault()) && x.fk_citizen == citizenId)
+                   .FirstOrDefaultAsync();
+                return compliance != null ? compliance.is_compliant.Value : false;
+            }
+        }
+
     }
 }

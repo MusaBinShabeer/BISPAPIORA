@@ -678,6 +678,7 @@ namespace BISPAPIORA.Repositories.CitizenServicesRepo
                     if (existingCitizen.tbl_enrollment == null)
                     {
                         var verifyCitizen = await innerServices.VerifyCitzen(citizenCnic);
+                        //var verifyCitizen = new ResponseModel<SurvayResponseDTO>() { success = false };
                         var response = new ResponseModel<RegistrationResponseDTO>();
 
                         // Map the verification result to the response model
@@ -687,7 +688,7 @@ namespace BISPAPIORA.Repositories.CitizenServicesRepo
                         }
                         else
                         {
-                            response.data = verifyCitizen.data != null ? _mapper.Map<RegistrationResponseDTO>((verifyCitizen.data, false, existingCitizen)) : null;
+                            response.data = verifyCitizen.data != null ? _mapper.Map<RegistrationResponseDTO>((verifyCitizen.data, false, existingCitizen)) : _mapper.Map<RegistrationResponseDTO>(existingCitizen);
                         }
                         // Check if the citizen is already registered
                         return new ResponseModel<RegistrationResponseDTO>()
