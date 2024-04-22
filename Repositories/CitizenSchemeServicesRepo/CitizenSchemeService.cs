@@ -6,6 +6,9 @@ using Microsoft.EntityFrameworkCore;
 using System.Security.Claims;
 using BISPAPIORA.Models.DTOS.ResponseDTO;
 using BISPAPIORA.Models.DTOS.CitizenSchemeDTO;
+using BISPAPIORA.Repositories.PaymentServicesRepo;
+using BISPAPIORA.Models.DTOS.PaymentDTO;
+using BISPAPIORA.Repositories.InnerServicesRepo;
 
 namespace BISPAPIORA.Repositories.CitizenSchemeServicesRepo
 {
@@ -13,10 +16,14 @@ namespace BISPAPIORA.Repositories.CitizenSchemeServicesRepo
     {
         private readonly IMapper _mapper;
         private readonly Dbcontext db;
-        public CitizenSchemeService(IMapper mapper, Dbcontext db)
+        private readonly IPaymentService paymentService;
+        private readonly IInnerServices innerServices;
+        public CitizenSchemeService(IMapper mapper, Dbcontext db, IPaymentService paymentService, IInnerServices innerServices)
         {
             _mapper = mapper;
             this.db = db;
+            this.paymentService = paymentService;
+            this.innerServices = innerServices;
         }
 
         // Adds or updates a citizen scheme based on the provided model
@@ -35,7 +42,12 @@ namespace BISPAPIORA.Repositories.CitizenSchemeServicesRepo
                     var newCitizenScheme = _mapper.Map<tbl_citizen_scheme>(model);
                     db.tbl_citizen_schemes.Add(newCitizenScheme);
                     await db.SaveChangesAsync();
-
+                    var allQuarters = innerServices.GetAllQuarterCodes(newCitizenScheme.citizen_scheme_quarter_code.Value);
+                    foreach (var quarterCode in allQuarters)
+                    {
+                        var addPaymentDTo = _mapper.Map<AddPaymentDTO>((quarterCode, newCitizenScheme));
+                        var responsePayment = await paymentService.AddPayment(addPaymentDTo);
+                    } 
                     return new ResponseModel<CitizenSchemeResponseDTO>()
                     {
                         success = true,

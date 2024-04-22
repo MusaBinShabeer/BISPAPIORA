@@ -136,6 +136,25 @@ namespace BISPAPIORA.Controllers
             var response = dashboardServices.GetTotalCitizenAndEnrolledForApp();
             return Ok(await response);
         }
+        [HttpGet("GetComplianceStatsByCnic")]
+        public async Task<ActionResult<DashboardCitizenComplianceStatus<List<DashboardQuarterlyStats>>>> GetComplianceStatsByCnic(string citizenCnic)
+        {
+            if (!string.IsNullOrEmpty(citizenCnic))
+            {
+                var response = dashboardServices.GetQuarterlyStatsByCnic(citizenCnic);
+                return Ok(await response);
+            }
+            else 
+            {
+                var response = new ResponseModel<CitizenResponseDTO>()
+                {
+                    remarks = "Parameter missing",
+                    success = false
+                };
+                return BadRequest(response);
+            }
+          
+        }
 
     }
 }

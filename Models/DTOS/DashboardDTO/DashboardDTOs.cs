@@ -171,5 +171,24 @@ namespace BISPAPIORA.Models.DTOS.DashboardDTO
     {
         public int totalCitizenCount { get; set; } = 0;
     }
+    public class DashboardQuarterlyStats 
+    {
+        public int quarterCode { get; set; } = default!;
+        public string quarterName { get; set; } = string.Empty;
+        public double expectedSaving { get; set; } = default!;
+        public double actualSaving { get; set; } = default!;
+        public double duePayment { get; set; } = default!;
+        public double paidAmount { get; set; } = default!;
+        public bool isCompliant { get; set; } = false;
+    }
+    public class DashboardCitizenComplianceStatus<T>
+    {
+        public T data { get; set; }
+        public double totalExpectedSaving { get; set; } = default!;
+        public double totalActualSaving { get; set; } = default!;
+        public double totalDuePayment { get; set; } = default!;
+        public double totalPaidAmount { get; set; } = default!;
+        public bool isCompliant { get; set; } = false;
+    }
 }
   

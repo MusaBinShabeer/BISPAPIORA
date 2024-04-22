@@ -53,6 +53,48 @@ namespace BISPAPIORA.Repositories.PaymentServicesRepo
             }
         }
 
+        public async Task<ResponseModel<PaymentResponseDTO>> AddPayment(string citizenCnic,int quarterCode, double paidAmount)
+        {
+            try
+            {
+                // Create a new Payment entity and map properties from the provided model
+                var payment = await db.tbl_payments.Where(x=>x.tbl_citizen.citizen_cnic== citizenCnic&& x.payment_quarter_code== quarterCode).FirstOrDefaultAsync();
+                if (payment != null)
+                {
+                    payment.paid_amount = decimal.Parse(paidAmount.ToString());
+                    // Update Payment to the database and save changes
+                     await db.SaveChangesAsync();
+                    return new ResponseModel<PaymentResponseDTO>()
+                    {
+                        success = true,
+                        remarks = $"Payment has been added successfully",
+                        data = _mapper.Map<PaymentResponseDTO>(payment),
+                    };
+                }
+                else
+                {
+                    return new ResponseModel<PaymentResponseDTO>()
+                    {
+                        success = false,
+                        remarks = $"No Record",                       
+                    };
+
+                }
+
+                // Return a success response model with the added Payment details
+                
+            }
+            catch (Exception ex)
+            {
+                // Return a failure response model with details about the exception if an error occurs
+                return new ResponseModel<PaymentResponseDTO>()
+                {
+                    success = false,
+                    remarks = $"There Was a Fatal Error: {ex.Message.ToString()}"
+                };
+            }
+        }
+
         // Deletes a Payment based on the provided PaymentId
         // Returns a response model indicating the success or failure of the operation
         public async Task<ResponseModel<PaymentResponseDTO>> DeletePayment(string paymentId)
