@@ -13,9 +13,9 @@ public partial class tbl_payment
 
     public int? payment_quarter_code { get; set; } = 0;
 
-    public Guid? fk_compliance { get; set; } = new Guid();
+    public Guid? fk_compliance { get; set; } = null;
 
-    public Guid? fk_citizen { get; set; } = new Guid();
+    public Guid? fk_citizen { get; set; } = default!;
 
     public virtual tbl_citizen_compliance? tbl_citizen_compliance { get; set; }
 

@@ -1,10 +1,10 @@
-﻿using BISPAPIORA.Models.DTOS.UserDTOs;
-using Microsoft.AspNetCore.Authorization;
+﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc.Filters;
 using Microsoft.AspNetCore.Mvc;
 using System.Net;
 using BISPAPIORA.Repositories.AppVersionValidatingServicesRepo;
 using BISPAPIORA.Models.DBModels.OraDbContextClass;
+using BISPAPIORA.Models.DTOS.UserDTOs;
 
 namespace BISPAPIORA.Extensions.Middleware
 {

@@ -1,12 +1,12 @@
 ﻿using AutoMapper;
 using BISPAPIORA.Models.DBModels.OraDbContextClass;
 using BISPAPIORA.Models.DBModels.Dbtables;
-using BISPAPIORA.Models.DTOS.UserDTOs;
 using BISPAPIORA.Models.DTOS.ResponseDTO;
 using Microsoft.AspNetCore.Http.Features;
 using Microsoft.EntityFrameworkCore;
 using System.Security.Claims;
 using BISPAPIORA.Extensions;
+using BISPAPIORA.Models.DTOS.UserDTOs;
 
 namespace BISPAPIORA.Repositories.UserServicesRepo
 {

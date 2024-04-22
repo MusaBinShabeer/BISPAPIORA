@@ -1,10 +1,10 @@
-﻿using BISPAPIORA.Models.DTOS.UserDTOs;
-using BISPAPIORA.Models.DTOS.ResponseDTO;
+﻿using BISPAPIORA.Models.DTOS.ResponseDTO;
 using BISPAPIORA.Repositories.UserServicesRepo;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using BISPAPIORA.Extensions.Middleware;
+using BISPAPIORA.Models.DTOS.UserDTOs;
 
 namespace BISPAPIORA.Controllers
 {

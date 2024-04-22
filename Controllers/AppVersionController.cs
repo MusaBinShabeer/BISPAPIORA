@@ -1,7 +1,7 @@
 ﻿using BISPAPIORA.Extensions.Middleware;
 using BISPAPIORA.Models.DTOS.AppVersionDTO;
 using BISPAPIORA.Models.DTOS.ResponseDTO;
-using BISPAPIORA.Repositories.AppVersionServicesRepo;
+using BISPAPIORA.Repositories.AppVersionServiceRepo;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;

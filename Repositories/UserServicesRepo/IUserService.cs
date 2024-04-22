@@ -1,6 +1,6 @@
-﻿using BISPAPIORA.Models.DTOS.UserDTOs;
-using BISPAPIORA.Models.DTOS.ResponseDTO;
+﻿using BISPAPIORA.Models.DTOS.ResponseDTO;
 using BISPAPIORA.Models.DBModels.Dbtables;
+using BISPAPIORA.Models.DTOS.UserDTOs;
 
 namespace BISPAPIORA.Repositories.UserServicesRepo
 {

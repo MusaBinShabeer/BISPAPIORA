@@ -2,7 +2,7 @@
 using BISPAPIORA.Models.DTOS.ResponseDTO;
 using BISPAPIORA.Models.DBModels.Dbtables;
 
-namespace BISPAPIORA.Repositories.AppVersionServicesRepo
+namespace BISPAPIORA.Repositories.AppVersionServiceRepo
 {
     public interface IAppVersionService
     {

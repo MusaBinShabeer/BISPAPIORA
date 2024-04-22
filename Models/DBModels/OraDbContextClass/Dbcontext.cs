@@ -67,6 +67,8 @@ public partial class Dbcontext : DbContext
 
     public virtual DbSet<tbl_payment> tbl_payments { get; set; }
 
+    public virtual DbSet<tbl_bank_statement> tbl_bank_statements { get; set; }
+
     //    protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     //#warning To protect potentially sensitive information in your connection string, you should move it out of source code. You can avoid scaffolding the connection string by using the Name= syntax to read it from configuration - see https://go.microsoft.com/fwlink/?linkid=2131148. For more guidance on storing connection strings, see https://go.microsoft.com/fwlink/?LinkId=723263.
     //        => optionsBuilder.UseOracle("User Id=admin;Password=vNrGBdITbyvVQtTspIx1;Data Source=oracle-database.cfgeu0k04wh6.us-east-1.rds.amazonaws.com:1521/bispdb;");
@@ -912,6 +914,46 @@ public partial class Dbcontext : DbContext
                 .HasForeignKey(d => d.fk_compliance)
                 .OnDelete(DeleteBehavior.Cascade)
                 .HasConstraintName("FK_PAYMENT_CITIZEN_COMPLIANCE");
+        });
+
+        modelBuilder.Entity<tbl_bank_statement>(entity =>
+        {
+            entity.HasKey(e => e.id).HasName("SYS_C006978");
+
+            entity.ToTable("TBL_BANK_STATEMENT");
+
+            entity.HasIndex(e => e.fk_citizen_compliance, "SYS_C006979").IsUnique();
+
+            entity.Property(e => e.id)
+                .HasDefaultValueSql("SYS_GUID() ")
+                .HasColumnName("ID");
+            entity.Property(e => e.cnic)
+                .HasMaxLength(255)
+                .IsUnicode(false)
+                .HasDefaultValueSql("'' ")
+                .HasColumnName("CNIC");
+            entity.Property(e => e.content_type)
+                .HasMaxLength(255)
+                .IsUnicode(false)
+                .HasDefaultValueSql("'' ")
+                .HasColumnName("CONTENT_TYPE");
+            entity.Property(e => e.data)
+                .HasColumnType("BLOB")
+                .HasColumnName("DATA");
+            entity.Property(e => e.fk_citizen_compliance).HasColumnName("FK_CITIZEN_COMPLIANCE");
+            entity.Property(e => e.insertion_date)
+                .HasColumnType("DATE")
+                .HasColumnName("INSERTION_DATE");
+            entity.Property(e => e.name)
+                .HasMaxLength(255)
+                .IsUnicode(false)
+                .HasDefaultValueSql("'' ")
+                .HasColumnName("NAME");
+
+            entity.HasOne(d => d.tbl_citizen_compliance).WithOne(p => p.tbl_bank_statement)
+                .HasForeignKey<tbl_bank_statement>(d => d.fk_citizen_compliance)
+                .OnDelete(DeleteBehavior.Cascade)
+                .HasConstraintName("FK_BANK_STATEMENT_COMPLIANCE");
         });
 
         OnModelCreatingPartial(modelBuilder);

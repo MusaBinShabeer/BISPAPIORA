@@ -34,11 +34,12 @@ using BISPAPIORA.Repositories.ReportingResponseServicesRepo;
 using BISPAPIORA.Repositories.FunctionalityServicesRepo;
 using BISPAPIORA.Models.DTOS.GroupPermissionDTO;
 using BISPAPIORA.Repositories.GroupPermissionServicesRepo;
-using BISPAPIORA.Repositories.AppVersionServicesRepo;
 using BISPAPIORA.Repositories.ComplexMappersRepo;
 using BISPAPIORA.Repositories.AppVersionValidatingServicesRepo;
 using BISPAPIORA.Repositories.DashboardServicesRepo;
 using BISPAPIORA.Repositories.PaymentServicesRepo;
+using BISPAPIORA.Repositories.BankStatementServicesRepo;
+using BISPAPIORA.Repositories.AppVersionServiceRepo;
 
 
 
@@ -109,6 +110,7 @@ namespace BISPAPIORA.Extensions
             services.AddTransient<IAppVersionService, AppVersionService>();
             services.AddTransient<IDashboardServices, DashboardServices>();
             services.AddTransient<IPaymentService, PaymentService>();
+            services.AddTransient<IBankStatementService, BankStatementService>();
         }
     }
 }

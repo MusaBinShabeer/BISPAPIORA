@@ -8,7 +8,7 @@ using Microsoft.EntityFrameworkCore;
 using System.Security.Claims;
 using BISPAPIORA.Models.DTOS.AppVersionDTO;
 
-namespace BISPAPIORA.Repositories.AppVersionServicesRepo
+namespace BISPAPIORA.Repositories.AppVersionServiceRepo
 {
     public class AppVersionService : IAppVersionService
     {
