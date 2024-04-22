@@ -15,7 +15,7 @@ namespace BISPAPIORA.Extensions.AutomapperProfiles
              .ForMember(d => d.due_amount, opt => opt.MapFrom(src => src.dueAmount))
              .ForMember(d => d.payment_quarter_code, opt => opt.MapFrom(src => src.quarterCode))
              .ForMember(d => d.fk_citizen, opt => opt.MapFrom(src => Guid.Parse(src.fkCitizen)))
-             .ForMember(d => d.fk_compliance, opt => opt.MapFrom(src => Guid.Parse(src.fkCitizenCompliance)));
+             .ForMember(d => d.fk_compliance, opt => opt.MapFrom((src, dest) => otherServices.Check(src.fkCitizenCompliance) ? Guid.Parse(src.fkCitizenCompliance) : dest.fk_compliance));
             CreateMap<UpdatePaymentDTO, tbl_payment>()
              .ForMember(d => d.payment_id, opt => opt.MapFrom((src, dest) => dest.payment_id))
              .ForMember(d => d.paid_amount, opt => opt.MapFrom((src, dest) => otherServices.Check(src.paidAmount) ? decimal.Parse(src.paidAmount.ToString()) : dest.paid_amount))
