@@ -80,17 +80,16 @@ namespace BISPAPIORA.Models.DTOS.DashboardDTO
         public Guid? educationId { get; set; } = default!;
         public string employmentName { get; set; } = default!;
         public Guid? employmentId { get; set; } = default!;
-
         public string citizen_gender { get; set; } = string.Empty;
         public string citizen_martial_status { get; set; } = string.Empty;
-
         public decimal? saving_amount { get; set; } = 0;
         public Guid? citizen_scheme_id { get; set; } = default!;
 
         public DateTime? insertion_date { get; set; } = default!;
-
         public tbl_enrollment? enrollment { get; set; } = default!;
-
+        public List<tbl_citizen_compliance> tbl_citizen_compliances { get; set; } =default!;
+        public List<tbl_payment> payments { get; set; } = default!;
+        public tbl_citizen_scheme? tbl_citizen_scheme { get; set; }
         public tbl_registration? registration { get; set; } = default!;
     }
     public class CitizenBaseModel

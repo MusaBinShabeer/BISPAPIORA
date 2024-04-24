@@ -154,6 +154,7 @@ namespace BISPAPIORA.Repositories.DashboardServicesRepo
                     .Include(x => x.tbl_citizen_education)
                     .Include(x => x.tbl_citizen_employment)
                     .Include(x => x.tbl_citizen_scheme)
+                    .Include(x=>x.tbl_citizen_compliances).ThenInclude(x=>x.tbl_transactions)
                     .ProjectTo<DashboardCitizenLocationModel>(mapper.ConfigurationProvider);
 
                 #region Filters
@@ -232,20 +233,21 @@ namespace BISPAPIORA.Repositories.DashboardServicesRepo
                 double onlyEnrolledCitizensPercentage = 0.0;
                 if(onlyRegisteredCitizens.Count > 0) 
                 {
-                    onlyRegisteredCitizensPercentage = (double)onlyRegisteredCitizens.Count() / filteredCitizens.Count * 100;
+                    onlyRegisteredCitizensPercentage = filteredCitizens.Count()>0?(double)onlyRegisteredCitizens.Count() / filteredCitizens.Count * 100:0;
                 }
                 if (onlyEnrolledCitizens.Count() > 0)
                 {
-                    onlyEnrolledCitizensPercentage = (double)onlyEnrolledCitizens.Count() / filteredCitizens.Count * 100;
+                    onlyEnrolledCitizensPercentage = filteredCitizens.Count() > 0?(double)onlyEnrolledCitizens.Count() / filteredCitizens.Count * 100:0;
                 }
                 #endregion
 
                 #region Citizen Count Wise
                 // Create a list to store WebDashboardStats objects
                 List<WebDashboardStats> citizenStats = new List<WebDashboardStats>();
+                var totalCompliantCitizen=await innerServices.CheckCompliance(filteredCitizens);
                 citizenStats.Add(new WebDashboardStats()
                 {
-                    //StatCount = filteredCitizens.Count() >0?filteredCitizens.Count() / filteredCitizens.Count * 100:0,
+                    StatCount = totalCompliantCitizen,
                     StatName = "Compliant"
                 }); 
                 citizenStats.Add(new WebDashboardStats()
@@ -267,6 +269,12 @@ namespace BISPAPIORA.Repositories.DashboardServicesRepo
                 {
                     //StatCount = filteredCitizens.Count(citizen => citizen.enrollment != null) > 0 ? filteredCitizens.Count(citizen => citizen.enrollment != null) / filteredCitizens.Count * 100 : 0,
                     StatName = "Unsubscribed"
+                });
+                var payments=filteredCitizens.Select(x => x.payments).ToList();
+                citizenStats.Add(new WebDashboardStats()
+                {
+                    StatCount =Double.Parse(payments.Sum(x=>x.Sum(x=>x.paid_amount)).ToString()),
+                    StatName = "Total Grants"
                 });
                 #endregion
 
@@ -601,7 +609,7 @@ namespace BISPAPIORA.Repositories.DashboardServicesRepo
                             quarterCode= quarterCode.quarterCode,
                             quarterName= quarterCode.quarterCodeName,
                             paidAmount=quarterCompliance!=null? quarterCompliance.tbl_payments.Count()>0? double.Parse(quarterCompliance.tbl_payments.Sum(x=>x.paid_amount).ToString()):0:0,
-                            duePayment=quarterCompliance!=null? quarterCompliance.tbl_payments.Count()>0? double.Parse(quarterCompliance.tbl_payments.Sum(x=>x.due_amount).ToString()) :0:0,
+                            duePayment=quarterCompliance!=null? quarterCompliance.tbl_payments.Count()>0? double.Parse(quarterCompliance.tbl_payments.Sum(x=>x.due_amount).ToString()) :0 : double.Parse(expectedSavingsPerQuarterDecimal.ToString()),
                         });
                     }
                     response.totalActualSaving = double.Parse(citizen.tbl_transactions.Sum(transaction =>

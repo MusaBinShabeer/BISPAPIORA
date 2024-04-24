@@ -23,7 +23,8 @@ namespace BISPAPIORA.Extensions.AutomapperProfiles
                 .ForMember(d => d.citizen_scheme_id, opt => opt.MapFrom(src => src.tbl_citizen_scheme.citizen_scheme_id))
                 .ForMember(d => d.saving_amount, opt => opt.MapFrom(src => src.tbl_citizen_scheme.citizen_scheme_saving_amount))
                 .ForMember(d => d.registration, opt => opt.MapFrom(src => src.tbl_citizen_registration))
-                .ForMember(d => d.enrollment, opt => opt.MapFrom(src => src.tbl_enrollment)); 
+                .ForMember(d => d.enrollment, opt => opt.MapFrom(src => src.tbl_enrollment))
+                .ForMember(d => d.tbl_citizen_compliances, opt => opt.MapFrom(src => src.tbl_citizen_compliances)); 
             CreateMap<tbl_citizen, CitizenBaseModel>()
               .ForMember(d => d.tbl_citizen_registration, opt => opt.MapFrom(src => src.tbl_citizen_registration ))
               .ForMember(d => d.tbl_enrollment, opt => opt.MapFrom(src => src.tbl_enrollment))
@@ -76,7 +77,9 @@ namespace BISPAPIORA.Extensions.AutomapperProfiles
                 .ForMember(d => d.saving_amount, opt => opt.MapFrom(src => src.tbl_citizen_scheme.citizen_scheme_saving_amount))
                 .ForMember(d => d.insertion_date, opt => opt.MapFrom(src => src.insertion_date))
                 .ForMember(d => d.registration, opt => opt.MapFrom(src => src.tbl_citizen_registration))
-                .ForMember(d => d.enrollment, opt => opt.MapFrom(src => src.tbl_enrollment));
+                .ForMember(d => d.enrollment, opt => opt.MapFrom(src => src.tbl_enrollment))
+                .ForMember(d => d.tbl_citizen_compliances, opt => opt.MapFrom(src => src.tbl_citizen_compliances))
+                .ForMember(d => d.payments, opt => opt.MapFrom(src => src.tbl_payments));
             CreateMap<CitizenBaseModel, CitizenResponseDTO>()
                    .ForMember(d => d.enrollmentId, opt => opt.MapFrom(src => src.tbl_enrollment != null ? src.tbl_enrollment.enrollment_id.ToString() : ""))
                    .ForMember(d => d.registrationId, opt => opt.MapFrom(src => src.tbl_citizen_registration != null ? src.tbl_citizen_registration.registration_id.ToString() : ""))

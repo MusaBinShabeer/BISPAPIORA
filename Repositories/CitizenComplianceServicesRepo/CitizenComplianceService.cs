@@ -63,12 +63,18 @@ namespace BISPAPIORA.Repositories.CitizenComplianceServicesRepo
                     });
                     var newCitizenCompliance = new tbl_citizen_compliance();
                     newCitizenCompliance = _mapper.Map<tbl_citizen_compliance>(model);
-                    await db.tbl_citizen_compliances.AddAsync(newCitizenCompliance);
+                    await db.tbl_citizen_compliances.AddAsync(newCitizenCompliance);                    
+                    await db.SaveChangesAsync();
                     if (actualSavings >= expectedSaving)
                     {
                         newCitizenCompliance.is_compliant = true;
+                        var paymentToUpdate = await db.tbl_payments
+                            .Where(x => x.fk_citizen == Guid.Parse(model.fkCitizen) && x.payment_quarter_code == newCitizenCompliance.citizen_compliance_quarter_code)
+                            .FirstOrDefaultAsync();
+                        paymentToUpdate.paid_amount = paymentToUpdate.due_amount;
+                        paymentToUpdate.fk_compliance = newCitizenCompliance.citizen_compliance_id;
+                        await db.SaveChangesAsync();
                     }
-                    await db.SaveChangesAsync();
                     foreach (var transaction in model.transactionDTO)
                     {
                         transaction.fkCompliance = newCitizenCompliance.citizen_compliance_id.ToString();

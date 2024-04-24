@@ -738,7 +738,7 @@ namespace BISPAPIORA.Repositories.CitizenServicesRepo
                 };
             }
         }
-        public async Task<ResponseModel<RegistrationResponseDTO>> VerifyCitizenEnrollmentStatusWithCNIC(string citizenCnic)
+        public async Task<ResponseModel<EnrollmentResponseDTO>> VerifyCitizenEnrollmentStatusWithCNIC(string citizenCnic)
         {
             try
             {
@@ -763,16 +763,16 @@ namespace BISPAPIORA.Repositories.CitizenServicesRepo
                         // Map the verification result to the response model
                         
                         // Check if the citizen is already registered
-                        return new ResponseModel<RegistrationResponseDTO>()
+                        return new ResponseModel<EnrollmentResponseDTO>()
                         {
-                            data = _mapper.Map<RegistrationResponseDTO>(existingCitizen),
+                            data = _mapper.Map<EnrollmentResponseDTO>(existingCitizen),
                             remarks = "Enrolled",
                             success = true,
                         };
                     }
                     else
                     {
-                        return new ResponseModel<RegistrationResponseDTO>()
+                        return new ResponseModel<EnrollmentResponseDTO>()
                         {
                             remarks = "Not Enrolled",
                             success = false,
@@ -782,7 +782,7 @@ namespace BISPAPIORA.Repositories.CitizenServicesRepo
                 else
                 {
                    
-                    return new ResponseModel<RegistrationResponseDTO>()
+                    return new ResponseModel<EnrollmentResponseDTO>()
                     {
                         remarks="Not Found",
                         success = false,
@@ -792,7 +792,7 @@ namespace BISPAPIORA.Repositories.CitizenServicesRepo
             catch (Exception ex)
             {
                 // Return a failure response model if an exception occurs during the process
-                return new ResponseModel<RegistrationResponseDTO>()
+                return new ResponseModel<EnrollmentResponseDTO>()
                 {
                     success = false,
                     remarks = $"There Was Fatal Error {ex.Message.ToString()}"
