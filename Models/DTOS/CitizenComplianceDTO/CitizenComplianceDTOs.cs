@@ -39,5 +39,6 @@ namespace BISPAPIORA.Models.DTOS.CitizenComplianceDTO
         public double citizenComplianceCommittedSavingAmount { get; set; } = 0.0;
         public List<TransactionResponseDTO> transactions { get; set; } = new List<TransactionResponseDTO>();
         public int citizenComplianceCode { get; set; } = default!;
+        public string citizenCnic { get; set; } = string.Empty;
     }
 }

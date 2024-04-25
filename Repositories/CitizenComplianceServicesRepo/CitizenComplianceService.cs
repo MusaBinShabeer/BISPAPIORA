@@ -36,7 +36,7 @@ namespace BISPAPIORA.Repositories.CitizenComplianceServicesRepo
             try
             {
                 // Check if the citizen compliance already exists
-                var citizenCompliance = await db.tbl_citizen_compliances
+                var citizenCompliance = await db.tbl_citizen_compliances.Include(x => x.tbl_citizen)
                     .Where(x => x.fk_citizen.Equals(Guid.Parse(model.fkCitizen)) && x.citizen_compliance_quarter_code.Equals(model.quarterCode))
                     .FirstOrDefaultAsync();
                 if (citizenCompliance == null)

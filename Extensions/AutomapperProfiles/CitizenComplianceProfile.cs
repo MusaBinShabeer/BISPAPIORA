@@ -31,6 +31,7 @@ namespace BISPAPIORA.Extensions.AutomapperProfiles
             .ForMember(d => d.citizenComplianceActualSavingAmount, opt => opt.MapFrom((src) => src.citizen_compliance_actual_saving_amount))
             .ForMember(d => d.quarterCode, opt => opt.MapFrom((src) => src.citizen_compliance_quarter_code))
             .ForMember(d => d.isCompliant, opt => opt.MapFrom(src => src.is_compliant))
+            .ForMember(d => d.citizenCnic, opt => opt.MapFrom((src) => src.tbl_citizen.citizen_cnic))
             .ForMember(d => d.fkCitizen, opt => opt.MapFrom((src) => src.fk_citizen));
         }
     }
