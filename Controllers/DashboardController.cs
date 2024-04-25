@@ -123,9 +123,10 @@ namespace BISPAPIORA.Controllers
             string districtId = null,
             string tehsilId = null,
             bool registration = false,
-            bool enrollment = false)
+            bool enrollment = false,
+            bool compliant= false)
         {
-            var response = dashboardServices.GetWebDesktopApplicantDistributionLocationBased(dateStart, dateEnd, provinceId, districtId, tehsilId, registration, enrollment);
+            var response = dashboardServices.GetWebDashboardGraphs(dateStart, dateEnd, provinceId, districtId, tehsilId, registration, enrollment,compliant);
             return Ok(await response);
         }
 

@@ -133,7 +133,7 @@ namespace BISPAPIORA.Repositories.DashboardServicesRepo
         }
 
         // Method to retrieve statistics for the web dashboard
-        public async Task<ResponseModel<List<DashboardProvinceCitizenCountPercentageDTO>, List<DashboardDistrictCitizenCountPercentageDTO>, List<DashboardTehsilCitizenCountPercentageDTO>, List<DashboardCitizenEducationalPercentageStatDTO>, List<DashboardCitizenGenderPercentageDTO>, List<DashboardCitizenMaritalStatusPercentageDTO>, List<DashboardCitizenEmploymentPercentageStatDTO>, List<DashboardCitizenCountSavingAmountDTO>, List<DashboardCitizenTrendDTO>, List<WebDashboardStats>>> GetWebDesktopApplicantDistributionLocationBased(string dateStart, string dateEnd, string provinceId, string districtId, string tehsilId, bool registration, bool enrollment)
+        public async Task<ResponseModel<List<DashboardProvinceCitizenCountPercentageDTO>, List<DashboardDistrictCitizenCountPercentageDTO>, List<DashboardTehsilCitizenCountPercentageDTO>, List<DashboardCitizenEducationalPercentageStatDTO>, List<DashboardCitizenGenderPercentageDTO>, List<DashboardCitizenMaritalStatusPercentageDTO>, List<DashboardCitizenEmploymentPercentageStatDTO>, List<DashboardCitizenCountSavingAmountDTO>, List<DashboardCitizenTrendDTO>, List<WebDashboardStats>>> GetWebDashboardGraphs(string dateStart, string dateEnd, string provinceId, string districtId, string tehsilId, bool registration, bool enrollment, bool compliant)
         {
             try
             {
@@ -227,11 +227,15 @@ namespace BISPAPIORA.Repositories.DashboardServicesRepo
 
                 // Fetching filtered citizens
                 var filteredCitizens = await totalCitizenQuery.Where(predicateCitizen).ToListAsync();
+                if (compliant == true)
+                {
+                    filteredCitizens= await innerServices.GetComplaintCitizen(filteredCitizens);
+                }
                 var onlyRegisteredCitizens = await totalCitizenQuery.Where(predicateRegisteredCitizen).ToListAsync();              
                 var onlyEnrolledCitizens = await totalCitizenQuery.Where(predicateEnrolledCitizen).ToListAsync();
                 double onlyRegisteredCitizensPercentage = 0.0;
                 double onlyEnrolledCitizensPercentage = 0.0;
-                if(onlyRegisteredCitizens.Count > 0) 
+                if(onlyRegisteredCitizens.Count() > 0) 
                 {
                     onlyRegisteredCitizensPercentage = filteredCitizens.Count()>0?(double)onlyRegisteredCitizens.Count() / filteredCitizens.Count * 100:0;
                 }
@@ -508,7 +512,6 @@ namespace BISPAPIORA.Repositories.DashboardServicesRepo
                 };
             }
         }
-
         // Retrieves the total count of citizens and the count of citizens who are registered and enrolled in the application.
         public async Task<ResponseModel<DashboardDTO>> GetTotalCitizenAndEnrolledForApp()
         {
