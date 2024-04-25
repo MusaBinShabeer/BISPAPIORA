@@ -12,6 +12,8 @@ using BISPAPIORA.Repositories.TransactionServicesRepo;
 using BISPAPIORA.Repositories.ComplexMappersRepo;
 using BISPAPIORA.Models.DTOS.AuthDTO;
 using BISPAPIORA.Models.ENUMS;
+using static System.Runtime.InteropServices.JavaScript.JSType;
+using BISPAPIORA.Models.DTOS.DashboardDTO;
 
 namespace BISPAPIORA.Repositories.CitizenComplianceServicesRepo
 {
@@ -81,16 +83,20 @@ namespace BISPAPIORA.Repositories.CitizenComplianceServicesRepo
                         var transactionResponse = await transactionService.AddTransaction(transaction);
                     }
                     var payment = await db.tbl_payments.Where(x => x.fk_citizen == newCitizenCompliance.fk_citizen && x.payment_quarter_code == newCitizenCompliance.citizen_compliance_quarter_code).FirstOrDefaultAsync();
-                    if(payment != null ) 
+                    if (payment != null)
                     {
                         payment.fk_compliance = newCitizenCompliance.citizen_compliance_id;
                         await db.SaveChangesAsync();
                     }
+
+                    var citizen = await db.tbl_citizens.Where(x => x.citizen_id == newCitizenCompliance.fk_citizen).FirstOrDefaultAsync();
+                    var data = _mapper.Map<CitizenComplianceResponseDTO>(newCitizenCompliance);
+                    data.citizenCnic = citizen.citizen_cnic;
                     return new ResponseModel<CitizenComplianceResponseDTO>()
                     {
                         success = true,
                         remarks = $"Citizen Compliance has been added successfully",
-                        data = _mapper.Map<CitizenComplianceResponseDTO>(newCitizenCompliance),
+                        data = data
                     };
                 }
                 else
