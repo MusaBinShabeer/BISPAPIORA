@@ -18,7 +18,7 @@ namespace BISPAPIORA.Repositories.AppVersionValidatingServicesRepo
         public bool IsValid(string apiVersion)
         {
             var key = db.tbl_app_versions.FirstOrDefault();
-            if (apiVersion == key.app_version)
+            if (apiVersion.Equals( key.app_version))
             {
                 return true;
             }

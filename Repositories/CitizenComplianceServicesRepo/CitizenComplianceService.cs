@@ -67,14 +67,16 @@ namespace BISPAPIORA.Repositories.CitizenComplianceServicesRepo
                     newCitizenCompliance = _mapper.Map<tbl_citizen_compliance>(model);
                     await db.tbl_citizen_compliances.AddAsync(newCitizenCompliance);                    
                     await db.SaveChangesAsync();
+                    var paymentToUpdate = await db.tbl_payments
+                           .Where(x => x.fk_citizen == Guid.Parse(model.fkCitizen) && x.payment_quarter_code == newCitizenCompliance.citizen_compliance_quarter_code)
+                           .FirstOrDefaultAsync();
                     if (actualSavings >= expectedSaving)
                     {
                         newCitizenCompliance.is_compliant = true;
-                        var paymentToUpdate = await db.tbl_payments
-                            .Where(x => x.fk_citizen == Guid.Parse(model.fkCitizen) && x.payment_quarter_code == newCitizenCompliance.citizen_compliance_quarter_code)
-                            .FirstOrDefaultAsync();
-                        paymentToUpdate.paid_amount = paymentToUpdate.due_amount;
-                        paymentToUpdate.fk_compliance = newCitizenCompliance.citizen_compliance_id;
+                        if (paymentToUpdate != null)
+                        {
+                            paymentToUpdate.paid_amount = paymentToUpdate.due_amount;
+                        }
                         await db.SaveChangesAsync();
                     }
                     foreach (var transaction in model.transactionDTO)
@@ -82,10 +84,9 @@ namespace BISPAPIORA.Repositories.CitizenComplianceServicesRepo
                         transaction.fkCompliance = newCitizenCompliance.citizen_compliance_id.ToString();
                         var transactionResponse = await transactionService.AddTransaction(transaction);
                     }
-                    var payment = await db.tbl_payments.Where(x => x.fk_citizen == newCitizenCompliance.fk_citizen && x.payment_quarter_code == newCitizenCompliance.citizen_compliance_quarter_code).FirstOrDefaultAsync();
-                    if (payment != null)
+                    if (paymentToUpdate != null)
                     {
-                        payment.fk_compliance = newCitizenCompliance.citizen_compliance_id;
+                        paymentToUpdate.fk_compliance = newCitizenCompliance.citizen_compliance_id;
                         await db.SaveChangesAsync();
                     }
 
