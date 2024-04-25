@@ -31,4 +31,6 @@ public partial class tbl_user
     public ICollection<tbl_registration>? tbl_registered_citizens { get; set; }
 
     public ICollection<tbl_enrollment>? tbl_enrolled_citizens { get; set; }
+
+    public ICollection<tbl_citizen_compliance>? tbl_citizen_compliances { get; set; }
 }

@@ -18,7 +18,12 @@ public partial class tbl_citizen_compliance
     public bool? is_compliant { get; set; } = false;
 
     public Guid? fk_citizen { get; set; } = new Guid();
+
+    public Guid? fk_compliant_by { get; set; } = default(Guid?);
+
     public virtual tbl_citizen? tbl_citizen { get; set; }
+
+    public virtual tbl_user? compliant_by { get; set; }
 
     public virtual tbl_bank_statement? tbl_bank_statement { get; set; }
 

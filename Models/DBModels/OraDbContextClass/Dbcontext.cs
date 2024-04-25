@@ -640,6 +640,11 @@ public partial class Dbcontext : DbContext
                 .HasForeignKey(d => d.fk_citizen)
                 .OnDelete(DeleteBehavior.Cascade)
                 .HasConstraintName("Fk_CITIZEN_COMPLIANCE_CITIZEN");
+            entity.Property(e => e.fk_compliant_by).HasColumnName("FK_COMPLIANT_BY");
+            entity.HasOne(d => d.compliant_by).WithMany(p => p.tbl_citizen_compliances)
+              .HasForeignKey(d => d.fk_compliant_by)
+              .OnDelete(DeleteBehavior.Cascade)
+              .HasConstraintName("FK_COMPLIANT_BY_USER");
         });
 
         modelBuilder.Entity<tbl_employment_other_specification>(entity =>
