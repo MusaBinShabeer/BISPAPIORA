@@ -1,9 +1,11 @@
 ﻿using BISPAPIORA.Extensions.Middleware;
 using BISPAPIORA.Models.DBModels.OraDbContextClass;
+using BISPAPIORA.Models.DTOS.BankStatementDTO;
 using BISPAPIORA.Models.DTOS.FileManagerDTO;
 using BISPAPIORA.Models.DTOS.ImageCitizenAttachmentDTO;
 using BISPAPIORA.Models.DTOS.ImageCitizenFingerPrintDTO;
 using BISPAPIORA.Models.DTOS.ResponseDTO;
+using BISPAPIORA.Repositories.BankStatementServicesRepo;
 using BISPAPIORA.Repositories.FileManagerServicesRepo;
 using BISPAPIORA.Repositories.ImageCitizenAttachmentServicesRepo;
 using BISPAPIORA.Repositories.ImageCitizenFingePrintServicesRepo;
@@ -28,16 +30,18 @@ namespace BISPAPIORA.Controllers
 
         private static readonly FormOptions _defaultFormOptions = new FormOptions();
         private readonly IFileManagerService fileManagerService;
+        private readonly IBankStatementService bankStatementService;
         private readonly IImageCitizenAttachmentService imageCitizenAttachmentService;
         private readonly IImageCitizenFingerPrintService imageCitizenFingerPrintService;
         private readonly Dbcontext db;
 
-        public FileManagerController(IFileManagerService fileManagerService, IImageCitizenAttachmentService imageCitizenAttachmentService, IImageCitizenFingerPrintService imageCitizenFingerPrintService, Dbcontext db) 
+        public FileManagerController(IFileManagerService fileManagerService, IImageCitizenAttachmentService imageCitizenAttachmentService, IImageCitizenFingerPrintService imageCitizenFingerPrintService, Dbcontext db, IBankStatementService bankStatementService) 
         {
             this.fileManagerService = fileManagerService;
             this.imageCitizenAttachmentService = imageCitizenAttachmentService;
             this.imageCitizenFingerPrintService = imageCitizenFingerPrintService;
             this.db = db;
+            this.bankStatementService= bankStatementService;
         }
 
         // Handles file upload for citizen attachments, processing multipart form data,
@@ -351,6 +355,163 @@ namespace BISPAPIORA.Controllers
                 var imageResponse = imageCitizenFingerPrintService.AddImageCitizenFingerPrint(image);
             }
 
+            // Return a success response
+            return Ok(new ResponseModel<FileManagerResponseDTO>() { remarks = "Success", success = true });
+            #endregion
+
+            //// Bind form data to the model
+            //var formData = new MultipartFormDataContent();
+            //var formValueProvider = new FormValueProvider(
+            //    BindingSource.Form,
+            //    new FormCollection(formAccumulator.GetResults()),
+            //    CultureInfo.CurrentCulture);
+            //var bindingSuccessful = await TryUpdateModelAsync(formData, prefix: "",
+            //    valueProvider: formValueProvider);
+            //if (!bindingSuccessful)
+            //{
+            //    ModelState.AddModelError("File",
+            //        "The request couldn't be processed (Error 5).");
+            //    // Log error
+
+            //    return BadRequest(ModelState);
+            //}
+            ////var response = await fileManagerService.UploadFileAsync(streamedFileContent, fileNameWithoutExtension,fileExtension);
+        }
+        [HttpPost("UploadBankStatment"), DisableRequestSizeLimit]
+        [DisableFormValueModelBinding]
+        public async Task<ActionResult<ResponseModel<FileManagerResponseDTO>>> UploadBankStatment(string citizenCnic,string fkCompliance)
+        {
+            // Initialize variables to store file information
+            string fileNameWithoutExtension = "";
+            string fileExtension = "";
+
+            // List to store thumbprint images
+            var images = new AddBankStatementDTO();
+            #region Multipart
+            // Check if the request is of type "multipart"
+            if (!MultipartMiddleware.IsMultipartContentType(Request.ContentType))
+            {
+                // Return an UnsupportedMediaTypeResult if the request is not multipart
+                return new UnsupportedMediaTypeResult();
+            }
+
+            // Accumulate the form data key-value pairs in the request (formAccumulator).
+            var formAccumulator = new KeyValueAccumulator();
+            var trustedFileNameForDisplay = string.Empty;
+            var untrustedFileNameForStorage = string.Empty;
+            var streamedFileContent = Array.Empty<byte>();
+
+            // Read the boundary from the request and set up a MultipartReader
+            var boundary = MultipartMiddleware.GetBoundary(
+                MediaTypeHeaderValue.Parse(Request.ContentType),
+                _defaultFormOptions.MultipartBoundaryLengthLimit);
+            var reader = new MultipartReader(boundary, HttpContext.Request.Body);
+
+            // Read the first section of the multipart content
+            var section = await reader.ReadNextSectionAsync();
+
+            while (section != null)
+            {
+                // Check if the section has a content disposition header
+                var hasContentDispositionHeader =
+                    ContentDispositionHeaderValue.TryParse(
+                        section.ContentDisposition, out var contentDisposition);
+
+                if (hasContentDispositionHeader)
+                {
+                    // Process file content if the section represents a file
+                    if (MultipartMiddleware
+                        .HasFileContentDisposition(contentDisposition))
+                    {
+                        untrustedFileNameForStorage = contentDisposition.FileName.Value;
+                        // Don't trust the file name sent by the client. To display
+                        // the file name, HTML-encode the value.
+                        trustedFileNameForDisplay = WebUtility.HtmlEncode(
+                                contentDisposition.FileName.Value);
+                        fileNameWithoutExtension = Path.GetFileNameWithoutExtension(untrustedFileNameForStorage);
+                        fileExtension = Path.GetExtension(untrustedFileNameForStorage);
+                        var stringArray = new string[1];
+                        stringArray[0] = fileExtension;
+                        streamedFileContent =
+                            await FileAuthentication.ProcessStreamedFile(section, contentDisposition,
+                                ModelState, stringArray, int.MaxValue);
+
+                        if (!ModelState.IsValid)
+                        {
+                            return BadRequest(ModelState);
+                        }
+                    }
+                    // Process form data content if the section represents form data
+                    else if (MultipartMiddleware
+                        .HasFormDataContentDisposition(contentDisposition))
+                    {
+                        // Don't limit the key name length because the 
+                        // multipart headers length limit is already in effect.
+                        var key = HeaderUtilities
+                            .RemoveQuotes(contentDisposition.Name).Value;
+                        var encoding = MultipartMiddleware.GetEncoding(section);
+
+                        if (encoding == null)
+                        {
+                            ModelState.AddModelError("File",
+                                $"The request couldn't be processed (Error 2).");
+                            // Log error
+
+                            return BadRequest(ModelState);
+                        }
+
+                        using (var streamReader = new StreamReader(
+                            section.Body,
+                            encoding,
+                            detectEncodingFromByteOrderMarks: true,
+                            bufferSize: 1024,
+                            leaveOpen: true))
+                        {
+                            // The value length limit is enforced by 
+                            // MultipartBodyLengthLimit
+                            var value = await streamReader.ReadToEndAsync();
+
+                            if (string.Equals(value, "undefined",
+                                StringComparison.OrdinalIgnoreCase))
+                            {
+                                value = string.Empty;
+                            }
+
+                            formAccumulator.Append(key, value);
+
+                            if (formAccumulator.ValueCount >
+                                _defaultFormOptions.ValueCountLimit)
+                            {
+                                // Form key count limit of 
+                                // _defaultFormOptions.ValueCountLimit 
+                                // is exceeded.
+                                ModelState.AddModelError("File",
+                                    $"The request couldn't be processed (Error 3).");
+                                // Log error
+
+                                return BadRequest(ModelState);
+                            }
+                        }
+                    }
+                }
+
+                // Drain any remaining section body that hasn't been consumed and
+                // read the headers for the next section.
+
+                // Create an image object for the thumbprint and add it to the list
+
+                images.bankStatementName = trustedFileNameForDisplay;  // Use the trusted file name for display
+                images.bankStatementData = streamedFileContent;
+                images.bankStatementContentType = section.ContentType;
+                images.bankStatementCnic = citizenCnic;
+                images.fkCitizenCompliance = fkCompliance;
+                var bankStatement= bankStatementService.AddBankStatement(images);
+                // Drain any remaining section body that hasn't been consumed and
+                // read the headers for the next section.
+                section = await reader.ReadNextSectionAsync();
+            }
+
+            
             // Return a success response
             return Ok(new ResponseModel<FileManagerResponseDTO>() { remarks = "Success", success = true });
             #endregion

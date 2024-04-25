@@ -67,5 +67,6 @@ namespace BISPAPIORA.Models.DTOS.CitizenDTO
         public string imageCitizenThumbPrintName { get; set; } = string.Empty;
         public string imageCitizenThumbPrintData { get; set; } = string.Empty;
         public string imageCitizenThumbPrintContentType { get; set; } = string.Empty;
+        public bool isCompliant { get; set; } = false;
     }
 }

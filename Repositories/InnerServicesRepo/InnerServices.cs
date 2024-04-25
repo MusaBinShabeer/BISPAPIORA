@@ -330,7 +330,7 @@ namespace BISPAPIORA.Repositories.InnerServicesRepo
                         {
                             if (double.TryParse(transaction.transaction_amount.ToString(), out double transactionAmount))
                             {
-                                return transactionType == TransactionTypeEnum.Debit ? +transactionAmount : -transactionAmount;
+                                return transactionType == TransactionTypeEnum.Debit ? -transactionAmount : +transactionAmount;
                             }
                             else
                             {

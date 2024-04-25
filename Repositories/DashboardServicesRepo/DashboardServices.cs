@@ -594,7 +594,7 @@ namespace BISPAPIORA.Repositories.DashboardServicesRepo
                                 if (Enum.TryParse(transaction.transaction_type, out TransactionTypeEnum transactionType))
                                 {
 
-                                    return transactionType == TransactionTypeEnum.Debit ? +transaction.transaction_amount : -transaction.transaction_amount;
+                                    return transactionType == TransactionTypeEnum.Debit ? -transaction.transaction_amount : +transaction.transaction_amount;
 
                                 }
                                 else
@@ -617,7 +617,7 @@ namespace BISPAPIORA.Repositories.DashboardServicesRepo
                         if (Enum.TryParse(transaction.transaction_type, out TransactionTypeEnum transactionType))
                         {
 
-                            return transactionType == TransactionTypeEnum.Debit ? +transaction.transaction_amount : -transaction.transaction_amount;
+                            return transactionType == TransactionTypeEnum.Debit ? -transaction.transaction_amount : +transaction.transaction_amount;
 
                         }
                         else

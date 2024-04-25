@@ -289,6 +289,8 @@ namespace BISPAPIORA.Extensions.AutomapperProfiles
               .ForMember(d => d.citizenBankName, opt => opt.MapFrom((src) => src.tbl_citizen_bank_info.tbl_bank_other_specification != null ? src.tbl_citizen_bank_info.tbl_bank_other_specification.bank_other_specification : src.tbl_citizen_bank_info.tbl_bank.bank_name))
               .ForMember(d => d.uniHHId, opt => opt.MapFrom(src => (src.unique_hh_id).ToString()))
               .ForMember(d => d.pmt, opt => opt.MapFrom(src => (src.pmt)))
+              .ForMember(d => d.isEnrolled, opt => opt.MapFrom(src => (src.tbl_enrollment!=null?true:false)))
+              .ForMember(d => d.pmt, opt => opt.MapFrom(src => (src.pmt)))
               .ForMember(d => d.submissionDate, opt => opt.MapFrom(src => (src.submission_date).ToString()))
               .ForMember(d => d.isValidBeneficiary, opt => opt.MapFrom(src => (src.is_valid_beneficiary)))
               .ForMember(d => d.fatherSpouseName, opt => opt.MapFrom(src => src.citizen_name))

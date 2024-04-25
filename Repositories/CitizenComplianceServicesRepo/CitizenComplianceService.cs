@@ -51,7 +51,7 @@ namespace BISPAPIORA.Repositories.CitizenComplianceServicesRepo
                         if (Enum.TryParse(transaction.transactionType, out TransactionTypeEnum transactionType))
                         {
                             
-                                return transactionType == TransactionTypeEnum.Debit ? +transaction.transactionAmount : -transaction.transactionAmount;
+                                return transactionType == TransactionTypeEnum.Debit ? -transaction.transactionAmount : +transaction.transactionAmount;
                            
                         }
                         else

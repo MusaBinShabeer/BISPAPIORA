@@ -463,6 +463,7 @@ namespace BISPAPIORA.Repositories.CitizenServicesRepo
                     .Include(x => x.tbl_citizen_employment)
                     .Include(x => x.tbl_citizen_education)
                     .Include(x => x.tbl_citizen_scheme)
+                    .Include(x => x.tbl_citizen_compliances)
                     .Include(x => x.tbl_citizen_registration)
                     .Include(x => x.tbl_enrollment)
                     .Include(x => x.tbl_citizen_bank_info).ThenInclude(x => x.tbl_bank)
@@ -473,10 +474,13 @@ namespace BISPAPIORA.Repositories.CitizenServicesRepo
 
                 if (existingCitizen != null)
                 {
+                    var data = _mapper.Map<CitizenResponseDTO>(existingCitizen);
+                    var allQuarters = innerServices.GetAllQuarterCodes(existingCitizen.tbl_citizen_scheme.citizen_scheme_quarter_code.Value).Select(x=>x.quarterCode).ToList();
+                    data.isCompliant=await innerServices.CheckCompliance(allQuarters,existingCitizen.citizen_id);
                     // Return a success response model with the details of the found citizen
                     return new ResponseModel<CitizenResponseDTO>()
                     {
-                        data = _mapper.Map<CitizenResponseDTO>(existingCitizen),
+                        data =data ,
                         remarks = "Citizen found successfully",
                         success = true,
                     };
