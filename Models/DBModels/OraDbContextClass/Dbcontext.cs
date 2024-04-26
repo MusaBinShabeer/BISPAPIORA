@@ -895,10 +895,14 @@ public partial class Dbcontext : DbContext
             entity.Property(e => e.payment_id)
                 .HasDefaultValueSql("SYS_GUID() ")
                 .HasColumnName("PAYMENT_ID");
-            entity.Property(e => e.due_amount)
+            entity.Property(e => e.actual_due_amount)
                 .HasDefaultValueSql("0")
                 .HasColumnType("NUMBER(19,2)")
-                .HasColumnName("DUE_AMOUNT");
+                .HasColumnName("ACTUAL_DUE_AMOUNT");
+            entity.Property(e => e.quarterly_due_amount)
+                .HasDefaultValueSql("0")
+                .HasColumnType("NUMBER(19,2)")
+                .HasColumnName("QUARTERLY_DUE_AMOUNT");
             entity.Property(e => e.fk_citizen).HasColumnName("FK_CITIZEN");
             entity.Property(e => e.fk_compliance).HasColumnName("FK_COMPLIANCE");
             entity.Property(e => e.paid_amount)

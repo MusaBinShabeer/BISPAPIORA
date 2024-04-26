@@ -9,7 +9,9 @@ public partial class tbl_payment
 
     public decimal? paid_amount { get; set; } = default;
 
-    public decimal? due_amount { get; set; } = default;
+    public decimal? actual_due_amount { get; set; } = default;
+
+    public decimal? quarterly_due_amount { get; set; } = default;
 
     public int? payment_quarter_code { get; set; } = 0;
 
