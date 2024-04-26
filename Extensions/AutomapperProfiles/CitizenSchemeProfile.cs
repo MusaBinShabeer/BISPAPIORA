@@ -43,7 +43,7 @@ namespace BISPAPIORA.Extensions.AutomapperProfiles
             .ForMember(d => d.citizenSchemeSavingAmount, opt => opt.MapFrom((src) => src.citizen_scheme_saving_amount))
             .ForMember(d => d.fkCitizen, opt => opt.MapFrom((src) => src.fk_citizen));
             CreateMap<(tbl_citizen_scheme scheme, int code), AddPaymentDTO>()
-           .ForMember(d => d.dueAmount, opt => opt.MapFrom(src => double.Parse((src.scheme.citizen_scheme_saving_amount * 3).ToString())))
+           .ForMember(d => d.dueAmount, opt => opt.MapFrom(src => double.Parse((src.scheme.citizen_scheme_saving_amount.Value * 3).ToString())* 0.4))
            .ForMember(d => d.fkCitizen, opt => opt.MapFrom((src) => src.scheme.fk_citizen.Value.ToString()))
            .ForMember(d => d.quarterCode, opt => opt.MapFrom((src) => src.code));
             CreateMap<AddCitizenSchemeDTO, UpdateCitizenSchemeDTO>()
