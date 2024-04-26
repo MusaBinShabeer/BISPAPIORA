@@ -176,7 +176,8 @@ namespace BISPAPIORA.Models.DTOS.DashboardDTO
         public string quarterName { get; set; } = string.Empty;
         public double expectedSaving { get; set; } = default!;
         public double actualSaving { get; set; } = default!;
-        public double duePayment { get; set; } = default!;
+        public double actualDuePayment { get; set; } = default!;
+        public double quarterlyDuePayment { get; set; } = default!;
         public double paidAmount { get; set; } = default!;
         public bool isCompliant { get; set; } = false;
     }

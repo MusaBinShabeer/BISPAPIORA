@@ -72,10 +72,11 @@ namespace BISPAPIORA.Repositories.CitizenComplianceServicesRepo
                            .FirstOrDefaultAsync();
                     if (actualSavings >= expectedSaving)
                     {
+                        var actualDue = await innerServices.GetTotalActualDueAmount(betweenquarters,citizenScheme.fk_citizen.Value);
                         newCitizenCompliance.is_compliant = true;
                         if (paymentToUpdate != null)
                         {
-                            paymentToUpdate.paid_amount = paymentToUpdate.actual_due_amount;
+                            paymentToUpdate.actual_due_amount = decimal.Parse(actualDue.ToString());
                         }
                         await db.SaveChangesAsync();
                     }

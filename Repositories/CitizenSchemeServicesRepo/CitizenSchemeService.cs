@@ -45,8 +45,8 @@ namespace BISPAPIORA.Repositories.CitizenSchemeServicesRepo
                     var allQuarters = innerServices.GetAllQuarterCodes(newCitizenScheme.citizen_scheme_quarter_code.Value);
                     foreach (var quarterCode in allQuarters)
                     {
-                        var addPaymentDTo = _mapper.Map<AddPaymentDTO>((newCitizenScheme, quarterCode.quarterCode));
-                        var responsePayment = await paymentService.AddPayment(addPaymentDTo);
+                        var addPaymentDto = _mapper.Map<AddPaymentDTO>((newCitizenScheme, quarterCode.quarterCode));
+                        var responsePayment = await paymentService.AddPayment(addPaymentDto);
                     } 
                     return new ResponseModel<CitizenSchemeResponseDTO>()
                     {

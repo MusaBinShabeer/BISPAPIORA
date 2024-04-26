@@ -318,6 +318,19 @@ namespace BISPAPIORA.Repositories.InnerServicesRepo
 
             
         }
+        public async Task<double> GetTotalActualDueAmount(List<int> quarterCodes, Guid fk_citizen)
+        {
+            double total = 0;
+            foreach (int code in quarterCodes)
+            {
+                var amountSavedPerQuarter = await GetActualDueAmount(code, fk_citizen);
+
+                total = total + amountSavedPerQuarter;
+            }
+            return total;
+
+
+        }
         public async Task<double> GetExpectedSavingAmount(int quarterCode, Guid fk_citizen, double expectedSavingAmountPerQuarter) 
         { 
             var compliance= await db.tbl_citizen_compliances.Where(x=>x.fk_citizen==fk_citizen && x.citizen_compliance_quarter_code== quarterCode).Include(x=>x.tbl_transactions).FirstOrDefaultAsync();
@@ -366,6 +379,21 @@ namespace BISPAPIORA.Repositories.InnerServicesRepo
             else 
             {
                 return expectedSavingAmountPerQuarter;
+            }
+        }
+        public async Task<double> GetActualDueAmount(int quarterCode, Guid fk_citizen)
+        {
+            var payment = await db.tbl_payments.Where(x => x.fk_citizen == fk_citizen && x.payment_quarter_code == quarterCode).FirstOrDefaultAsync();
+            if (payment != null)
+            {
+                
+                var actualDue=double.Parse(( payment.quarterly_due_amount- payment.paid_amount).ToString());
+                return actualDue;
+                
+            }
+            else
+            {
+                return 0;
             }
         }
         public List<QuarterCodesReponseDTO> GetAllQuarterCodes(int startingQuarterCode)

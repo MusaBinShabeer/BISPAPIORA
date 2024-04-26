@@ -586,8 +586,11 @@ namespace BISPAPIORA.Repositories.DashboardServicesRepo
                     var quarterlyResponse = new List<DashboardQuarterlyStats>();
                     var response = new DashboardCitizenComplianceStatus<List<DashboardQuarterlyStats>>();
                     var expectedSavingsPerQuarterDecimal = citizen.tbl_citizen_scheme.citizen_scheme_saving_amount * 3;
+                    var expectedSavingsPerQuarter = double.Parse(expectedSavingsPerQuarterDecimal.ToString());                    
                     foreach (var quarterCode in quarterCodes)
                     {
+                        var betweenquarters = innerServices.GetQuarterCodesBetween(citizen.tbl_citizen_scheme.citizen_scheme_quarter_code.Value,quarterCode.quarterCode);
+                        var expectedSaving = await innerServices.GetTotalExpectedSavingAmount(betweenquarters, citizen.citizen_id, expectedSavingsPerQuarter);
                         var quarterCompliance = citizen.tbl_citizen_compliances
                             .Where(x => x.citizen_compliance_quarter_code == quarterCode.quarterCode).FirstOrDefault();
                         quarterlyResponse.Add(new DashboardQuarterlyStats()
@@ -607,12 +610,13 @@ namespace BISPAPIORA.Repositories.DashboardServicesRepo
                                     return 0; // or any default value
                                 }
                             }).ToString()): 0,
-                            expectedSaving= double.Parse(expectedSavingsPerQuarterDecimal.ToString()),
+                            expectedSaving= expectedSaving,
                             isCompliant = quarterCompliance!=null? quarterCompliance.is_compliant.Value: false,
                             quarterCode= quarterCode.quarterCode,
                             quarterName= quarterCode.quarterCodeName,
                             paidAmount=quarterCompliance!=null? quarterCompliance.tbl_payments.Count()>0? double.Parse(quarterCompliance.tbl_payments.Sum(x=>x.paid_amount).ToString()):0:0,
-                            duePayment=quarterCompliance!=null? quarterCompliance.tbl_payments.Count()>0? double.Parse(quarterCompliance.tbl_payments.Sum(x=>x.actual_due_amount).ToString()) :0 : double.Parse(expectedSavingsPerQuarterDecimal.ToString()),
+                            actualDuePayment=quarterCompliance!=null? quarterCompliance.tbl_payments.Count()>0? double.Parse(quarterCompliance.tbl_payments.Sum(x=>x.actual_due_amount).ToString()) :0 : 0,
+                            quarterlyDuePayment=quarterCompliance!=null? quarterCompliance.tbl_payments.Count()>0? double.Parse(quarterCompliance.tbl_payments.Sum(x=>x.quarterly_due_amount).ToString()) :0 : expectedSavingsPerQuarter *0.4,
                         });
                     }
                     response.totalActualSaving = double.Parse(citizen.tbl_transactions.Sum(transaction =>
