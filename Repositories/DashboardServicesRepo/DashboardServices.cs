@@ -593,7 +593,7 @@ namespace BISPAPIORA.Repositories.DashboardServicesRepo
                     foreach (var quarterCode in quarterCodes)
                     {
                         var betweenquarters = innerServices.GetQuarterCodesBetween(citizen.tbl_citizen_scheme.citizen_scheme_quarter_code.Value,quarterCode.quarterCode);
-                        var expectedSaving = await innerServices.GetTotalExpectedSavingAmount(betweenquarters, citizen.citizen_id, expectedSavingsPerQuarter);
+                        var expectedSaving = innerServices.GetMinimumBalanceReq(betweenquarters, citizen.citizen_id, expectedSavingsPerQuarter);
                         var quarterCompliance = citizen.tbl_citizen_compliances
                             .Where(x => x.citizen_compliance_quarter_code == quarterCode.quarterCode).FirstOrDefault();
                         quarterlyResponse.Add(new DashboardQuarterlyStats()
@@ -612,7 +612,7 @@ namespace BISPAPIORA.Repositories.DashboardServicesRepo
                                     Console.WriteLine("Invalid transaction type: " + transaction.transaction_type);
                                     return 0; // or any default value
                                 }
-                            }).ToString()): 0,
+                            }).ToString()) + double.Parse(quarterCompliance.starting_balance_on_quarterly_bank_statement.ToString()): 0,
                             expectedSaving= expectedSaving,
                             isCompliant = quarterCompliance!=null? quarterCompliance.is_compliant.Value: false,
                             quarterCode= quarterCode.quarterCode,
@@ -637,7 +637,7 @@ namespace BISPAPIORA.Repositories.DashboardServicesRepo
                             return 0; // or any default value
                         }
                     }).ToString());
-                    response.totalExpectedSaving= await innerServices.GetTotalExpectedSavingAmount(quarterCodes.Select(x=>x.quarterCode).ToList(), citizen.citizen_id, double.Parse(expectedSavingsPerQuarterDecimal.ToString()));
+                    response.totalExpectedSaving=  innerServices.GetMinimumBalanceReq(quarterCodes.Select(x=>x.quarterCode).ToList(), citizen.citizen_id, double.Parse(expectedSavingsPerQuarterDecimal.ToString()));
                     response.totalPaidAmount = double.Parse(citizen.tbl_payments.Sum(x => x.paid_amount).ToString());
                     response.totalDuePayment = double.Parse(citizen.tbl_payments.Sum(x => x.actual_due_amount).ToString());
                     response.data = quarterlyResponse;

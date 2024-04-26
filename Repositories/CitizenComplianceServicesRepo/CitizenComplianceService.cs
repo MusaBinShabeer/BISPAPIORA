@@ -62,24 +62,20 @@ namespace BISPAPIORA.Repositories.CitizenComplianceServicesRepo
                             Console.WriteLine("Invalid transaction type: " + transaction.transactionType);
                             return 0; // or any default value
                         }
-                    });
+                    }) + model.startingBalanceOnQuarterlyBankStatement;
                     var newCitizenCompliance = new tbl_citizen_compliance();
+                    newCitizenCompliance.citizen_compliance_actual_saving_amount = decimal.Parse(actualSavings.ToString());
                     newCitizenCompliance = _mapper.Map<tbl_citizen_compliance>(model);
                     await db.tbl_citizen_compliances.AddAsync(newCitizenCompliance);                    
                     await db.SaveChangesAsync();
                     var paymentToUpdate = await db.tbl_payments
                            .Where(x => x.fk_citizen == Guid.Parse(model.fkCitizen) && x.payment_quarter_code == newCitizenCompliance.citizen_compliance_quarter_code)
                            .FirstOrDefaultAsync();
-                    if (actualSavings >= expectedSaving)
+                    if (expectedSaving==0)
                     {
-                        var actualDue = await innerServices.GetTotalActualDueAmount(betweenquarters,citizenScheme.fk_citizen.Value);
                         newCitizenCompliance.is_compliant = true;
-                        if (paymentToUpdate != null)
-                        {
-                            paymentToUpdate.actual_due_amount = decimal.Parse(actualDue.ToString());
-                        }
                         await db.SaveChangesAsync();
-                    }
+                    }                   
                     foreach (var transaction in model.transactionDTO)
                     {
                         transaction.fkCompliance = newCitizenCompliance.citizen_compliance_id.ToString();
@@ -87,6 +83,11 @@ namespace BISPAPIORA.Repositories.CitizenComplianceServicesRepo
                     }
                     if (paymentToUpdate != null)
                     {
+                        var actualDue = await innerServices.GetTotalActualDueAmount(betweenquarters, citizenScheme.fk_citizen.Value, actualSavings,expectedSavingsPerQuarter);
+                        if (paymentToUpdate != null)
+                        {
+                            paymentToUpdate.actual_due_amount = decimal.Parse(actualDue.ToString());
+                        }
                         paymentToUpdate.fk_compliance = newCitizenCompliance.citizen_compliance_id;
                         await db.SaveChangesAsync();
                     }

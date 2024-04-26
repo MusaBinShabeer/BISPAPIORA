@@ -316,15 +316,31 @@ namespace BISPAPIORA.Repositories.InnerServicesRepo
             return totalActualExpected;
 
             
-        }
-        public async Task<double> GetTotalActualDueAmount(List<int> quarterCodes, Guid fk_citizen)
+        }  
+        public double GetMinimumBalanceReq(List<int> quarterCodes, Guid fk_citizen,double expectedSavingAmountPerQuarter) 
         {
-            double total = 0;
-            foreach (int code in quarterCodes)
+           
+            double totalActualExpected = 0;
+            foreach(int code in quarterCodes)
             {
-                var amountDue = await GetActualDueAmount(code, fk_citizen);
+                totalActualExpected = totalActualExpected + expectedSavingAmountPerQuarter;
+            }
+            return totalActualExpected;
 
-                total = total + amountDue;
+            
+        }
+        public async Task<double> GetTotalActualDueAmount(List<int> quarterCodes, Guid fk_citizen, double actualSaving, double savingAmountperQuarter)
+        {
+            double total = 0;          
+            var payments= await db.tbl_payments.Where(x=>x.fk_citizen==fk_citizen && quarterCodes.Contains( x.payment_quarter_code.Value )).ToListAsync();            
+            var totalExpectedDue= payments.Select(x=>x.quarterly_due_amount).Sum();
+            var totalActualDue = payments.Select(x => x.actual_due_amount).Sum();
+            var noOfQuartersCompliant= int.Parse((actualSaving/ savingAmountperQuarter).ToString());
+            var quarterlyDue = payments[0].quarterly_due_amount;
+            if (noOfQuartersCompliant > 0)
+            {
+                total = total + (double.Parse(quarterlyDue.ToString()) * noOfQuartersCompliant);
+                total = total - double.Parse(totalActualDue.ToString());
             }
             return total;
 
@@ -358,7 +374,7 @@ namespace BISPAPIORA.Repositories.InnerServicesRepo
                             Console.WriteLine("Invalid transaction type: " + transaction.transaction_type);
                             return 0; // or any default value
                         }
-                    });
+                    }) + double.Parse(compliance.starting_balance_on_quarterly_bank_statement.Value.ToString());
                     var amountSaved = double.Parse(amountSavedDecimal.ToString());
                     if (amountSaved == (totalActualExpected+expectedSavingAmountPerQuarter) && amountSaved> totalActualExpected + expectedSavingAmountPerQuarter)
                     {
@@ -379,22 +395,7 @@ namespace BISPAPIORA.Repositories.InnerServicesRepo
             {
                 return  (totalActualExpected + expectedSavingAmountPerQuarter);
             }
-        }
-        public async Task<double> GetActualDueAmount(int quarterCode, Guid fk_citizen)
-        {
-            var payment = await db.tbl_payments.Where(x => x.fk_citizen == fk_citizen && x.payment_quarter_code == quarterCode).FirstOrDefaultAsync();
-            if (payment != null)
-            {
-                
-                var actualDue=double.Parse(( payment.quarterly_due_amount- payment.paid_amount).ToString());
-                return actualDue;
-                
-            }
-            else
-            {
-                return 0;
-            }
-        }
+        }       
         public List<QuarterCodesReponseDTO> GetAllQuarterCodes(int startingQuarterCode)
         {
             List<QuarterCodesReponseDTO> quarterCodes = new List<QuarterCodesReponseDTO>();

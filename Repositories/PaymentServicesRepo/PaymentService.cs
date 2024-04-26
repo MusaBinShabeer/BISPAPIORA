@@ -28,8 +28,7 @@ namespace BISPAPIORA.Repositories.PaymentServicesRepo
             {
                 // Create a new Payment entity and map properties from the provided model
                 var newPayment = new tbl_payment();
-                newPayment = _mapper.Map<tbl_payment>(model);
-
+                newPayment = _mapper.Map<tbl_payment>(model);               
                 // Add the new Payment to the database and save changes
                 db.tbl_payments.Add(newPayment);
                 await db.SaveChangesAsync();
@@ -62,6 +61,7 @@ namespace BISPAPIORA.Repositories.PaymentServicesRepo
                 if (payment != null)
                 {
                     payment.paid_amount = decimal.Parse(paidAmount.ToString());
+                    payment.actual_due_amount= payment.actual_due_amount- payment.paid_amount;
                     // Update Payment to the database and save changes
                      await db.SaveChangesAsync();
                     return new ResponseModel<PaymentResponseDTO>()
