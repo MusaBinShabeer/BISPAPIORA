@@ -21,6 +21,8 @@ public partial class tbl_citizen_compliance
 
     public Guid? fk_compliant_by { get; set; } = default(Guid?);
 
+    public DateTime? insertion_date { get; set; }
+
     public virtual tbl_citizen? tbl_citizen { get; set; }
 
     public virtual tbl_user? compliant_by { get; set; }

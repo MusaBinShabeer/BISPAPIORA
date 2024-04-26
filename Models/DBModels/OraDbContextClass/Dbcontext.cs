@@ -645,6 +645,10 @@ public partial class Dbcontext : DbContext
               .HasForeignKey(d => d.fk_compliant_by)
               .OnDelete(DeleteBehavior.Cascade)
               .HasConstraintName("FK_COMPLIANT_BY_USER");
+
+            entity.Property(e => e.insertion_date)
+                .HasColumnType("DATE")
+                .HasColumnName("INSERTION_DATE");
         });
 
         modelBuilder.Entity<tbl_employment_other_specification>(entity =>
