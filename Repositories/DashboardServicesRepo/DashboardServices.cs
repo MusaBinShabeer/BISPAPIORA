@@ -612,7 +612,7 @@ namespace BISPAPIORA.Repositories.DashboardServicesRepo
                             quarterCode= quarterCode.quarterCode,
                             quarterName= quarterCode.quarterCodeName,
                             paidAmount=quarterCompliance!=null? quarterCompliance.tbl_payments.Count()>0? double.Parse(quarterCompliance.tbl_payments.Sum(x=>x.paid_amount).ToString()):0:0,
-                            duePayment=quarterCompliance!=null? quarterCompliance.tbl_payments.Count()>0? double.Parse(quarterCompliance.tbl_payments.Sum(x=>x.due_amount).ToString()) :0 : double.Parse(expectedSavingsPerQuarterDecimal.ToString()),
+                            duePayment=quarterCompliance!=null? quarterCompliance.tbl_payments.Count()>0? double.Parse(quarterCompliance.tbl_payments.Sum(x=>x.actual_due_amount).ToString()) :0 : double.Parse(expectedSavingsPerQuarterDecimal.ToString()),
                         });
                     }
                     response.totalActualSaving = double.Parse(citizen.tbl_transactions.Sum(transaction =>
