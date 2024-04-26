@@ -34,7 +34,7 @@ namespace BISPAPIORA.Repositories.DashboardServicesRepo
                 // Query to retrieve registered citizens with their registration information
                 var registeredCitizenQuery = db.tbl_citizens
                     .Include(x => x.tbl_citizen_registration).ThenInclude(x => x.registered_by)
-                    .Where(x => x.tbl_citizen_registration != null && x.tbl_enrollment == null)
+                    .Where(x => x.tbl_citizen_registration != null)
                     .ProjectTo<DashboardCitizenBaseModel>(mapper.ConfigurationProvider);
 
                 // Query to retrieve enrolled citizens with their enrollment information
