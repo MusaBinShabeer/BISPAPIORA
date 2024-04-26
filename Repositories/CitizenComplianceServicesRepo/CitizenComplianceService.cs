@@ -75,7 +75,7 @@ namespace BISPAPIORA.Repositories.CitizenComplianceServicesRepo
                         newCitizenCompliance.is_compliant = true;
                         if (paymentToUpdate != null)
                         {
-                            paymentToUpdate.paid_amount = paymentToUpdate.due_amount;
+                            paymentToUpdate.paid_amount = paymentToUpdate.actual_due_amount;
                         }
                         await db.SaveChangesAsync();
                     }
