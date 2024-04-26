@@ -632,7 +632,7 @@ namespace BISPAPIORA.Repositories.DashboardServicesRepo
                     }).ToString());
                     response.totalExpectedSaving= await innerServices.GetTotalExpectedSavingAmount(quarterCodes.Select(x=>x.quarterCode).ToList(), citizen.citizen_id, double.Parse(expectedSavingsPerQuarterDecimal.ToString()));
                     response.totalPaidAmount = double.Parse(citizen.tbl_payments.Sum(x => x.paid_amount).ToString());
-                    response.totalDuePayment = double.Parse(citizen.tbl_payments.Sum(x => x.due_amount).ToString());
+                    response.totalDuePayment = double.Parse(citizen.tbl_payments.Sum(x => x.actual_due_amount).ToString());
                     response.data = quarterlyResponse;
                     response.isCompliant = await innerServices.CheckCompliance(quarterCodes.Select(x=>x.quarterCode).ToList(),citizen.citizen_id);
                     return new ResponseModel<DashboardCitizenComplianceStatus<List<DashboardQuarterlyStats>>>() 
