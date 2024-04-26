@@ -41,13 +41,16 @@ namespace BISPAPIORA.Repositories.DashboardServicesRepo
                 var enrolledCitizenQuery = db.tbl_citizens
                    .Include(x => x.tbl_enrollment).ThenInclude(x => x.enrolled_by)
                    .Where(x => x.tbl_enrollment != null)
+                   .ProjectTo<DashboardCitizenBaseModel>(mapper.ConfigurationProvider);              
+                var user= await db.tbl_users.Where(x=>x.user_name == userName).FirstOrDefaultAsync(); 
+                var complianceCitizenQuery = db.tbl_citizen_compliances.Include(x => x.compliant_by).Where(x => x.fk_compliant_by == user.user_id).Select(x=>x.tbl_citizen)
                    .ProjectTo<DashboardCitizenBaseModel>(mapper.ConfigurationProvider);
-
                 // Predicates to filter citizens based on userName and date range
                 var predicateRegistered = PredicateBuilder.New<DashboardCitizenBaseModel>(true);
-                predicateRegistered = predicateRegistered.And(x => x.user_name == (userName));
-                var predicateEnrolled = PredicateBuilder.New<DashboardCitizenBaseModel>(true);
-                predicateEnrolled = predicateEnrolled.And(x => x.user_name == (userName));
+                predicateRegistered = predicateRegistered.And(x => x.registered_by.Value == (user.user_id));
+                var predicateEnrolled = PredicateBuilder.New<DashboardCitizenBaseModel>(true);               
+                predicateEnrolled = predicateEnrolled.And(x => x.enrolled_by == (user.user_id));
+                var predicateCompliance = PredicateBuilder.New<DashboardCitizenBaseModel>(true);
                 if (!string.IsNullOrEmpty(dateStart) && !string.IsNullOrEmpty(dateEnd))
                 {
                     // Adding conditions for date range if provided

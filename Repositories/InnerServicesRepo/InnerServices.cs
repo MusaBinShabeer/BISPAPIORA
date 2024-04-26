@@ -307,14 +307,13 @@ namespace BISPAPIORA.Repositories.InnerServicesRepo
         }
         public async Task<double> GetTotalExpectedSavingAmount(List<int> quarterCodes, Guid fk_citizen,double expectedSavingAmountPerQuarter) 
         {
-            double total = 0;
+           
+            double totalActualExpected = 0;
             foreach(int code in quarterCodes)
             {
-                var amountSavedPerQuarter = await GetExpectedSavingAmount(code, fk_citizen, expectedSavingAmountPerQuarter);
- 
-                 total = total + amountSavedPerQuarter;
+                totalActualExpected = await GetExpectedSavingAmount(code, fk_citizen, expectedSavingAmountPerQuarter, totalActualExpected);
             }
-            return total;
+            return totalActualExpected;
 
             
         }
@@ -323,15 +322,15 @@ namespace BISPAPIORA.Repositories.InnerServicesRepo
             double total = 0;
             foreach (int code in quarterCodes)
             {
-                var amountSavedPerQuarter = await GetActualDueAmount(code, fk_citizen);
+                var amountDue = await GetActualDueAmount(code, fk_citizen);
 
-                total = total + amountSavedPerQuarter;
+                total = total + amountDue;
             }
             return total;
 
 
         }
-        public async Task<double> GetExpectedSavingAmount(int quarterCode, Guid fk_citizen, double expectedSavingAmountPerQuarter) 
+        public async Task<double> GetExpectedSavingAmount(int quarterCode, Guid fk_citizen, double expectedSavingAmountPerQuarter, double totalActualExpected) 
         { 
             var compliance= await db.tbl_citizen_compliances.Where(x=>x.fk_citizen==fk_citizen && x.citizen_compliance_quarter_code== quarterCode).Include(x=>x.tbl_transactions).FirstOrDefaultAsync();
             if(compliance!=null) 
@@ -361,24 +360,24 @@ namespace BISPAPIORA.Repositories.InnerServicesRepo
                         }
                     });
                     var amountSaved = double.Parse(amountSavedDecimal.ToString());
-                    if (amountSaved == expectedSavingAmountPerQuarter && amountSaved> expectedSavingAmountPerQuarter)
+                    if (amountSaved == (totalActualExpected+expectedSavingAmountPerQuarter) && amountSaved> totalActualExpected + expectedSavingAmountPerQuarter)
                     {
                         return 0;
                     }
                     else
                     {
-                        var difference = expectedSavingAmountPerQuarter - amountSaved;
-                        return difference > 0 ? difference : 0;
+                        var difference = (totalActualExpected + expectedSavingAmountPerQuarter) - amountSaved;
+                        return difference > 0 ?  difference : 0;
                     }
                 }
                 else
                 {
-                    return expectedSavingAmountPerQuarter;
+                    return (totalActualExpected + expectedSavingAmountPerQuarter);
                 }
             }
             else 
             {
-                return expectedSavingAmountPerQuarter;
+                return  (totalActualExpected + expectedSavingAmountPerQuarter);
             }
         }
         public async Task<double> GetActualDueAmount(int quarterCode, Guid fk_citizen)
