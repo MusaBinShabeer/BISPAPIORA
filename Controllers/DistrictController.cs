@@ -9,7 +9,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace BISPAPIORA.Controllers
 {
-    //[AppVersion]
+    [AppVersion]
     [Route("api/[controller]")]
     [ApiController]
     public class DistrictController : ControllerBase
