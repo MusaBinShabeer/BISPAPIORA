@@ -11,6 +11,7 @@ namespace BISPAPIORA.Models.DTOS.DashboardDTO
     {
         public string educationalBackground { get; set; } = default!;
         public double educationalBackgroundPercentage { get; set; } = 0;
+        public double educationalBackgroundCount { get; set; } = 0;
     }
 
     public class DashboardCitizenEmploymentPercentageStatDTO
@@ -29,12 +30,14 @@ namespace BISPAPIORA.Models.DTOS.DashboardDTO
     {
         public string citizenMaritalStatus { get; set; }
         public double citizenMaritalStatusPercentage { get; set; }
+        public double citizenMaritalStatusCount { get; set; }
     }
 
     public class DashboardProvinceCitizenCountPercentageDTO
     {
         public string provinceName { get; set; } = string.Empty;
         public double citizenPercentage { get; set; } = 0;
+        public double citizenCount { get; set; } = 0;
     }
 
     public class DashboardCitizenCountSavingAmountDTO
@@ -62,17 +65,20 @@ namespace BISPAPIORA.Models.DTOS.DashboardDTO
         public int registeredCount { get; set; } = 0;
         public int enrolledCount { get; set; } = 0;
         public int complianceCount { get; set; } = 0;
+        public bool userStatus { get; set; } = false;
     }
     public class WebDashboardStats
     {
         public string StatName { get; set; } = string.Empty;
         public double StatCount { get; set; } = 0;
+        public double StatPercentage { get; set; } = 0;
     }
     public class DashboardCitizenBaseModel
     {
         public Guid citizen_id { get; set; }
         public string citizen_name { get; set; } = string.Empty;
         public Guid? registered_by { get; set; } = default!;
+        public Guid? compliant_by { get; set; } = default!;
         public DateTime? registered_date { get; set; } = default!;
         public Guid? enrolled_by { get; set; } = default!;
         public DateTime? enrolled_date { get; set; } = default!;
@@ -84,13 +90,14 @@ namespace BISPAPIORA.Models.DTOS.DashboardDTO
         public string citizen_martial_status { get; set; } = string.Empty;
         public decimal? saving_amount { get; set; } = 0;
         public Guid? citizen_scheme_id { get; set; } = default!;
-
         public DateTime? insertion_date { get; set; } = default!;
         public tbl_enrollment? enrollment { get; set; } = default!;
         public List<tbl_citizen_compliance> tbl_citizen_compliances { get; set; } =default!;
+        public List<tbl_transaction> tbl_transactions { get; set; } =default!;
         public List<tbl_payment> payments { get; set; } = default!;
         public tbl_citizen_scheme? tbl_citizen_scheme { get; set; }
         public tbl_registration? registration { get; set; } = default!;
+        public double totalSavings { get; set; } = 0;
     }
     public class CitizenBaseModel
     {
@@ -146,6 +153,7 @@ namespace BISPAPIORA.Models.DTOS.DashboardDTO
         public virtual tbl_image_citizen_finger_print? tbl_image_citizen_finger_print { get; set; }
 
         public virtual ICollection<tbl_transaction> tbl_transactions { get; set; } = new List<tbl_transaction>();
+        public virtual ICollection<tbl_payment> tbl_payments { get; set; } = new List<tbl_payment>();
 
         public bool? is_valid_beneficiary { get; set; }
 

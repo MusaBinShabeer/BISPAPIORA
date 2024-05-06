@@ -335,7 +335,7 @@ namespace BISPAPIORA.Repositories.InnerServicesRepo
             var payments= await db.tbl_payments.Where(x=>x.fk_citizen==fk_citizen && quarterCodes.Contains( x.payment_quarter_code.Value )).ToListAsync();            
             var totalExpectedDue= payments.Select(x=>x.quarterly_due_amount).Sum();
             var totalActualDue = payments.Select(x => x.actual_due_amount).Sum();
-            var noOfQuartersCompliant= int.Parse((actualSaving/ savingAmountperQuarter).ToString());
+            var noOfQuartersCompliant= int.Parse((Math.Floor(actualSaving/ savingAmountperQuarter)).ToString());
             var quarterlyDue = payments[0].quarterly_due_amount;
             if (noOfQuartersCompliant > 0)
             {
@@ -442,9 +442,11 @@ namespace BISPAPIORA.Repositories.InnerServicesRepo
             else
             {
                 var compliance = await db.tbl_citizen_compliances
-                   .Where(x => x.citizen_compliance_quarter_code.Equals(quarterCodes.LastOrDefault()) && x.fk_citizen == citizenId)
-                   .FirstOrDefaultAsync();
+                     .Where(x => x.fk_citizen == citizenId)
+                     .OrderBy(x => x.citizen_compliance_quarter_code)
+                     .LastOrDefaultAsync();
                 return compliance != null ? compliance.is_compliant.Value : false;
+              
             }
         }
         public async Task<int> CheckCompliance(List<DashboardCitizenLocationModel> citizens)
@@ -475,9 +477,11 @@ namespace BISPAPIORA.Repositories.InnerServicesRepo
                 else
                 {
                     var compliance = await db.tbl_citizen_compliances
-                       .Where(x => x.citizen_compliance_quarter_code.Equals(quarterCodes.LastOrDefault()) && x.fk_citizen == citizen.citizen_id)
-                       .FirstOrDefaultAsync();
+                     .Where(x => x.fk_citizen == citizen.citizen_id)
+                     .OrderBy(x => x.citizen_compliance_quarter_code)
+                     .LastOrDefaultAsync();
                     if (compliance != null)
+                        if (compliance != null)
                     {
                         if (compliance.is_compliant == true)
                         {
@@ -516,8 +520,9 @@ namespace BISPAPIORA.Repositories.InnerServicesRepo
                 else
                 {
                     var compliance = await db.tbl_citizen_compliances
-                       .Where(x => x.citizen_compliance_quarter_code.Equals(quarterCodes.LastOrDefault()) && x.fk_citizen == citizen.citizen_id)
-                       .FirstOrDefaultAsync();
+                       .Where(x =>  x.fk_citizen == citizen.citizen_id)
+                       .OrderBy(x=>x.citizen_compliance_quarter_code)
+                       .LastOrDefaultAsync();
                     if (compliance != null)
                     {
                         if (compliance.is_compliant == true)
@@ -558,8 +563,52 @@ namespace BISPAPIORA.Repositories.InnerServicesRepo
                 else
                 {
                     var compliance = await db.tbl_citizen_compliances
-                       .Where(x => x.citizen_compliance_quarter_code.Equals(quarterCodes.LastOrDefault()) && x.fk_citizen == citizen.citizen_id)
-                       .FirstOrDefaultAsync();
+                     .Where(x => x.fk_citizen == citizen.citizen_id)
+                     .OrderBy(x => x.citizen_compliance_quarter_code)
+                     .LastOrDefaultAsync();
+                    if (compliance != null)
+                    {
+                        if (compliance.is_compliant == true)
+                        {
+                            compliiantCitizen.Add(citizen);
+                        };
+                    }
+                }
+            }
+            return compliiantCitizen;
+        }
+        public async Task<List<CitizenBaseModel>> GetComplaintCitizen(List<CitizenBaseModel> citizens)
+        {
+            var count = 0;
+            List<CitizenBaseModel> compliiantCitizen = new List<    CitizenBaseModel>();
+            foreach (var citizen in citizens)
+            {
+                var quarterCodesDto = GetAllQuarterCodes(citizen.tbl_citizen_scheme.citizen_scheme_quarter_code.Value);
+                var quarterCodes = quarterCodesDto.Select(x => x.quarterCode).ToList();
+                var month = DateTime.Now.Month;
+                var year = DateTime.Now.Year;
+                var currentQuarter = GetQuarter(month);
+                var currentQuarterIndex = (int)Enum.Parse<QuarterIndexEnum>(currentQuarter.ToString());
+                var currentQuarterCode = (year * 4) + currentQuarterIndex;
+                if (quarterCodes.Contains(currentQuarterCode))
+                {
+                    var compliance = await db.tbl_citizen_compliances
+                        .Where(x => x.citizen_compliance_quarter_code.Equals(currentQuarterCode) && x.fk_citizen == citizen.citizen_id)
+                        .FirstOrDefaultAsync();
+                    if (compliance != null)
+                    {
+                        if (compliance.is_compliant == true)
+                        {
+                            compliiantCitizen.Add(citizen);
+                        };
+                    }
+                }
+                else
+                {
+                    var compliance = await db.tbl_citizen_compliances
+                     .Where(x => x.fk_citizen == citizen.citizen_id)
+                     .OrderBy(x => x.citizen_compliance_quarter_code)
+                     .LastOrDefaultAsync();
                     if (compliance != null)
                     {
                         if (compliance.is_compliant == true)

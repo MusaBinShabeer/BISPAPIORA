@@ -44,5 +44,6 @@ namespace BISPAPIORA.Models.DTOS.CitizenComplianceDTO
         public int citizenComplianceCode { get; set; } = default!;
         public string compliantByUser { get; set; } = string.Empty;
         public string citizenCnic { get; set; } = string.Empty;
+        public string complianceInsertionDate { get; set; } = string.Empty;
     }
 }

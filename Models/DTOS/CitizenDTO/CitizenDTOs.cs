@@ -46,6 +46,7 @@ namespace BISPAPIORA.Models.DTOS.CitizenDTO
         public string enrolledByUser { get; set; } = string.Empty;
         public string ibanNo { get; set; } = string.Empty;
         public string accountHolderName { get; set; } = string.Empty;
+        public string citizenAccountHolderName { get; set; } = string.Empty;
         public string aIOA { get; set; } = string.Empty;
         public string citizenIbanNo { get; set; } = string.Empty;
         public string citizenAccountTypeName { get; set; } = string.Empty;
@@ -68,5 +69,7 @@ namespace BISPAPIORA.Models.DTOS.CitizenDTO
         public string imageCitizenThumbPrintData { get; set; } = string.Empty;
         public string imageCitizenThumbPrintContentType { get; set; } = string.Empty;
         public bool isCompliant { get; set; } = false;
+        public double totalSavings { get; set; } = 0;
+        public double totalDueAmount { get; set;} = 0;
     }
 }

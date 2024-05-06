@@ -71,7 +71,7 @@ namespace BISPAPIORA.Repositories.CitizenComplianceServicesRepo
                     var paymentToUpdate = await db.tbl_payments
                            .Where(x => x.fk_citizen == Guid.Parse(model.fkCitizen) && x.payment_quarter_code == newCitizenCompliance.citizen_compliance_quarter_code)
                            .FirstOrDefaultAsync();
-                    if (expectedSaving==0)
+                    if (expectedSaving<=actualSavings)
                     {
                         newCitizenCompliance.is_compliant = true;
                         await db.SaveChangesAsync();

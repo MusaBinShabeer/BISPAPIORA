@@ -72,5 +72,6 @@ namespace BISPAPIORA.Models.DTOS.EnrollmentDTO
         public string enrolledDate { get; set; } = string.Empty;
         public int citizenCode { get; set; } = default!;
         public string enrolledByUser { get; set; } = string.Empty;
+        public int lastComplianceQuarterCode { get; set; } = 0;
     }
 }

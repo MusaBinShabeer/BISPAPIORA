@@ -59,12 +59,12 @@ namespace BISPAPIORA.Controllers
         /// <param name="enrollment">A boolean indicating whether to include enrolled citizens.</param>
         /// <returns>An HTTP response containing the citizens' data for the web application.</returns>
         [HttpGet("GetCitizensForWeb")]
-        public async Task<ActionResult<ResponseModel<List<CitizenResponseDTO>>>> GetCitizensForWeb(string dateStart = null, string dateEnd = null, string provinceId = null, string districtId = null, string tehsilId = null, bool registration = false, bool enrollment = false)
+        public async Task<ActionResult<ResponseModel<List<CitizenResponseDTO>>>> GetCitizensForWeb(string dateStart = null, string dateEnd = null, string provinceId = null, string districtId = null, string tehsilId = null, bool registration = false, bool enrollment = false, bool compliant=false)
         {
             // Check if the CNIC parameter is not null or empty
 
             // Get the registration information by CNIC and return the response
-            var response = citizenService.GetCitizensDataForWeb(dateStart, dateEnd, provinceId, districtId, tehsilId, registration, enrollment);
+            var response = citizenService.GetCitizensDataForWeb(dateStart, dateEnd, provinceId, districtId, tehsilId, registration, enrollment,compliant);
             return Ok(await response);
 
         }
@@ -79,12 +79,12 @@ namespace BISPAPIORA.Controllers
         ///     An HTTP response containing the performance statistics for the user or a bad request response if the date range is not valid.
         /// </returns>
         [HttpGet("GetUserPerformanceStatsForApp")]
-        public async Task<ActionResult<ResponseModel<DashboardUserPerformanceResponseDTO>>> GetUserPerformanceStatsForApp(string userName, string dateStart = null, string dateEnd = null)
+        public async Task<ActionResult<ResponseModel<DashboardUserPerformanceResponseDTO>>> GetUserPerformanceStatsForApp(string userEmail, string dateStart = null, string dateEnd = null)
         {
             // Check if both dateStart and dateEnd are provided or both are null
             if ((string.IsNullOrEmpty(dateStart) && string.IsNullOrEmpty(dateEnd)) || (dateStart != null && dateEnd != null))
             {
-                var response = dashboardServices.GetUserPerformanceStatsForApp(userName, dateStart, dateEnd);
+                var response = dashboardServices.GetUserPerformanceStatsForApp(userEmail, dateStart, dateEnd);
                 return Ok(await response);
             }
             else
