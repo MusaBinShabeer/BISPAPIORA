@@ -96,6 +96,8 @@ namespace BISPAPIORA.Repositories.AuthServicesRepo
                 // Map user information to the response DTO
                 var responseUser = complexMapperServices.ComplexAutomapperForLogin().Map<LoginResponseDTO>(user);
                 responseUser.userToken = new JwtSecurityTokenHandler().WriteToken(token);
+                user.user_token = responseUser.userToken;
+                await db.SaveChangesAsync();
 
                 // Return a success response model with the user information and JWT token
                 return new ResponseModel<LoginResponseDTO>()
