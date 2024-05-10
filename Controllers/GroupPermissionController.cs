@@ -20,7 +20,7 @@ namespace BISPAPIORA.Controllers
         }
         // Add New GroupPermission Method
         [HttpPost]
-        public async Task<ActionResult<ResponseModel<GroupPermissionResponseDTO>>> Post(AddGroupPermissionDTO model)
+        public async Task<ActionResult<ResponseModel<List<GroupPermissionResponseDTO>>>> Post(List<AddGroupPermissionDTO> model)
         {
             if (ModelState.IsValid)
             {

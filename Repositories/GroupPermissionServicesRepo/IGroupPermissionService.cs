@@ -6,7 +6,7 @@ namespace BISPAPIORA.Repositories.GroupPermissionServicesRepo
 {
     public interface IGroupPermissionService
     {
-        public Task<ResponseModel<GroupPermissionResponseDTO>> AddGroupPermission(AddGroupPermissionDTO model);
+        public Task<ResponseModel<List<GroupPermissionResponseDTO>>> AddGroupPermission(List<AddGroupPermissionDTO> model);
         public Task<ResponseModel<GroupPermissionResponseDTO>> DeleteGroupPermission(string groupPermissionId);
         public Task<ResponseModel<List<GroupPermissionResponseDTO>>> GetGroupPermissionsList();
         public Task<ResponseModel<GroupPermissionResponseDTO>> GetGroupPermission(string groupPermissionId);

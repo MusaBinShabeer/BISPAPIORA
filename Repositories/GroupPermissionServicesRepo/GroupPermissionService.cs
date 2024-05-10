@@ -21,51 +21,42 @@ namespace BISPAPIORA.Repositories.GroupPermissionServicesRepo
 
         // Adds a new GroupPermission record to the database based on the provided model
         // Returns a response model indicating the success or failure of the operation
-        public async Task<ResponseModel<GroupPermissionResponseDTO>> AddGroupPermission(AddGroupPermissionDTO model)
+        public async Task<ResponseModel<List<GroupPermissionResponseDTO>>> AddGroupPermission(List<AddGroupPermissionDTO> model)
         {
             try
             {
+                var newGroupPermissions = new List<tbl_group_permission>();
                 // Check if a GroupPermission with the same name already exists in the database
-                var groupPermission = await db.tbl_group_permissions.Where(x => x.fk_user_type.Equals(Guid.Parse(model.fkUserType)) && x.fk_functionality.Equals(Guid.Parse(model.fkFunctionality))).FirstOrDefaultAsync();
-
-                if (groupPermission == null)
+                foreach (var item in model)
                 {
                     // If no existing record is found, create a new GroupPermission record
-                    var newGroupPermission = new tbl_group_permission();
-                    
-                    // Map properties from the provided DTO to the entity using AutoMapper
-                    newGroupPermission = _mapper.Map<tbl_group_permission>(model);
-                    db.tbl_group_permissions.Add(newGroupPermission);
-                    await db.SaveChangesAsync();
-                    // Return a success response model with details of the added GroupPermission record
-                    return new ResponseModel<GroupPermissionResponseDTO>()
+                    var groupPermission = await db.tbl_group_permissions.Where(x => x.fk_user_type.Equals(Guid.Parse(item.fkUserType)) && x.fk_functionality.Equals(Guid.Parse(item.fkFunctionality))).FirstOrDefaultAsync();
+                    if (groupPermission == null)
                     {
-                        success = true,
-                        remarks = $"Group Permission has been added successfully",
-                        data = _mapper.Map<GroupPermissionResponseDTO>(newGroupPermission),
-                    };
+                        // Map properties from the provided DTO to the entity using AutoMapper
+                        newGroupPermissions.Add( _mapper.Map<tbl_group_permission>(item));
+                    }                 
                 }
-                else
+                await db.tbl_group_permissions.AddRangeAsync(newGroupPermissions);
+                await db.SaveChangesAsync();
+                // Return a success response model with details of the added GroupPermission record   
+                return new ResponseModel<List<GroupPermissionResponseDTO>>()
                 {
-                    // If a GroupPermission with the same name already exists, return a failure response
-                    return new ResponseModel<GroupPermissionResponseDTO>()
-                    {
-                        success = false,
-                        remarks = $"Group Permission of User type: {groupPermission.tbl_user_type.user_type_name} with Functionality {groupPermission.tbl_functionality.functionality_name} has been added successfully"
-                    };
-                }
+                    success = true,
+                    remarks = $"Group Permission has been added successfully",
+                    data = _mapper.Map <List<GroupPermissionResponseDTO>>(newGroupPermissions),
+                };
             }
             catch (Exception ex)
             {
                 // Return a failure response model with details about the exception if an error occurs
-                return new ResponseModel<GroupPermissionResponseDTO>()
+                return new ResponseModel<List<GroupPermissionResponseDTO>>()
                 {
                     success = false,
                     remarks = $"There Was Fatal Error {ex.Message.ToString()}"
                 };
             }
         }
-
         // Deletes an existing GroupPermission record from the database based on the provided GroupPermission ID
         // Returns a response model indicating the success or failure of the operation
         public async Task<ResponseModel<GroupPermissionResponseDTO>> DeleteGroupPermission(string GroupPermissionId)
