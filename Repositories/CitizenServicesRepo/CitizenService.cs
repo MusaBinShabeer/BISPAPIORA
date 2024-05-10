@@ -753,6 +753,7 @@ namespace BISPAPIORA.Repositories.CitizenServicesRepo
                             response.data = _mapper.Map<RegistrationResponseDTO>((verifyCitizen.data, true));
                             response.remarks = "Found";
                             response.success = true;
+                            return response;
                         }
                         else
                         {
@@ -771,11 +772,10 @@ namespace BISPAPIORA.Repositories.CitizenServicesRepo
                         else
                         {
                             response.success = false;
-                            response.remarks = "Applicant not data";
+                            response.remarks = "Applicant not Found";
                             return response;
                         }
                     }
-                    return new ResponseModel<RegistrationResponseDTO>() { remarks="Unexpected Error", success = false };
                 }
             }
             catch (Exception ex)

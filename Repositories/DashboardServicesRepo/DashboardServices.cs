@@ -466,13 +466,15 @@ namespace BISPAPIORA.Repositories.DashboardServicesRepo
                                                          {
                                                              // Grouping citizens by insertion date rounded to every 15 days
                                                              var insertionDate = citizen.insertion_date!.Value;
-                                                             var roundedDate = new DateTime(insertionDate.Year, insertionDate.Month, 1);
-                                                             var daysToAdd = 15 - (roundedDate.Day % 15); // Days to add to reach the next 15th day
-                                                             return roundedDate.AddDays(daysToAdd);
+                                                             var roundedDate = new DateTime(insertionDate.Year, insertionDate.Month, insertionDate.Day);
+                                                             var daysToAdd =  15-(roundedDate.Day % 15); // Days to add to reach the next 15th day
+                                                             
+                                                                 return roundedDate.AddDays(daysToAdd);
+                                                                                                                       
                                                          })
                                                          .Select(group =>
                                                          {
-                                                             var insertionMonth = new DateTime(group.Key.Year, group.Key.Month, 1); // The insertion month for the current group
+                                                             var insertionMonth = new DateTime(group.Key.Year, group.Key.Month, group.Key.Day); // The insertion month for the current group
                                                              var citizenCount = group.Count(); // Counting the number of citizens for the current insertion month
                                                              return new DashboardCitizenTrendDTO
                                                              {
