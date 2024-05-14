@@ -671,7 +671,7 @@ namespace BISPAPIORA.Repositories.CitizenServicesRepo
                         else
                         {
                             response.success = false;
-                            response.remarks = "Applicant not data";
+                            response.remarks = "Applicant not found";
                             return response;
                         }
                     }
