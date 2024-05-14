@@ -13,5 +13,6 @@ namespace BISPAPIORA.Repositories.AuthServicesRepo
     {
         public  Task<ResponseModel<LoginResponseDTO>> Login(LoginRequestDTO model);
         public  Task<ResponseModel<LoginResponseDTO>> Logout(string logoutId);
+        public  Task<ResponseModel<LoginResponseDTO>> ResetPassword(string userEmail);
     }
 }

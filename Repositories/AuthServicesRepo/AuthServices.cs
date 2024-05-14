@@ -18,6 +18,7 @@ namespace BISPAPIORA.Repositories.AuthServicesRepo
         private readonly Dbcontext db;
         private readonly IMapper mapper;
         private readonly IJwtUtils jwtUtils;
+        private readonly OtherServices otherServices= new OtherServices();
         private readonly IComplexMapperServices complexMapperServices;
         public AuthServices(IConfiguration configuration, Dbcontext db, IMapper mapper, IJwtUtils jwtUtils, IComplexMapperServices complexMapperServices)
         {
@@ -171,6 +172,45 @@ namespace BISPAPIORA.Repositories.AuthServicesRepo
                 response.remarks = ex.Message;
             }
             return response;
+        }
+        public async Task<ResponseModel<LoginResponseDTO>> ResetPassword(string userEmail)
+        {
+            try
+            {
+                // Retrieve user information from the database based on the provided email
+                var user = await db.tbl_users
+                    .Include(x => x.tbl_user_type).ThenInclude(x => x.tbl_group_permissions).ThenInclude(x => x.tbl_functionality)
+                    .Where(x => x.user_email.ToLower() == userEmail.ToLower()).FirstOrDefaultAsync();
+                if (user != null)
+                {
+                    user.user_password= otherServices.encodePassword("12345");
+                    user.is_ftp_set = false;
+                    await db.SaveChangesAsync();
+                    return  new ResponseModel<LoginResponseDTO>()
+                    {
+                        remarks = $"Password has been Resetted",
+                        success = true,
+                    };
+                }
+                else
+                {
+                    // If no user is found with the provided email, return a failure response
+                    return new ResponseModel<LoginResponseDTO>()
+                    {
+                        success = false,
+                        remarks = "Invalid Email/Password"
+                    };
+                }
+            }
+            catch (Exception ex)
+            {
+                // Return a failure response model with details about the exception if an error occurs during login
+                return new ResponseModel<LoginResponseDTO>()
+                {
+                    success = false,
+                    remarks = $"Login failed, there was a fatal error {ex.Message.ToString()}"
+                };
+            }
         }
     }
 }

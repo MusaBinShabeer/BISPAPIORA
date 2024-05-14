@@ -12,7 +12,7 @@ namespace BISPAPIORA.Models.DTOS.AuthDTO
         [Required(ErrorMessage = "Password is required")]
         public string userPassword { get; set; } = string.Empty;
        
-    }
+    }   
     public class LoginResponseDTO: UserDTO
     {
         public string userId { get; set; } = string.Empty;

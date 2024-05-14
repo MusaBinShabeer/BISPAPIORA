@@ -1,4 +1,5 @@
 ﻿using BISPAPIORA.Extensions;
+using BISPAPIORA.Extensions.Middleware;
 using BISPAPIORA.Models.DTOS.AuthDTO;
 using BISPAPIORA.Models.DTOS.ResponseDTO;
 using BISPAPIORA.Models.DTOS.UserDTOs;
@@ -8,10 +9,10 @@ using BISPAPIORA.Repositories.UserServicesRepo;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.IdentityModel.Tokens;
 
 namespace BISPAPIORA.Controllers
 {
-    [AllowAnonymous]
     [Route("api/[controller]")]
     [ApiController]
     public class AuthController : ControllerBase
@@ -28,6 +29,7 @@ namespace BISPAPIORA.Controllers
             this.userService = userService;
         }
         //Login Method
+        [AllowAnonymous]
         [HttpPost]
         [Route("login")]
         public async Task<ActionResult<ResponseModel<LoginResponseDTO>>> Login([FromBody] LoginRequestDTO model)
@@ -54,6 +56,7 @@ namespace BISPAPIORA.Controllers
             }
         }
         //Logout Method
+        [AllowAnonymous]
         [HttpGet]
         [Route("logout")]
         public async Task<ActionResult<ResponseModel<LoginResponseDTO>>> Logout(string id)
@@ -77,6 +80,7 @@ namespace BISPAPIORA.Controllers
             }
         }
         //Send Otp through Email
+        [AllowAnonymous]
         [HttpPost]
         [Route("SendOtp")]
         public async Task<ActionResult<ResponseModel<LoginResponseDTO>>> SendOtp(string to)
@@ -104,7 +108,27 @@ namespace BISPAPIORA.Controllers
                 });
             }
         }
+        [AppVersion]
+        [HttpGet]
+        [Route("ResetPassword")]
+        public async Task<ActionResult<ResponseModel<LoginResponseDTO>>> ResetPassword(string userEmail)
+        {
+            if (!string.IsNullOrEmpty(userEmail))
+            {
+                var response = await authManager.ResetPassword(userEmail);
+                return Ok(response);
+            }
+            else
+            {
+                return BadRequest(new ResponseModel<LoginResponseDTO>()
+                {
+                    remarks = "Request is not valid",
+                    success = false
+                });
+            }
+        }
         //Verifing OTP 
+        [AllowAnonymous]
         [HttpGet]
         [Route("VerifyOTP")]
         public async Task<ActionResult<ResponseModel<UserResponseDTO>>> VerifyOTP(string to,string otp)

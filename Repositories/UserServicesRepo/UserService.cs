@@ -346,7 +346,7 @@ namespace BISPAPIORA.Repositories.UserServicesRepo
             }
         }
 
-        // Updates the FTP (File Transfer Protocol) information for a user based on the provided model
+        // Updates the FTP (File Time Paswword) information for a user based on the provided model
         // Returns a response model indicating the success or failure of the operation
         public async Task<ResponseModel<UserResponseDTO>> UpdateFTP(UpdateUserFtpDTO model)
         {
