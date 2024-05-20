@@ -665,13 +665,13 @@ namespace BISPAPIORA.Repositories.CitizenServicesRepo
                         if (verifyCitizen.data != null)
                         {
                             response.success = false;
-                            response.remarks = "Applicant not eligible";
+                            response.remarks = $"Applicant {verifyCitizen.remarks}";
                             return response;
                         }
                         else
                         {
                             response.success = false;
-                            response.remarks = "Applicant not found";
+                            response.remarks = $"Applicant {verifyCitizen.remarks}";
                             return response;
                         }
                     }
@@ -955,6 +955,36 @@ namespace BISPAPIORA.Repositories.CitizenServicesRepo
                     success = false,
                     remarks = $"There Was Fatal Error {ex.Message.ToString()}"
                 };
+            }
+        }
+        public async Task<bool> UpdatePmt()
+        {
+            try
+            {
+                var citizens = await db.tbl_citizens.Where(x => x.is_valid_beneficiary == null ).ToListAsync();
+                foreach (var citizen in citizens)
+                {
+
+                    var verifyCitizen = await innerServices.VerifyCitzen(citizen.citizen_cnic);
+                    if (verifyCitizen.success)
+                    {
+                        citizen.unique_hh_id = Decimal.Parse(verifyCitizen.data.unique_hh_id.Value.ToString());
+                        citizen.pmt = verifyCitizen.data.PMT.ToString();
+                        citizen.is_valid_beneficiary = true;
+                        citizen.submission_date = verifyCitizen.data.submission_date;
+                        await db.SaveChangesAsync();
+                    }
+                    else
+                    {
+                        citizen.is_valid_beneficiary = false;
+                        await db.SaveChangesAsync();
+                    }
+                }
+                return true;
+            }
+            catch (Exception ex)
+            {
+                return false;
             }
         }
 

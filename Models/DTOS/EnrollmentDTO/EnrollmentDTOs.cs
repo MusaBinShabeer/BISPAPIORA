@@ -48,6 +48,7 @@ namespace BISPAPIORA.Models.DTOS.EnrollmentDTO
         public new string fkEmployment { get; set; } = string.Empty;
         [Required]
         public new string fkEducation { get; set; } = string.Empty;
+        public bool is_valid_beneficiary { get; set; } = false;
     }
     public class UpdateEnrollmentDTO : EnrollmentDTO
     {

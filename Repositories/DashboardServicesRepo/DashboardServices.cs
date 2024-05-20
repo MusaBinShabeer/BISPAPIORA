@@ -45,7 +45,7 @@ namespace BISPAPIORA.Repositories.DashboardServicesRepo
                    .Include(x => x.tbl_citizen_compliances).ThenInclude(x => x.compliant_by)
                    .Where(x => x.tbl_enrollment != null)
                    .ProjectTo<DashboardCitizenBaseModel>(mapper.ConfigurationProvider);              
-                var user= await db.tbl_users.Where(x=>x.user_email == userEmail).FirstOrDefaultAsync();
+                var user= await db.tbl_users.Where(x=>x.user_email.ToLower() == userEmail.ToLower()).FirstOrDefaultAsync();
                 if (user != null)
                 {
                     var complianceCitizenQuery = db.tbl_citizen_compliances.Include(x => x.compliant_by).Where(x => x.fk_compliant_by == user.user_id).Select(x => x.tbl_citizen)
@@ -382,7 +382,7 @@ namespace BISPAPIORA.Repositories.DashboardServicesRepo
                 // Calculating percentage for each marital status group
                 var maritalStatusGroupsWithPercentage = maritalListEnums.Select(status =>
                 {
-                    var group = filteredCitizens.Where(c => c.citizen_martial_status == status.ToString());
+                    var group = filteredCitizens.Where(c => c.citizen_martial_status == status.ToString()).ToList();
                     var statusCount = group.Count();
                     var citizenPercentage = statusCount > 0 ? (double)statusCount / onlyEnrolledCitizens.Count * 100 : 0;
 

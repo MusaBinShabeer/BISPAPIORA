@@ -4,6 +4,7 @@ using BISPAPIORA.Models.DTOS.AuthDTO;
 using BISPAPIORA.Models.DTOS.ResponseDTO;
 using BISPAPIORA.Models.DTOS.UserDTOs;
 using BISPAPIORA.Repositories.AuthServicesRepo;
+using BISPAPIORA.Repositories.CitizenServicesRepo;
 using BISPAPIORA.Repositories.InnerServicesRepo;
 using BISPAPIORA.Repositories.UserServicesRepo;
 using Microsoft.AspNetCore.Authorization;
@@ -20,13 +21,15 @@ namespace BISPAPIORA.Controllers
         IAuthServices authManager;
         IInnerServices innerServices;
         IUserService userService;
+        ICitizenService citizenService;
         OtherServices otherServices = new OtherServices();
         //Constructor
-        public AuthController(IAuthServices manager, IInnerServices innerServices, IUserService userService)
+        public AuthController(IAuthServices manager, IInnerServices innerServices, IUserService userService, ICitizenService citizenService )
         {
             authManager = manager;
             this.innerServices = innerServices;
             this.userService = userService;
+            this.citizenService = citizenService;
         }
         //Login Method
         [AllowAnonymous]
@@ -153,6 +156,16 @@ namespace BISPAPIORA.Controllers
                     success = false
                 });
             }
+        }
+        [AllowAnonymous]
+        [HttpPost]
+        [Route("UpdatePMT")]
+        public async Task<bool> UpdatePMT()
+        {
+
+            var userResposne = await citizenService.UpdatePmt();
+               return true;
+           
         }
 
     }
