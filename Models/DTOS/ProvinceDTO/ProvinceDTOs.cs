@@ -13,7 +13,7 @@ namespace BISPAPIORA.Models.DTOS.ProvinceDTO
         [Required]
         public new string provinceName { get; set; } = string.Empty;
         [Required]
-        public new string id { get; set; } = string.Empty;
+        public new int id { get; set; } = default(int);
     }
     public class UpdateProvinceDTO : ProvinceDTO
     {
