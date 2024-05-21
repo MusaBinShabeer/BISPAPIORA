@@ -76,7 +76,7 @@ namespace BISPAPIORA.Repositories.DistrictServicesRepo
                 if (existingDistrict != null)
                 {
                     // Remove the existing district and save changes to the database
-                    db.tbl_districts.Remove(existingDistrict);
+                    existingDistrict.is_active = false;
                     await db.SaveChangesAsync();
 
                     // Return a success response model indicating that the district has been deleted
@@ -123,6 +123,50 @@ namespace BISPAPIORA.Repositories.DistrictServicesRepo
                     return new ResponseModel<List<DistrictResponseDTO>>()
                     {
                         data = _mapper.Map<List<DistrictResponseDTO>>(districts),
+                        remarks = "Success",
+                        success = true,
+                    };
+                }
+                else
+                {
+                    // Return a failure response model if no districts are found
+                    return new ResponseModel<List<DistrictResponseDTO>>()
+                    {
+                        success = false,
+                        remarks = "No Record"
+                    };
+                }
+            }
+            catch (Exception ex)
+            {
+                // Return a failure response model with details about the exception if an error occurs
+                return new ResponseModel<List<DistrictResponseDTO>>()
+                {
+                    success = false,
+                    remarks = $"There Was Fatal Error {ex.Message.ToString()}"
+                };
+            }
+        }
+        // Retrieves a list of Active districts along with associated province details
+        // Returns a response model containing the list of districts or an error message
+        public async Task<ResponseModel<List<DistrictResponseDTO>>> GetActiveDistrictsList()
+        {
+            try
+            {
+                var isActive = true;
+                // Retrieve all districts from the database, including associated province details
+                var activeDistricts = await db.tbl_districts
+                    .Where(x=>x.is_active== isActive)
+                    .Include(x => x.tbl_province)
+                    .ToListAsync();
+
+                // Check if there are districts in the list
+                if (activeDistricts.Count() > 0)
+                {
+                    // Return a success response model with the list of districts
+                    return new ResponseModel<List<DistrictResponseDTO>>()
+                    {
+                        data = _mapper.Map<List<DistrictResponseDTO>>(activeDistricts),
                         remarks = "Success",
                         success = true,
                     };

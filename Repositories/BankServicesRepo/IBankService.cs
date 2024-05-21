@@ -9,6 +9,7 @@ namespace BISPAPIORA.Repositories.BankServicesRepo
         public Task<ResponseModel<BankResponseDTO>> AddBank(AddBankDTO model);
         public Task<ResponseModel<BankResponseDTO>> DeleteBank(string bankId);
         public Task<ResponseModel<List<BankResponseDTO>>> GetBanksList();
+        public Task<ResponseModel<List<BankResponseDTO>>> GetActiveBanksList();
         public Task<ResponseModel<BankResponseDTO>> GetBank(string bankId);
         public Task<ResponseModel<BankResponseDTO>> UpdateBank(UpdateBankDTO model);
     }

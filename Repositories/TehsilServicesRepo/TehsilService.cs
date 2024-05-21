@@ -72,12 +72,14 @@ namespace BISPAPIORA.Repositories.TehsilServicesRepo
             try
             {
                 // Retrieve the existing tehsil from the database based on the tehsilId
-                var existingTehsil = await db.tbl_tehsils.Where(x => x.tehsil_id == Guid.Parse(tehsilId)).FirstOrDefaultAsync();
+                var existingTehsil = await db.tbl_tehsils
+                    .Where(x => x.tehsil_id == Guid.Parse(tehsilId))
+                    .FirstOrDefaultAsync();
 
                 if (existingTehsil != null)
                 {
                     // Remove the existing tehsil and save changes to the database
-                    db.tbl_tehsils.Remove(existingTehsil);
+                    existingTehsil.is_active = false;
                     await db.SaveChangesAsync();
 
                     // Return a success response model indicating that the tehsil has been deleted
@@ -148,6 +150,50 @@ namespace BISPAPIORA.Repositories.TehsilServicesRepo
             }
         }
 
+        // Retrieves a list of active tehsils along with associated district and province details
+        // Returns a response model containing the list of tehsils or an error message
+        public async Task<ResponseModel<List<TehsilResponseDTO>>> GetActiveTehsilsList()
+        {
+            try
+            {
+                var isActive= true;
+                // Retrieve all tehsils from the database, including associated district and province details
+                var activeTehsils = await db.tbl_tehsils
+                    .Include(x => x.tbl_district)
+                    .Include(x => x.tbl_district.tbl_province)
+                    .Where(x=>x.is_active== isActive)
+                    .ToListAsync();
+
+                if (activeTehsils.Count() > 0)
+                {
+                    // Return a success response model with the list of tehsils
+                    return new ResponseModel<List<TehsilResponseDTO>>()
+                    {
+                        data = _mapper.Map<List<TehsilResponseDTO>>(activeTehsils),
+                        remarks = "Success",
+                        success = true,
+                    };
+                }
+                else
+                {
+                    // Return a failure response model if no tehsils are found
+                    return new ResponseModel<List<TehsilResponseDTO>>()
+                    {
+                        success = false,
+                        remarks = "No Record"
+                    };
+                }
+            }
+            catch (Exception ex)
+            {
+                // Return a failure response model with details about the exception if an error occurs
+                return new ResponseModel<List<TehsilResponseDTO>>()
+                {
+                    success = false,
+                    remarks = $"There Was Fatal Error {ex.Message.ToString()}"
+                };
+            }
+        }
         // Retrieves a specific tehsil based on the provided tehsilId
         // Returns a response model containing the tehsil details or an error message
         public async Task<ResponseModel<TehsilResponseDTO>> GetTehsil(string tehsilId)

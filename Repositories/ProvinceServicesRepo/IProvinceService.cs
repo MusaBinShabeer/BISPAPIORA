@@ -9,7 +9,9 @@ namespace BISPAPIORA.Repositories.ProvinceServicesRepo
         public Task<ResponseModel<ProvinceResponseDTO>> AddProvince(AddProvinceDTO model);
         public Task<ResponseModel<ProvinceResponseDTO>> DeleteProvince(string provinceId);
         public Task<ResponseModel<List<ProvinceResponseDTO>>> GetProvincesList();
+        public Task<ResponseModel<List<ProvinceResponseDTO>>> GetActiveProvincesList();
         public Task<ResponseModel<ProvinceResponseDTO>> GetProvince(string provinceId);
         public Task<ResponseModel<ProvinceResponseDTO>> UpdateProvince(UpdateProvinceDTO model);
+
     }
 }

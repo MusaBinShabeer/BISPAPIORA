@@ -114,6 +114,12 @@ namespace BISPAPIORA.Controllers
             var response = provinceService.GetProvincesList();
             return Ok(await response);
         }
+        [HttpGet("GetActiveProvincesList")]
+        public async Task<ActionResult<ResponseModel<List<ProvinceResponseDTO>>>> GetActiveProvincesList()
+        {
+            var response = provinceService.GetActiveProvincesList();
+            return Ok(await response);
+        }
     }
 
 }

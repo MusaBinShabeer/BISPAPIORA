@@ -100,5 +100,11 @@ namespace BISPAPIORA.Controllers
             var response = educationService.GetEducationsList();
             return Ok(await response);
         }
+        [HttpGet("GetActiveEducationsList")]
+        public async Task<ActionResult<ResponseModel<List<EducationResponseDTO>>>> GetActiveEducationsList()
+        {
+            var response = educationService.GetActiveEducationsList();
+            return Ok(await response);
+        }
     }
 }

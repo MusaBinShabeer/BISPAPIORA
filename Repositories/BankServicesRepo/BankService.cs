@@ -79,7 +79,7 @@ namespace BISPAPIORA.Repositories.BankServicesRepo
                 if (existingBank != null)
                 {
                     // If the bank record is found, remove it from the database
-                    db.tbl_banks.Remove(existingBank);
+                    existingBank.is_active=false;
                     await db.SaveChangesAsync();
 
                     // Return a success response model indicating the deletion
@@ -118,6 +118,48 @@ namespace BISPAPIORA.Repositories.BankServicesRepo
             {
                 // Retrieve all bank records from the database
                 var banks = await db.tbl_banks.ToListAsync();
+
+                if (banks.Count() > 0)
+                {
+                    // If there are records, return a success response model with the list of banks
+                    return new ResponseModel<List<BankResponseDTO>>()
+                    {
+                        data = _mapper.Map<List<BankResponseDTO>>(banks),
+                        remarks = "Success",
+                        success = true,
+                    };
+                }
+                else
+                {
+                    // If no records are found, return a failure response
+                    return new ResponseModel<List<BankResponseDTO>>()
+                    {
+                        success = false,
+                        remarks = "No Record"
+                    };
+                }
+            }
+            catch (Exception ex)
+            {
+                // Return a failure response model with details about the exception if an error occurs
+                return new ResponseModel<List<BankResponseDTO>>()
+                {
+                    success = false,
+                    remarks = $"There Was Fatal Error {ex.Message.ToString()}"
+                };
+            }
+        }
+        // Retrieves a list of all active bank records from the database
+        // Returns a response model containing the list of banks or indicating the absence of records
+        public async Task<ResponseModel<List<BankResponseDTO>>> GetActiveBanksList()
+        {
+            try
+            {
+                var isActive= true;
+                // Retrieve all bank records from the database
+                var banks = await db.tbl_banks
+                    .Where(x=>x.is_active==isActive)
+                    .ToListAsync();
 
                 if (banks.Count() > 0)
                 {

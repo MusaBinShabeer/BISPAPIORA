@@ -9,6 +9,7 @@ namespace BISPAPIORA.Repositories.DistrictServicesRepo
         public Task<ResponseModel<DistrictResponseDTO>> AddDistrict(AddDistrictDTO model);
         public Task<ResponseModel<DistrictResponseDTO>> DeleteDistrict(string districtId);
         public Task<ResponseModel<List<DistrictResponseDTO>>> GetDistrictsList();
+        public Task<ResponseModel<List<DistrictResponseDTO>>> GetActiveDistrictsList();
         public Task<ResponseModel<DistrictResponseDTO>> GetDistrict(string districtId);
         public Task<ResponseModel<DistrictResponseDTO>> UpdateDistrict(UpdateDistrictDTO model);
         public Task<ResponseModel<List<DistrictResponseDTO>>> GetDistrictByProviceId(string provinceId);

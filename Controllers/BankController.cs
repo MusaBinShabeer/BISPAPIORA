@@ -101,5 +101,11 @@ namespace BISPAPIORA.Controllers
             var response = bankService.GetBanksList();
             return Ok(await response);
         }
+        [HttpGet("GetActiveBanksList")]
+        public async Task<ActionResult<ResponseModel<List<BankResponseDTO>>>> GetActiveBanksList()
+        {
+            var response = bankService.GetActiveBanksList();
+            return Ok(await response);
+        }
     }
 }

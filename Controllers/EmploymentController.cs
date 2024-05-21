@@ -101,5 +101,11 @@ namespace BISPAPIORA.Controllers
             var response = employmentService.GetEmploymentsList();
             return Ok(await response);
         }
+        [HttpGet("GetActiveEmploymentsList")]
+        public async Task<ActionResult<ResponseModel<List<EmploymentResponseDTO>>>> GetActiveEmploymentsList()
+        {
+            var response = employmentService.GetActiveEmploymentsList();
+            return Ok(await response);
+        }
     }
 }

@@ -102,6 +102,12 @@ namespace BISPAPIORA.Controllers
             var response = districtService.GetDistrictsList();
             return Ok(await response);
         }
+        [HttpGet("GetActiveDistrictsList")]
+        public async Task<ActionResult<ResponseModel<List<DistrictResponseDTO>>>> GetActiveDistrictsList()
+        {
+            var response = districtService.GetActiveDistrictsList();
+            return Ok(await response);
+        }
         //Get Distirict By Provicne Method
         [HttpGet("GetByProvinceId")]
         public async Task<ActionResult<ResponseModel<List<TehsilResponseDTO>>>> GetByProvinceId(string id)

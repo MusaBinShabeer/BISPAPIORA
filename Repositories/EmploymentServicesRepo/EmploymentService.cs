@@ -149,6 +149,49 @@ namespace BISPAPIORA.Repositories.EmploymentServicesRepo
             }
         }
 
+        // Retrieves a list of active employments from the database
+        // Returns a response model containing the list of employments or an error message
+        public async Task<ResponseModel<List<EmploymentResponseDTO>>> GetActiveEmploymentsList()
+        {
+            try
+            {
+                var isActive= true;
+                // Retrieve all employments from the database
+                var activeEmployments = await db.tbl_employments
+                    .Where(x=>x.is_active== isActive)
+                    .ToListAsync();
+
+                if (activeEmployments.Count() > 0)
+                {
+                    // Return a success response model with the list of employments
+                    return new ResponseModel<List<EmploymentResponseDTO>>()
+                    {
+                        data = _mapper.Map<List<EmploymentResponseDTO>>(activeEmployments),
+                        remarks = "Success",
+                        success = true,
+                    };
+                }
+                else
+                {
+                    // Return a failure response model if no employments are found
+                    return new ResponseModel<List<EmploymentResponseDTO>>()
+                    {
+                        success = false,
+                        remarks = "No Record"
+                    };
+                }
+            }
+            catch (Exception ex)
+            {
+                // Return a failure response model with details about the exception if an error occurs
+                return new ResponseModel<List<EmploymentResponseDTO>>()
+                {
+                    success = false,
+                    remarks = $"There Was Fatal Error {ex.Message.ToString()}"
+                };
+            }
+        }
+
         // Retrieves an employment based on the provided employmentId
         // Returns a response model containing the employment details or an error message
         public async Task<ResponseModel<EmploymentResponseDTO>> GetEmployment(string EmploymentId)

@@ -114,6 +114,14 @@ namespace BISPAPIORA.Controllers
             var response = tehsilService.GetTehsilsList();
             return Ok(await response);
         }
+        // GET api/Tehsil
+        // Endpoint for getting a list of all Active tehsils
+        [HttpGet("GetActiveTehsilsList")]
+        public async Task<ActionResult<ResponseModel<List<TehsilResponseDTO>>>> GetActiveTehsilsList()
+        {
+            var response = tehsilService.GetActiveTehsilsList();
+            return Ok(await response);
+        }
 
         // GET api/Tehsil/GetByDistrictId
         // Endpoint for getting a list of tehsils by district ID

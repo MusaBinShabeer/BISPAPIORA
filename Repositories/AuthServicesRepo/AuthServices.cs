@@ -133,12 +133,20 @@ namespace BISPAPIORA.Repositories.AuthServicesRepo
                     Guid userId = Guid.Parse(logoutId);
 
                     // Retrieve the user from the database based on the user ID
-                    var tenantUser = db.tbl_users.Where(x => x.user_id == userId).FirstOrDefault();
+                    var user = db.tbl_users.Include(x=>x.tbl_user_type).Where(x => x.user_id == userId).FirstOrDefault();
 
-                    if (tenantUser != null)
+                    if (user != null)
                     {
+                        var userRole = user.tbl_user_type.user_type_name;
+                        var authClaims = new List<Claim>
+                            {
+                                new Claim(ClaimTypes.Email, user.user_email),
+                                new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
+                                new Claim(ClaimTypes.Role, userRole)
+                            };
                         // If the user is found, clear the user token (perform logout) and save changes to the database
-                        tenantUser.user_token = "";
+                        var token = jwtUtils.GetToken(authClaims);
+                        user.user_token = new JwtSecurityTokenHandler().WriteToken(token);
                         await db.SaveChangesAsync();
 
                         // Return a success response model indicating the successful logout

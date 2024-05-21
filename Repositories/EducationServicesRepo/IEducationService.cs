@@ -8,6 +8,7 @@ namespace BISPAPIORA.Repositories.EducationServicesRepo
         public Task<ResponseModel<EducationResponseDTO>> AddEducation(AddEducationDTO model);
         public Task<ResponseModel<EducationResponseDTO>> DeleteEducation(string educationId);
         public Task<ResponseModel<List<EducationResponseDTO>>> GetEducationsList();
+        public Task<ResponseModel<List<EducationResponseDTO>>> GetActiveEducationsList();
         public Task<ResponseModel<EducationResponseDTO>> GetEducation(string educationId);
         public Task<ResponseModel<EducationResponseDTO>> UpdateEducation(UpdateEducationDTO model);
     }

@@ -766,13 +766,13 @@ namespace BISPAPIORA.Repositories.CitizenServicesRepo
                         if (verifyCitizen.data != null)
                         {
                             response.success = false;
-                            response.remarks = "Applicant not eligible";
+                            response.remarks = $"Applicant {verifyCitizen.remarks}";
                             return response;
                         }
                         else
                         {
                             response.success = false;
-                            response.remarks = "Applicant not Found";
+                            response.remarks = $"Applicant {verifyCitizen.remarks}";
                             return response;
                         }
                     }

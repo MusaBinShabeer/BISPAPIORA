@@ -76,9 +76,8 @@ namespace BISPAPIORA.Repositories.ProvinceServicesRepo
                 if (existingProvince != null)
                 {
                     // Remove the existing province and save changes to the database
-                    db.tbl_provinces.Remove(existingProvince);
+                    existingProvince.is_active= false;
                     await db.SaveChangesAsync();
-
                     // Return a success response model indicating that the province has been deleted
                     return new ResponseModel<ProvinceResponseDTO>()
                     {
@@ -122,6 +121,45 @@ namespace BISPAPIORA.Repositories.ProvinceServicesRepo
                     return new ResponseModel<List<ProvinceResponseDTO>>()
                     {
                         data = _mapper.Map<List<ProvinceResponseDTO>>(provinces),
+                        remarks = "Success",
+                        success = true,
+                    };
+                }
+                else
+                {
+                    // Return a failure response model if no provinces are found
+                    return new ResponseModel<List<ProvinceResponseDTO>>()
+                    {
+                        success = false,
+                        remarks = "No Record"
+                    };
+                }
+            }
+            catch (Exception ex)
+            {
+                // Return a failure response model with details about the exception if an error occurs
+                return new ResponseModel<List<ProvinceResponseDTO>>()
+                {
+                    success = false,
+                    remarks = $"There Was Fatal Error {ex.Message.ToString()}"
+                };
+            }
+        }
+        // Retrieves a list of all provinces
+        // Returns a response model containing the list of provinces or an error message
+        public async Task<ResponseModel<List<ProvinceResponseDTO>>> GetActiveProvincesList()
+        {
+            try
+            {
+                var isActive = true;
+                // Retrieve all provinces from the database
+                var activeProvinces = await db.tbl_provinces.Where(x=>x.is_active== isActive).ToListAsync();
+                if (activeProvinces.Count() > 0)
+                {
+                    // Return a success response model with the list of provinces
+                    return new ResponseModel<List<ProvinceResponseDTO>>()
+                    {
+                        data = _mapper.Map<List<ProvinceResponseDTO>>(activeProvinces),
                         remarks = "Success",
                         success = true,
                     };

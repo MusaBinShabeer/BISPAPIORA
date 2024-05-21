@@ -77,7 +77,7 @@ namespace BISPAPIORA.Repositories.EducationServicesRepo
                 if (existingEducation != null)
                 {
                     // Remove the existing education record from the database
-                    db.tbl_educations.Remove(existingEducation);
+                    existingEducation.is_active=false;
                     await db.SaveChangesAsync();
 
                     // Return a success response model indicating that the education record has been deleted
@@ -123,6 +123,48 @@ namespace BISPAPIORA.Repositories.EducationServicesRepo
                     return new ResponseModel<List<EducationResponseDTO>>()
                     {
                         data = _mapper.Map<List<EducationResponseDTO>>(educations),
+                        remarks = "Success",
+                        success = true,
+                    };
+                }
+                else
+                {
+                    // Return a failure response model if no records are found
+                    return new ResponseModel<List<EducationResponseDTO>>()
+                    {
+                        success = false,
+                        remarks = "No Record"
+                    };
+                }
+            }
+            catch (Exception ex)
+            {
+                // Return a failure response model with details about the exception if an error occurs
+                return new ResponseModel<List<EducationResponseDTO>>()
+                {
+                    success = false,
+                    remarks = $"There Was Fatal Error {ex.Message.ToString()}"
+                };
+            }
+        }
+        // Retrieves a list of all active education records from the database
+        // Returns a response model containing the list of education records
+        public async Task<ResponseModel<List<EducationResponseDTO>>> GetActiveEducationsList()
+        {
+            try
+            {
+                var isActive= true;
+                // Retrieve all education records from the database
+                var activeEducations = await db.tbl_educations
+                    .Where(x=>x.is_active==isActive)
+                    .ToListAsync();
+
+                if (activeEducations.Count() > 0)
+                {
+                    // Return a success response model with the list of education records
+                    return new ResponseModel<List<EducationResponseDTO>>()
+                    {
+                        data = _mapper.Map<List<EducationResponseDTO>>(activeEducations),
                         remarks = "Success",
                         success = true,
                     };
