@@ -25,6 +25,7 @@ public partial class tbl_user
     public DateTime? insertion_date { get; set; }
 
     public Guid? fk_user_type { get; set; } = default!;
+    public string? remarks { get; set; }
 
     public virtual tbl_user_type? tbl_user_type { get; set; }
 

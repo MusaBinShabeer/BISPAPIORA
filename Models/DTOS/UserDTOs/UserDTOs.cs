@@ -9,6 +9,7 @@ namespace BISPAPIORA.Models.DTOS.UserDTOs
         public string userPassword { get; set; } = string.Empty;
         public string fkUserType { get; set; } = string.Empty;
         public bool isActive { get; set; } = true;
+        public string remarks { get; set; } = string.Empty;
     }
     public class AddUserDTO : UserDTO
     {

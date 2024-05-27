@@ -824,6 +824,9 @@ public partial class Dbcontext : DbContext
                 .IsUnicode(false)
                 .HasDefaultValueSql("'12345'")
                 .HasColumnName("USER_PASSWORD");
+            entity.Property(e => e.remarks)
+              .IsUnicode(false)
+              .HasColumnName("REMARK");
             entity.Property(e => e.user_name)
                 .HasMaxLength(255)
                 .IsUnicode(false)
