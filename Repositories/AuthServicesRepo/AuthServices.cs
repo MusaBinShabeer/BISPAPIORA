@@ -35,22 +35,36 @@ namespace BISPAPIORA.Repositories.AuthServicesRepo
             try
             {
                 // Retrieve user information from the database based on the provided email
-                var user = await db.tbl_users.Include(x => x.tbl_user_type).ThenInclude(x => x.tbl_group_permissions).ThenInclude(x => x.tbl_functionality).Where(x => x.user_email.ToLower() == model.userEmail.ToLower()).FirstOrDefaultAsync();
+                var active = true;
+                var user = await db.tbl_users
+                    .Include(x => x.tbl_user_type).ThenInclude(x => x.tbl_group_permissions).ThenInclude(x => x.tbl_functionality)
+                    .Where(x => x.user_email.ToLower() == model.userEmail.ToLower()).FirstOrDefaultAsync();
 
                 if (user != null)
                 {
-                    // Check if the provided password matches the stored encoded password
-                    if (user.user_password == new OtherServices().encodePassword(model.userPassword))
+                    if (user.is_active == active)
                     {
-                        //If the password is correct, proceed with the login operation
-                        return await Login(user);
+                        // Check if the provided password matches the stored encoded password
+                        if (user.user_password == new OtherServices().encodePassword(model.userPassword))
+                        {
+                            //If the password is correct, proceed with the login operation
+                            return await Login(user);
+                        }
+                        else
+                        {
+                            // If the password is incorrect, return a failure response
+                            return new ResponseModel<LoginResponseDTO>()
+                            {
+                                remarks = "Invalid Email/Password",
+                                success = false
+                            };
+                        }
                     }
                     else
                     {
-                        // If the password is incorrect, return a failure response
                         return new ResponseModel<LoginResponseDTO>()
                         {
-                            remarks = "Invalid Email/Password",
+                            remarks = "User access has been disabled"
                             success = false
                         };
                     }
