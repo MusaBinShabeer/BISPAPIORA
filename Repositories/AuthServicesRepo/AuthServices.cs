@@ -64,7 +64,7 @@ namespace BISPAPIORA.Repositories.AuthServicesRepo
                     {
                         return new ResponseModel<LoginResponseDTO>()
                         {
-                            remarks = "User access has been disabled"
+                            remarks = "User access has been disabled",
                             success = false
                         };
                     }
