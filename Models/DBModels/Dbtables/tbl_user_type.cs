@@ -13,4 +13,5 @@ public partial class tbl_user_type
 
     public virtual ICollection<tbl_user> tbl_users { get; set; } = new List<tbl_user>();
     public virtual ICollection<tbl_group_permission> tbl_group_permissions { get; set; } = new List<tbl_group_permission>();
+    public int? enum_index { get; set; }
 }

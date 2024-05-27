@@ -74,15 +74,15 @@ namespace BISPAPIORA.Repositories.InnerServicesRepo
                     if (ResponseModel != null)
                     {
                         // Check the eligibility status in the ResponseDTO
-                        if (ResponseModel.status == "ELIGIBLE")
+                        if (ResponseModel.success)
                         {
                             // Return a success response model with survey details if the citizen is eligible
-                            return new ResponseModel<SurvayResponseDTO>() { data = ResponseModel.surveyDetails, success = true, remarks=ResponseModel.status };
+                            return new ResponseModel<SurvayResponseDTO>() { data = ResponseModel.surveyDetails, success = true, remarks=ResponseModel.remarks };
                         }
                         else
                         {
                             // Return a failure response model if the citizen is not eligible
-                            return new ResponseModel<SurvayResponseDTO>() { data = ResponseModel.surveyDetails != null ? ResponseModel.surveyDetails : null, success = false, remarks= ResponseModel.status };
+                            return new ResponseModel<SurvayResponseDTO>() { data = ResponseModel.surveyDetails != null ? ResponseModel.surveyDetails : null, success = false, remarks= ResponseModel.remarks };
                         }
                     }
                     else

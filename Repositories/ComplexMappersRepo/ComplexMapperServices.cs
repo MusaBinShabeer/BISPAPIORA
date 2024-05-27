@@ -25,8 +25,6 @@ namespace BISPAPIORA.Repositories.ComplexMappersRepo
                 .ForMember(d => d.isActive, opt => opt.MapFrom(src => src.is_active));
                 cfg.CreateMap<tbl_group_permission, GroupPermissionResponseDTO>()
                 .ForMember(d => d.groupPermissionId, opt => opt.MapFrom(src => src.group_permission_id))
-                .ForMember(d => d.fkUserType, opt => opt.MapFrom((src) => src.fk_user_type))
-                .ForMember(d => d.fkFunctionality, opt => opt.MapFrom((src) => src.fk_functionality))
                 .ForMember(d => d.canCreate, opt => opt.MapFrom(src => src.can_create))
                 .ForMember(d => d.canUpdate, opt => opt.MapFrom(src => src.can_update))
                 .ForMember(d => d.canRead, opt => opt.MapFrom(src => src.can_read))

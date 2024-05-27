@@ -862,6 +862,9 @@ public partial class Dbcontext : DbContext
                 .HasPrecision(1)
                 .HasDefaultValueSql("1 ")
                 .HasColumnName("IS_ACTIVE");
+            entity.Property(e => e.enum_index)
+             .HasPrecision(10)
+             .HasColumnName("ENUM_INDEX");
             entity.Property(e => e.user_type_name)
                 .HasMaxLength(255)
                 .IsUnicode(false)

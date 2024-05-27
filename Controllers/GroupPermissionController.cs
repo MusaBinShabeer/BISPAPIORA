@@ -94,6 +94,24 @@ namespace BISPAPIORA.Controllers
                 return BadRequest(response);
             }
         }
+        [HttpGet("GetGroupPermissionByUserTypeAndFunctionality")]
+        public async Task<ActionResult<ResponseModel<GroupPermissionResponseDTO>>> GetGroupPermissionByUserTypeAndFunctionality(string userTypeId, string funtionalityId)
+        {
+            if (!string.IsNullOrEmpty(userTypeId) && !string.IsNullOrEmpty(funtionalityId))
+            {
+                var response = groupPermissionService.GetGroupPermissionByUserTypeAndFunctionality(userTypeId, funtionalityId);
+                return Ok(await response);
+            }
+            else
+            {
+                var response = new ResponseModel<GroupPermissionResponseDTO>()
+                {
+                    remarks = "Parameter missing",
+                    success = false
+                };
+                return BadRequest(response);
+            }
+        }
         //To get all GroupPermissions Method
         [HttpGet]
         public async Task<ActionResult<ResponseModel<List<GroupPermissionResponseDTO>>>> Get()

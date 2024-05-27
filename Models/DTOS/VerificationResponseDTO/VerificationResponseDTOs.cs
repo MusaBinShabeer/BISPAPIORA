@@ -3,7 +3,8 @@
     public class ResponseDTO
     {
         public SurvayResponseDTO surveyDetails { get; set; }
-        public string status { get; set; } = string.Empty;
+        public string remarks { get; set; } = string.Empty;
+        public bool success { get; set; }
     }
     public class SurvayResponseDTO
     {

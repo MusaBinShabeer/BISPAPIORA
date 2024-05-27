@@ -107,7 +107,7 @@ namespace BISPAPIORA.Repositories.GroupPermissionServicesRepo
             try
             {
                 // Retrieve all GroupPermission records from the database
-                var grouppermissions = await db.tbl_group_permissions.ToListAsync();
+                var grouppermissions = await db.tbl_group_permissions.Include(x => x.tbl_user_type).Include(X=>X.tbl_functionality).ToListAsync();
 
                 if (grouppermissions.Count() > 0)
                 {
@@ -147,7 +147,44 @@ namespace BISPAPIORA.Repositories.GroupPermissionServicesRepo
             try
             {
                 // Retrieve the existing GroupPermission record from the database based on the provided ID
-                var existingGroupPermission = await db.tbl_group_permissions.Where(x => x.group_permission_id == Guid.Parse(GroupPermissionId)).FirstOrDefaultAsync();
+                var existingGroupPermission = await db.tbl_group_permissions.Include(x => x.tbl_user_type).Include(X => X.tbl_functionality).Where(x => x.group_permission_id == Guid.Parse(GroupPermissionId)).FirstOrDefaultAsync();
+
+                if (existingGroupPermission != null)
+                {
+                    // If the GroupPermission record is found, return a success response model with details
+                    return new ResponseModel<GroupPermissionResponseDTO>()
+                    {
+                        data = _mapper.Map<GroupPermissionResponseDTO>(existingGroupPermission),
+                        remarks = "Group Permission found successfully",
+                        success = true,
+                    };
+                }
+                else
+                {
+                    // If no matching record is found, return a failure response
+                    return new ResponseModel<GroupPermissionResponseDTO>()
+                    {
+                        success = false,
+                        remarks = "No Record"
+                    };
+                }
+            }
+            catch (Exception ex)
+            {
+                // Return a failure response model with details about the exception if an error occurs
+                return new ResponseModel<GroupPermissionResponseDTO>()
+                {
+                    success = false,
+                    remarks = $"There Was Fatal Error {ex.Message.ToString()}"
+                };
+            }
+        }
+        public async Task<ResponseModel<GroupPermissionResponseDTO>> GetGroupPermissionByUserTypeAndFunctionality(string userTypeId, string functionalityId)
+        {
+            try
+            {
+                // Retrieve the existing GroupPermission record from the database based on the provided ID
+                var existingGroupPermission = await db.tbl_group_permissions.Include(x=>x.tbl_user_type).Include(X => X.tbl_functionality).Where(x => x.fk_user_type == Guid.Parse(userTypeId) && x.fk_functionality== Guid.Parse(functionalityId)).FirstOrDefaultAsync();
 
                 if (existingGroupPermission != null)
                 {
