@@ -18,7 +18,7 @@ namespace BISPAPIORA.Repositories.ComplexMappersRepo
                 .ForMember(d => d.userName, opt => opt.MapFrom(src => src.user_name))
                 .ForMember(d => d.userEmail, opt => opt.MapFrom(src => src.user_email))
                 .ForMember(d => d.userPassword, opt => opt.MapFrom(src => src.fk_user_type))
-                .ForMember(d => d.fkUserType, opt => opt.MapFrom(src => src.tbl_user_type.user_type_name))
+                .ForMember(d => d.fkUserType, opt => opt.MapFrom(src => src.tbl_user_type.user_type_id))
                 .ForMember(d => d.userTypeName, opt => opt.MapFrom(src => src.tbl_user_type.user_type_name))
                 .ForMember(d => d.isFtpSet, opt => opt.MapFrom(src => src.is_ftp_set))
                 .ForMember(d => d.permissions, opt => opt.MapFrom(src => src.tbl_user_type.tbl_group_permissions))
