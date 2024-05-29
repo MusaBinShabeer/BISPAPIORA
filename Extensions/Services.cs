@@ -56,14 +56,14 @@ namespace BISPAPIORA.Extensions
             //services.AddDbContext<Dbcontext>(options =>
             //options.UseOracle(("User Id=savings;Password=savings;Data Source=localhost:1521/savings;")), ServiceLifetime.Transient);
 
-            services.AddDbContext<Dbcontext>(options =>
-            options.UseOracle(("User Id=admin;Password=vNrGBdITbyvVQtTspIx1;Data Source=oracle-database.cfgeu0k04wh6.us-east-1.rds.amazonaws.com:1521/bispdb;")), ServiceLifetime.Transient);
-            ////services.AddDbContext<Dbcontext>(options =>
+            //services.AddDbContext<Dbcontext>(options =>
+            //options.UseOracle(("User Id=admin;Password=vNrGBdITbyvVQtTspIx1;Data Source=oracle-database.cfgeu0k04wh6.us-east-1.rds.amazonaws.com:1521/bispdb;")), ServiceLifetime.Transient);
+            //////services.AddDbContext<Dbcontext>(options =>
             //           options.UseOracle(("User Id=savings;Password=savings;Data Source=localhost:1521/savings;")), ServiceLifetime.Transient);
             //services.AddDbContext<Dbcontext>(options =>
             //options.UseOracle(("User Id=savings;Password=Oracle_123;Data Source=exadata.bisp.gov.pk:1521/bispsc;")), ServiceLifetime.Transient);
-            //services.AddDbContext<Dbcontext>(options =>
-            //options.UseOracle((configuration.GetConnectionString("BISP"))), ServiceLifetime.Transient);
+            services.AddDbContext<Dbcontext>(options =>
+            options.UseOracle((configuration.GetConnectionString("BISP"))), ServiceLifetime.Transient);
 
             services.AddCors(options =>
             {

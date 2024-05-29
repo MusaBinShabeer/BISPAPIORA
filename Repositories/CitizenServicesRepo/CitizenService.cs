@@ -650,7 +650,7 @@ namespace BISPAPIORA.Repositories.CitizenServicesRepo
                         if (relativeCitizen == null)
                         {
                             response.data = _mapper.Map<RegistrationResponseDTO>((verifyCitizen.data, true));
-                            response.remarks = "Applicant Not Registered";
+                            response.remarks = verifyCitizen.remarks;
                             response.success = true;
                         }
                         else
@@ -664,13 +664,13 @@ namespace BISPAPIORA.Repositories.CitizenServicesRepo
                         if (verifyCitizen.data != null)
                         {
                             response.success = false;
-                            response.remarks = $"Applicant {verifyCitizen.remarks}";
+                            response.remarks = $"{verifyCitizen.remarks}";
                             return response;
                         }
                         else
                         {
                             response.success = false;
-                            response.remarks = $"Applicant {verifyCitizen.remarks}";
+                            response.remarks = $"{verifyCitizen.remarks}";
                             return response;
                         }
                     }
@@ -715,13 +715,23 @@ namespace BISPAPIORA.Repositories.CitizenServicesRepo
                         // Map the verification result to the response model
                         if (verifyCitizen.success)
                         {
-                            response.data = _mapper.Map<RegistrationResponseDTO>((verifyCitizen.data, true, existingCitizen));
-                            return new ResponseModel<RegistrationResponseDTO>()
+
+                            var relativeCitizen = await db.tbl_citizens.Where(x => x.unique_hh_id == decimal.Parse(verifyCitizen.data.unique_hh_id.ToString())).FirstOrDefaultAsync();
+                            if (relativeCitizen == null)
                             {
-                                data = response.data,
-                                remarks = "Registered Not Enrolled",
-                                success = true,
-                            };
+                                response.data = _mapper.Map<RegistrationResponseDTO>((verifyCitizen.data, true, existingCitizen));
+                                return new ResponseModel<RegistrationResponseDTO>()
+                                {
+                                    data = response.data,
+                                    remarks = verifyCitizen.remarks,
+                                    success = true,
+                                };                                
+                            }
+                            else
+                            {
+                                 return new ResponseModel<RegistrationResponseDTO>() { success = false, remarks = "Household member already Registered" };
+                                
+                            }
                         }
                         else
                         {
@@ -729,7 +739,7 @@ namespace BISPAPIORA.Repositories.CitizenServicesRepo
                             return new ResponseModel<RegistrationResponseDTO>()
                             {
                                 data = response.data,
-                                remarks = $"Registered but {verifyCitizen.remarks}",
+                                remarks = verifyCitizen.remarks,
                                 success = false,
                             };
                         }
@@ -755,7 +765,7 @@ namespace BISPAPIORA.Repositories.CitizenServicesRepo
                         if (relativeCitizen == null)
                         {
                             response.data = _mapper.Map<RegistrationResponseDTO>((verifyCitizen.data, true));
-                            response.remarks = "Found";
+                            response.remarks = verifyCitizen.remarks;
                             response.success = true;
                             return response;
                         }
