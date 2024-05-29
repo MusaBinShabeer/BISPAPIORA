@@ -30,6 +30,8 @@ namespace BISPAPIORA.Extensions.AutomapperProfiles
              .ForMember(d => d.canRead, opt => opt.MapFrom(src => src.can_read))
              .ForMember(d => d.canDelete, opt => opt.MapFrom(src => src.can_delete))
              .ForMember(d => d.userTypeName, opt => opt.MapFrom(src => src.tbl_user_type.user_type_name))
+             .ForMember(d => d.fkUserType, opt => opt.MapFrom(src => src.fk_user_type))
+             .ForMember(d => d.fkFunctionality, opt => opt.MapFrom(src => src.fk_functionality))
              .ForMember(d => d.functionalityName, opt => opt.MapFrom(src => src.tbl_functionality.functionality_name));
         }
     }

@@ -202,6 +202,46 @@ namespace BISPAPIORA.Repositories.CitizenSchemeServicesRepo
                 };
             }
         }
+        public async Task<ResponseModel<CitizenSchemeResponseDTO>> GetCitizenSchemeByCitizenId(string citizenId)
+        {
+            try
+            {
+                // Find the existing citizen scheme in the database based on the provided ID
+                var existingCitizenScheme = await db.tbl_citizen_schemes
+                    .Where(x => x.fk_citizen == Guid.Parse(citizenId))
+                    .FirstOrDefaultAsync();
+
+                if (existingCitizenScheme != null)
+                {
+                    // Create a success response model with the found citizen scheme
+                    return new ResponseModel<CitizenSchemeResponseDTO>()
+                    {
+                        data = _mapper.Map<CitizenSchemeResponseDTO>(existingCitizenScheme),
+                        remarks = "Citizen Scheme found successfully",
+                        success = true,
+                    };
+                }
+                else
+                {
+                    // Return a failure response model if no record is found for the provided ID
+                    return new ResponseModel<CitizenSchemeResponseDTO>()
+                    {
+                        success = false,
+                        remarks = "No Record"
+                    };
+                }
+            }
+            catch (Exception ex)
+            {
+                // Return a failure response model if an exception occurs during the process
+                return new ResponseModel<CitizenSchemeResponseDTO>()
+                {
+                    success = false,
+                    remarks = $"There Was Fatal Error {ex.Message.ToString()}"
+                };
+            }
+        }
+
 
         // Updates a citizen scheme based on the provided model
         public async Task<ResponseModel<CitizenSchemeResponseDTO>> UpdateCitizenScheme(UpdateCitizenSchemeDTO model)

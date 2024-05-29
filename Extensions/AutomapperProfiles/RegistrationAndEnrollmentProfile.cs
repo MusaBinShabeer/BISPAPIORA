@@ -41,15 +41,14 @@ namespace BISPAPIORA.Extensions.AutomapperProfiles
                .ForMember(d => d.citizenName, opt => opt.MapFrom(src => src.citizenName))
                .ForMember(d => d.citizenPhoneNo, opt => opt.MapFrom(src => src.citizenPhoneNo))
                .ForMember(d => d.citizenGender, opt => opt.MapFrom(src => src.citizenGender))
-               .ForMember(d => d.maritalStatus, opt => opt.MapFrom(src =>src.maritalStatus))
+               .ForMember(d => d.maritalStatus, opt => opt.MapFrom(src => src.maritalStatus))
                .ForMember(d => d.citizenAddress, opt => opt.MapFrom(src => src.citizenAddress))
                .ForMember(d => d.fatherSpouseName, opt => opt.MapFrom(src => src.fatherSpouseName))
                .ForMember(d => d.fkTehsil, opt => opt.MapFrom(src => Guid.Parse(src.fkTehsil)))
                .ForMember(d => d.fkEmployment, opt => opt.MapFrom(src => Guid.Parse(src.fkEmployment)))
                .ForMember(d => d.fkEducation, opt => opt.MapFrom(src => Guid.Parse(src.fkEducation)))
                .ForMember(d => d.dateOfBirth, opt => opt.MapFrom((src, dest) => otherServices.Check(src.dateOfBirth) ? src.dateOfBirth : dest.dateOfBirth))
-               .ForMember(d => d.citizenCnic, opt => opt.MapFrom(src => src.citizenCnic))
-               .ForMember(d => d.quarterCode, opt => opt.MapFrom(src => src.quarterCode));
+               .ForMember(d => d.citizenCnic, opt => opt.MapFrom(src => src.citizenCnic));
 
         }
     }

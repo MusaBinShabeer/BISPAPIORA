@@ -91,17 +91,17 @@ namespace BISPAPIORA.Repositories.EnrollmentServicesRepo
                                 var responseEmploymentOtherSpecification = await employmentOtherSpecificationService.AddEmploymentOtherSpecification(addEmploymentOtherSpecification);
                             }
                             #endregion
-                            #region Add Citizen Scheme
-                            //Mapping Required data to Citizen Scheme DTO
-                            var newSchemeReq = new AddCitizenSchemeDTO();
-                            newSchemeReq = _mapper.Map<AddCitizenSchemeDTO>(model);
-                            //Add Citizen Scheme
-                            var schemeResp = citizenSchemeService.AddCitizenScheme(newSchemeReq);
-                            #endregion
+                            //#region Add Citizen Scheme
+                            ////Mapping Required data to Citizen Scheme DTO
+                            //var newSchemeReq = new AddCitizenSchemeDTO();
+                            //newSchemeReq = _mapper.Map<AddCitizenSchemeDTO>(model);
+                            ////Add Citizen Scheme
+                            //var schemeResp = citizenSchemeService.AddCitizenScheme(newSchemeReq);
+                            //#endregion
                             #region Preparing Response and Returning it
                             //Mapping Citizen To Response DTO
                             var response = _mapper.Map<EnrollmentResponseDTO>(newCitizen.data);
-                            response.enrollmentId = newEnrollment.enrollment_id.ToString();
+                            response.enrollmentId = newEnrollment.enrollment_id.ToString();                            
                             //Returning Response
                             return new ResponseModel<EnrollmentResponseDTO>()
                             {

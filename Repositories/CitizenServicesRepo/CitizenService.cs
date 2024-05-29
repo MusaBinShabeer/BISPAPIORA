@@ -736,11 +736,23 @@ namespace BISPAPIORA.Repositories.CitizenServicesRepo
                     }
                     else
                     {
-                        return new ResponseModel<RegistrationResponseDTO>()
+                        if (existingCitizen.tbl_citizen_scheme == null)
                         {
-                            remarks = "Already Enrolled",
-                            success = false,
-                        };
+                            return new ResponseModel<RegistrationResponseDTO>()
+                            {
+                                data = _mapper.Map<RegistrationResponseDTO>(existingCitizen),
+                                remarks = "Success",
+                                success = true,
+                            };
+                        }
+                        else
+                        {
+                            return new ResponseModel<RegistrationResponseDTO>()
+                            {
+                                remarks = "Already Enrolled",
+                                success = false,
+                            };
+                        }
                     }
                 }
                 else

@@ -11,5 +11,6 @@ namespace BISPAPIORA.Repositories.CitizenSchemeServicesRepo
         public Task<ResponseModel<List<CitizenSchemeResponseDTO>>> GetCitizenSchemesList();
         public Task<ResponseModel<CitizenSchemeResponseDTO>> GetCitizenScheme(string bankId);
         public Task<ResponseModel<CitizenSchemeResponseDTO>> UpdateCitizenScheme(UpdateCitizenSchemeDTO model);
+        public Task<ResponseModel<CitizenSchemeResponseDTO>> GetCitizenSchemeByCitizenId(string citizenId);
     }
 }

@@ -27,5 +27,7 @@ namespace BISPAPIORA.Models.DTOS.GroupPermissionDTO
         public string groupPermissionId { get; set; } = string.Empty;
         public string userTypeName { get; set; } = string.Empty;
         public string functionalityName { get; set; } = string.Empty;
+        public string fkUserType { get; set; } = string.Empty;
+        public string fkFunctionality { get; set; } = string.Empty;
     }
 }

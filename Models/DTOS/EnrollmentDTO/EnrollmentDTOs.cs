@@ -14,13 +14,8 @@ namespace BISPAPIORA.Models.DTOS.EnrollmentDTO
         public string fkTehsil { get; set; } = string.Empty;
         public string fkEmployment { get; set; } = string.Empty;
         public string fkEducation { get; set; } = string.Empty;
-        public int accountType { get; set; } = 0;
-        public string citizenSchemeYear { get; set; } = string.Empty;
-        public  string citizenSchemeQuarter { get; set; } = string.Empty;
-        public  string citizenSchemeStartingMonth { get; set; } = string.Empty;
-        public  double citizenSchemeSavingAmount { get; set; } = 0.0;
+        public int accountType { get; set; } = 0;    
         public string fkEnrolledBy { get; set; } = string.Empty;
-        public int quarterCode { get; set; } = 0;
     }
     public class AddEnrollmentDTO : EnrollmentDTO
     {
