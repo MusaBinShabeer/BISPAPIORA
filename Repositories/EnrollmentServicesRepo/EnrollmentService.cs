@@ -34,6 +34,7 @@ namespace BISPAPIORA.Repositories.EnrollmentServicesRepo
             this.citizenBankInfoService= citizenBankInfoService;
             this.citizenSchemeService = citizenSchemeService;
             this.bankOtherSpecificationService= bankOtherSpecificationService;
+            this.employmentOtherSpecificationService= employmentOtherSpecificationService;
         }
         //Add Enrolled Citizen Method
         public async Task<ResponseModel<EnrollmentResponseDTO>> AddEnrolledCitizen(AddEnrollmentDTO model)
@@ -76,7 +77,7 @@ namespace BISPAPIORA.Repositories.EnrollmentServicesRepo
                             {
                                 //Mapping Required Data to Bank Other Specification DTO
                                 var addBankOtherSpecification = new AddEnrolledBankOtherSpecificationDTO();
-                                addBankOtherSpecification = _mapper.Map<AddEnrolledBankOtherSpecificationDTO>((model, resposne));
+                                addBankOtherSpecification = _mapper.Map<AddEnrolledBankOtherSpecificationDTO>((model, resposne.data));
                                 //Add Bank Other Specification
                                 var responseBankOtherSpecification = await bankOtherSpecificationService.AddEnrolledBankOtherSpecification(addBankOtherSpecification);
                             }
