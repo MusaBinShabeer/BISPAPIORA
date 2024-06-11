@@ -128,7 +128,7 @@ namespace BISPAPIORA.Repositories.DashboardServicesRepo
                 // Calculating statistics based on fetched data
                 var totalRegisteredCount = registeredCitizen.Count;
                 var totalEnrolledCount = enrolledCitizen.Count;
-                var totalCitizenSavings = int.Parse(citizensSavings.Sum(x => x).ToString());
+                var totalCitizenSavings =citizensSavings.Count()>0?int.Parse(citizensSavings.Sum(x => x).ToString()):0;
                 var totalCitizenCount = totalRegisteredCount + totalEnrolledCount;
                 var payments = allCitizens.Where(x=>x.payments!=null).Select(x => x.payments).ToList();
                 var totalCompliantCitizen = await innerServices.CheckCompliance(allCitizens.Where(x => x.enrollment != null && x.tbl_citizen_scheme != null).ToList());
@@ -241,7 +241,7 @@ namespace BISPAPIORA.Repositories.DashboardServicesRepo
                 var filteredCitizens = await totalCitizenQuery.Where(predicateCitizen).ToListAsync();
                 if (compliant == true)
                 {
-                    filteredCitizens = await innerServices.GetComplaintCitizen(filteredCitizens.Where(x => x.enrollment != null).ToList());
+                    filteredCitizens = await innerServices.GetComplaintCitizen(filteredCitizens.Where(x => x.enrollment != null && x.tbl_citizen_scheme!=null).ToList());
                 }
                 var onlyRegisteredCitizens = filteredCitizens.Where(x => x.registration != null && x.enrollment == null).ToList();
                 var onlyEnrolledCitizens = filteredCitizens.Where(x => x.enrollment != null).ToList();
@@ -589,69 +589,82 @@ namespace BISPAPIORA.Repositories.DashboardServicesRepo
                     .Include(x=>x.tbl_citizen_compliances).ThenInclude(x=>x.tbl_payments)
                     .Include(x=>x.tbl_payments)
                     .Where(x => x.citizen_cnic == citizenCnic).FirstOrDefaultAsync();
-                if (citizen != null && citizen.tbl_enrollment != null)
+                if (citizen != null )
                 {
-                    var quarterCodes = innerServices.GetAllQuarterCodes(citizen.tbl_citizen_scheme.citizen_scheme_quarter_code.Value);
-                    var quarterlyResponse = new List<DashboardQuarterlyStats>();
-                    var response = new DashboardCitizenComplianceStatus<List<DashboardQuarterlyStats>>();
-                    var expectedSavingsPerQuarterDecimal = citizen.tbl_citizen_scheme.citizen_scheme_saving_amount * 3;
-                    var expectedSavingsPerQuarter = double.Parse(expectedSavingsPerQuarterDecimal.ToString());                    
-                    foreach (var quarterCode in quarterCodes)
+                    if (citizen.tbl_enrollment != null && citizen.tbl_citizen_scheme != null)
                     {
-                        var betweenquarters = innerServices.GetQuarterCodesBetween(citizen.tbl_citizen_scheme.citizen_scheme_quarter_code.Value,quarterCode.quarterCode);
-                        var expectedSaving = innerServices.GetMinimumBalanceReq(betweenquarters, citizen.citizen_id, expectedSavingsPerQuarter);
-                        var quarterCompliance = citizen.tbl_citizen_compliances
-                            .Where(x => x.citizen_compliance_quarter_code == quarterCode.quarterCode).FirstOrDefault();
-                        quarterlyResponse.Add(new DashboardQuarterlyStats()
+                        var quarterCodes = innerServices.GetAllQuarterCodes(citizen.tbl_citizen_scheme.citizen_scheme_quarter_code.Value);
+                        var quarterlyResponse = new List<DashboardQuarterlyStats>();
+                        var response = new DashboardCitizenComplianceStatus<List<DashboardQuarterlyStats>>();
+                        var expectedSavingsPerQuarterDecimal = citizen.tbl_citizen_scheme.citizen_scheme_saving_amount * 3;
+                        var expectedSavingsPerQuarter = double.Parse(expectedSavingsPerQuarterDecimal.ToString());
+                        foreach (var quarterCode in quarterCodes)
                         {
-                            actualSaving= quarterCompliance!=null?Double.Parse(quarterCompliance.tbl_transactions.Sum(transaction =>
+                            var betweenquarters = innerServices.GetQuarterCodesBetween(citizen.tbl_citizen_scheme.citizen_scheme_quarter_code.Value, quarterCode.quarterCode);
+                            var expectedSaving = innerServices.GetMinimumBalanceReq(betweenquarters, citizen.citizen_id, expectedSavingsPerQuarter);
+                            var quarterCompliance = citizen.tbl_citizen_compliances
+                                .Where(x => x.citizen_compliance_quarter_code == quarterCode.quarterCode).FirstOrDefault();
+                            quarterlyResponse.Add(new DashboardQuarterlyStats()
                             {
-                                if (Enum.TryParse(transaction.transaction_type, out TransactionTypeEnum transactionType))
+                                actualSaving = quarterCompliance != null ? Double.Parse(quarterCompliance.tbl_transactions.Sum(transaction =>
                                 {
+                                    if (Enum.TryParse(transaction.transaction_type, out TransactionTypeEnum transactionType))
+                                    {
 
-                                    return transactionType == TransactionTypeEnum.Debit ? -transaction.transaction_amount : +transaction.transaction_amount;
+                                        return transactionType == TransactionTypeEnum.Debit ? -transaction.transaction_amount : +transaction.transaction_amount;
 
-                                }
-                                else
-                                {
-                                    // Handle parsing error for transaction type
-                                    Console.WriteLine("Invalid transaction type: " + transaction.transaction_type);
-                                    return 0; // or any default value
-                                }
-                            }).ToString()) + double.Parse(quarterCompliance.starting_balance_on_quarterly_bank_statement.ToString()): 0,
-                            expectedSaving= expectedSaving,
-                            isCompliant = quarterCompliance!=null? quarterCompliance.is_compliant.Value: false,
-                            quarterCode= quarterCode.quarterCode,
-                            quarterName= quarterCode.quarterCodeName,
-                            paidAmount=quarterCompliance!=null? quarterCompliance.tbl_payments.Count()>0? double.Parse(quarterCompliance.tbl_payments.Sum(x=>x.paid_amount).ToString()):0:0,
-                            actualDuePayment=quarterCompliance!=null? quarterCompliance.tbl_payments.Count()>0? double.Parse(quarterCompliance.tbl_payments.Sum(x=>x.actual_due_amount).ToString()) :0 : 0,
-                            quarterlyDuePayment=quarterCompliance!=null? quarterCompliance.tbl_payments.Count()>0? double.Parse(quarterCompliance.tbl_payments.Sum(x=>x.quarterly_due_amount).ToString()) :0 : expectedSavingsPerQuarter *0.4,
-                        });
+                                    }
+                                    else
+                                    {
+                                        // Handle parsing error for transaction type
+                                        Console.WriteLine("Invalid transaction type: " + transaction.transaction_type);
+                                        return 0; // or any default value
+                                    }
+                                }).ToString()) + double.Parse(quarterCompliance.starting_balance_on_quarterly_bank_statement.ToString()) : 0,
+                                expectedSaving = expectedSaving,
+                                isCompliant = quarterCompliance != null ? quarterCompliance.is_compliant.Value : false,
+                                quarterCode = quarterCode.quarterCode,
+                                quarterName = quarterCode.quarterCodeName,
+                                paidAmount = quarterCompliance != null ? quarterCompliance.tbl_payments.Count() > 0 ? double.Parse(quarterCompliance.tbl_payments.Sum(x => x.paid_amount).ToString()) : 0 : 0,
+                                actualDuePayment = quarterCompliance != null ? quarterCompliance.tbl_payments.Count() > 0 ? double.Parse(quarterCompliance.tbl_payments.Sum(x => x.actual_due_amount).ToString()) : 0 : 0,
+                                quarterlyDuePayment = quarterCompliance != null ? quarterCompliance.tbl_payments.Count() > 0 ? double.Parse(quarterCompliance.tbl_payments.Sum(x => x.quarterly_due_amount).ToString()) : 0 : expectedSavingsPerQuarter * 0.4,
+                            });
+                        }
+                        response.totalActualSaving = double.Parse(citizen.tbl_transactions.Sum(transaction =>
+                        {
+                            if (Enum.TryParse(transaction.transaction_type, out TransactionTypeEnum transactionType))
+                            {
+
+                                return transactionType == TransactionTypeEnum.Debit ? -transaction.transaction_amount : +transaction.transaction_amount;
+
+                            }
+                            else
+                            {
+                                // Handle parsing error for transaction type
+                                Console.WriteLine("Invalid transaction type: " + transaction.transaction_type);
+                                return 0; // or any default value
+                            }
+                        }).ToString());
+                        response.totalExpectedSaving = innerServices.GetMinimumBalanceReq(quarterCodes.Select(x => x.quarterCode).ToList(), citizen.citizen_id, double.Parse(expectedSavingsPerQuarterDecimal.ToString()));
+                        response.totalPaidAmount = double.Parse(citizen.tbl_payments.Sum(x => x.paid_amount).ToString());
+                        response.totalDuePayment = double.Parse(citizen.tbl_payments.Sum(x => x.actual_due_amount).ToString());
+                        response.data = quarterlyResponse;
+                        response.isCompliant = await innerServices.CheckCompliance(quarterCodes.Select(x => x.quarterCode).ToList(), citizen.citizen_id);
+                        return new ResponseModel<DashboardCitizenComplianceStatus<List<DashboardQuarterlyStats>>>()
+                        {
+                            data = response,
+                            success = true,
+                            remarks = "Success"
+                        };
                     }
-                    response.totalActualSaving = double.Parse(citizen.tbl_transactions.Sum(transaction =>
+                    else
                     {
-                        if (Enum.TryParse(transaction.transaction_type, out TransactionTypeEnum transactionType))
+                        return new ResponseModel<DashboardCitizenComplianceStatus<List<DashboardQuarterlyStats>>>()
                         {
-
-                            return transactionType == TransactionTypeEnum.Debit ? -transaction.transaction_amount : +transaction.transaction_amount;
-
-                        }
-                        else
-                        {
-                            // Handle parsing error for transaction type
-                            Console.WriteLine("Invalid transaction type: " + transaction.transaction_type);
-                            return 0; // or any default value
-                        }
-                    }).ToString());
-                    response.totalExpectedSaving=  innerServices.GetMinimumBalanceReq(quarterCodes.Select(x=>x.quarterCode).ToList(), citizen.citizen_id, double.Parse(expectedSavingsPerQuarterDecimal.ToString()));
-                    response.totalPaidAmount = double.Parse(citizen.tbl_payments.Sum(x => x.paid_amount).ToString());
-                    response.totalDuePayment = double.Parse(citizen.tbl_payments.Sum(x => x.actual_due_amount).ToString());
-                    response.data = quarterlyResponse;
-                    response.isCompliant = await innerServices.CheckCompliance(quarterCodes.Select(x=>x.quarterCode).ToList(),citizen.citizen_id);
-                    return new ResponseModel<DashboardCitizenComplianceStatus<List<DashboardQuarterlyStats>>>() 
-                    {
-                        data = response,success=true, remarks="Success" 
-                    };
+                            remarks = "Enrollment Incomplete",
+                            success = false
+                        };
+                    }
                 }
                 else
                 {

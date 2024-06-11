@@ -160,7 +160,7 @@ namespace BISPAPIORA.Controllers
             }
         }
         [HttpGet("VerifyEnrollmentByCnic")]
-        public async Task<ActionResult<ResponseModel<EnrollmentResponseDTO>>> VerifyEnrollmentByCnic(string cnic)
+        public async Task<ActionResult<ResponseModel<EnrollmentSchemeResponseDTO>>> VerifyEnrollmentByCnic(string cnic)
         {
             // Check if the CNIC parameter is not null or empty
             if (!string.IsNullOrEmpty(cnic))

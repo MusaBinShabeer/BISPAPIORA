@@ -20,12 +20,12 @@ namespace BISPAPIORA.Repositories.CitizenServicesRepo
         public Task<ResponseModel<EnrollmentResponseDTO>> UpdateEnrolledCitizen(UpdateEnrollmentDTO model);
         public Task<ResponseModel<List<EnrollmentResponseDTO>>> GetEnrolledCitizensList();
         public Task<ResponseModel<EnrollmentResponseDTO>> GetEnrolledCitizenByCnic(string citizenCnic);
-        public Task<ResponseModel<RegistrationResponseDTO>> VerifyCitizenEnrollmentWithCNIC(string citizenCnic);
+        public Task<ResponseModel<EnrollmentResponseDTO>> VerifyCitizenEnrollmentWithCNIC(string citizenCnic);
         #endregion
         public Task<ResponseModel<RegistrationResponseDTO>> DeleteCitizen(string CitizenId);
         public Task<ResponseModel<RegistrationResponseDTO>> GetCitizen(string CitizenId);
         public Task<ResponseModel<CitizenResponseDTO>> GetCitizenByCnicForApp(string CitizenCnic);
-        public Task<ResponseModel<EnrollmentResponseDTO>> VerifyCitizenEnrollmentStatusWithCNIC(string citizenCnic);
+        public Task<ResponseModel<EnrollmentSchemeResponseDTO>> VerifyCitizenEnrollmentStatusWithCNIC(string citizenCnic);
         public Task<bool> UpdatePmt();
         public Task<ResponseModel<List<CitizenResponseDTO>>> GetCitizensDataForWeb(string dateStart, string dateEnd, string provinceId, string districtId, string tehsilId, bool registration, bool enrollment, bool compliant);
     }

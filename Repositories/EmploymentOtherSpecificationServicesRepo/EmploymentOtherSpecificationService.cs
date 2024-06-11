@@ -94,7 +94,7 @@ namespace BISPAPIORA.Repositories.EmploymentOtherSpecificationServicesRepo
             {
                 // Retrieve the existing employment other specification from the database based on the provided ID
                 var existingEmploymentOtherSpecification = await db.tbl_employment_other_specifications
-                    .Where(x => x.employment_other_specification_id == Guid.Parse(model.employmentOtherSpecificationId))
+                    .Where(x => x.fk_citizen == Guid.Parse(model.fkCitizen))
                     .FirstOrDefaultAsync();
 
                 if (existingEmploymentOtherSpecification != null)
@@ -116,13 +116,11 @@ namespace BISPAPIORA.Repositories.EmploymentOtherSpecificationServicesRepo
                 }
                 else
                 {
+                    var newAddRequest = new AddEmploymentOtherSpecificationDTO();
+                    newAddRequest= _mapper.Map(model, newAddRequest);
+                    var response= await AddEmploymentOtherSpecification(newAddRequest);
                     // Return a failure response model if no matching record is found
-                    return new ResponseModel<EmploymentOtherSpecificationResponseDTO>()
-                    {
-                        success = false,
-                        remarks = "No Record",
-                        // Note: The data field is not explicitly mapped here as there's no data to map for a non-existing record
-                    };
+                    return response;
                 }
             }
             catch (Exception ex)

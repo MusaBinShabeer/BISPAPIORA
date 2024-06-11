@@ -12,13 +12,13 @@ namespace BISPAPIORA.Extensions.AutomapperProfiles
         private readonly OtherServices otherServices = new();
         public CitizenSchemeProfile()
         {
-            CreateMap<AddEnrollmentDTO, AddCitizenSchemeDTO>()
-            .ForMember(d => d.citizenSchemeYear, opt => opt.MapFrom(src => src.citizenSchemeYear))
-            .ForMember(d => d.citizenSchemeQuarter, opt => opt.MapFrom(src => src.citizenSchemeQuarter))
-            .ForMember(d => d.citizenSchemeStartingMonth, opt => opt.MapFrom(src => src.citizenSchemeStartingMonth))
-            .ForMember(d => d.citizenSchemeSavingAmount, opt => opt.MapFrom(src => src.citizenSchemeSavingAmount))
-            .ForMember(d => d.quarterCode, opt => opt.MapFrom(src => src.quarterCode))
-            .ForMember(d => d.fkCitizen, opt => opt.MapFrom(src => Guid.Parse(src.fkCitizen)));
+            //CreateMap<AddEnrollmentDTO, AddCitizenSchemeDTO>()
+            //.ForMember(d => d.citizenSchemeYear, opt => opt.MapFrom(src => src.citizenSchemeYear))
+            //.ForMember(d => d.citizenSchemeQuarter, opt => opt.MapFrom(src => src.citizenSchemeQuarter))
+            //.ForMember(d => d.citizenSchemeStartingMonth, opt => opt.MapFrom(src => src.citizenSchemeStartingMonth))
+            //.ForMember(d => d.citizenSchemeSavingAmount, opt => opt.MapFrom(src => src.citizenSchemeSavingAmount))
+            //.ForMember(d => d.quarterCode, opt => opt.MapFrom(src => src.quarterCode))
+            //.ForMember(d => d.fkCitizen, opt => opt.MapFrom(src => Guid.Parse(src.fkCitizen)));
             CreateMap<AddCitizenSchemeDTO, tbl_citizen_scheme>()
              .ForMember(d => d.citizen_scheme_year, opt => opt.MapFrom(src => src.citizenSchemeYear))
              .ForMember(d => d.citizen_scheme_quarter, opt => opt.MapFrom(src => src.citizenSchemeQuarter))

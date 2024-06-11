@@ -63,7 +63,7 @@ namespace BISPAPIORA.Controllers
         {
             if (ModelState.IsValid)
             {
-                var response = BankOtherSpecificationService.UpdateEnrolleedBankOtherSpecification(model);
+                var response = BankOtherSpecificationService.UpdateEnrolledBankOtherSpecification(model);
                 return Ok(await response);
             }
             else

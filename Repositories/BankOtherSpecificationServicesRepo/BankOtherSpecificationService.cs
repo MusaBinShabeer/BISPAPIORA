@@ -181,13 +181,13 @@ namespace BISPAPIORA.Repositories.BankOtherSpecificationServicesRepo
 
         // Updates an enrolled bank other specification based on the provided model
         // Returns a response model indicating the success or failure of the operation
-        public async Task<ResponseModel<BankRegisteredOtherSpecificationResponseDTO>> UpdateEnrolleedBankOtherSpecification(UpdateEnrolledCitizenBankInfoDTO model)
+        public async Task<ResponseModel<BankRegisteredOtherSpecificationResponseDTO>> UpdateEnrolledBankOtherSpecification(UpdateEnrolledCitizenBankInfoDTO model)
         {
             try
             {
                 // Retrieve the existing bank other specification from the database based on the provided ID
                 var existingBankOtherSpecification = await db.tbl_bank_other_specifications
-                    .Where(x => x.bank_other_specification_id == Guid.Parse(model.CitizenBankInfoId))
+                    .Where(x => x.tbl_citizen_bank_info.fk_citizen == Guid.Parse(model.fkCitizen))
                     .FirstOrDefaultAsync();
 
                 if (existingBankOtherSpecification != null)
@@ -208,12 +208,11 @@ namespace BISPAPIORA.Repositories.BankOtherSpecificationServicesRepo
                 }
                 else
                 {
+                    var newAddRequest = new AddEnrolledBankOtherSpecificationDTO();
+                    newAddRequest= _mapper.Map(model, newAddRequest);
+                    var response= await AddEnrolledBankOtherSpecification(newAddRequest);
                     // If no matching record is found, return a failure response
-                    return new ResponseModel<BankRegisteredOtherSpecificationResponseDTO>()
-                    {
-                        success = false,
-                        remarks = "No Record"
-                    };
+                    return response;
                 }
             }
             catch (Exception ex)

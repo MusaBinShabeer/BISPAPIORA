@@ -18,6 +18,12 @@ namespace BISPAPIORA.Extensions.AutomapperProfiles
             CreateMap<AddEnrollmentDTO, AddEmploymentOtherSpecificationDTO>()
               .ForMember(d => d.employmentOtherSpecification, opt => opt.MapFrom(src => src.citizenEmploymentOtherSpecification))
               .ForMember(d => d.fkCitizen, opt => opt.MapFrom(src => src.fkCitizen));
+            CreateMap<AddEnrollmentDTO, UpdateEmploymentOtherSpecificationDTO>()
+             .ForMember(d => d.employmentOtherSpecification, opt => opt.MapFrom(src => src.citizenEmploymentOtherSpecification))
+             .ForMember(d => d.fkCitizen, opt => opt.MapFrom(src => src.fkCitizen));
+            CreateMap<UpdateEmploymentOtherSpecificationDTO, AddEmploymentOtherSpecificationDTO>()
+          .ForMember(d => d.employmentOtherSpecification, opt => opt.MapFrom(src => src.employmentOtherSpecification))
+          .ForMember(d => d.fkCitizen, opt => opt.MapFrom(src => src.fkCitizen));
             CreateMap<AddEmploymentOtherSpecificationDTO, tbl_employment_other_specification>()
              .ForMember(d => d.employment_other_specification, opt => opt.MapFrom(src => src.employmentOtherSpecification))
              .ForMember(d => d.fk_citizen, opt => opt.MapFrom(src => Guid.Parse(src.fkCitizen)));

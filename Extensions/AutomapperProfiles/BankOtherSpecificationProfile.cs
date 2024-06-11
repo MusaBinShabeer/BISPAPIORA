@@ -22,6 +22,9 @@ namespace BISPAPIORA.Extensions.AutomapperProfiles
             CreateMap<(AddEnrollmentDTO reg, EnrolledCitizenBankInfoResponseDTO dto), AddEnrolledBankOtherSpecificationDTO>()
            .ForMember(d => d.bankOtherSpecification, opt => opt.MapFrom(src => src.reg.citizenBankOtherSpecification))
            .ForMember(d => d.fkCitizenBankInfo, opt => opt.MapFrom(src => src.dto.CitizenBankInfoId));
+            CreateMap<(AddEnrollmentDTO reg, EnrolledCitizenBankInfoResponseDTO dto), UpdateEnrolledBankOtherSpecificationDTO>()
+         .ForMember(d => d.bankOtherSpecification, opt => opt.MapFrom(src => src.reg.citizenBankOtherSpecification))
+         .ForMember(d => d.fkCitizenBankInfo, opt => opt.MapFrom(src => src.dto.CitizenBankInfoId));
             CreateMap<AddEnrolledBankOtherSpecificationDTO, tbl_bank_other_specification>()
              .ForMember(d => d.bank_other_specification, opt => opt.MapFrom(src => src.bankOtherSpecification))
              .ForMember(d => d.fk_citizen_bank_info, opt => opt.MapFrom(src => Guid.Parse(src.fkCitizenBankInfo)));
@@ -29,6 +32,13 @@ namespace BISPAPIORA.Extensions.AutomapperProfiles
              .ForMember(d => d.bank_other_specification_id, opt => opt.MapFrom((src, dest) => dest.bank_other_specification_id))
              .ForMember(d => d.bank_other_specification, opt => opt.MapFrom((src, dest) => otherServices.Check(src.bankOtherSpecification) ? src.bankOtherSpecification : dest.bank_other_specification))
              .ForMember(d => d.fk_citizen_family_bank_info, opt => opt.MapFrom((src, dest) => otherServices.Check(src.fkCitizenFamilyBankInfo) ? Guid.Parse(src.fkCitizenFamilyBankInfo) : dest.fk_citizen_family_bank_info));
+            CreateMap<UpdateEnrolledBankOtherSpecificationDTO, tbl_bank_other_specification>()
+           .ForMember(d => d.bank_other_specification_id, opt => opt.MapFrom((src, dest) => dest.bank_other_specification_id))
+           .ForMember(d => d.bank_other_specification, opt => opt.MapFrom((src, dest) => otherServices.Check(src.bankOtherSpecification) ? src.bankOtherSpecification : dest.bank_other_specification))
+           .ForMember(d => d.fk_citizen_bank_info, opt => opt.MapFrom((src, dest) => otherServices.Check(src.fkCitizenBankInfo) ? Guid.Parse(src.fkCitizenBankInfo) : dest.fk_citizen_family_bank_info));
+            CreateMap<UpdateEnrolledBankOtherSpecificationDTO, AddEnrolledBankOtherSpecificationDTO>()
+          .ForMember(d => d.bankOtherSpecification, opt => opt.MapFrom((src, dest) => src.bankOtherSpecification))
+          .ForMember(d => d.fkCitizenBankInfo, opt => opt.MapFrom((src, dest) => src.fkCitizenBankInfo));
             CreateMap<tbl_bank_other_specification, BankRegisteredOtherSpecificationResponseDTO>()
              .ForMember(d => d.bankOtherSpecificationId, opt => opt.MapFrom(src => src.bank_other_specification_id))
              .ForMember(d => d.bankOtherSpecification, opt => opt.MapFrom((src) => src.bank_other_specification))

@@ -454,7 +454,7 @@ namespace BISPAPIORA.Repositories.CitizenBankInfoServicesRepo
             {
                 // Retrieve the existing enrolled citizen bank info from the database based on the provided ID
                 var existingCitizenBankInfo = await db.tbl_citizen_bank_infos
-                    .Where(x => x.citizen_bank_info_id == Guid.Parse(model.CitizenBankInfoId))
+                    .Where(x => x.fk_citizen == Guid.Parse(model.fkCitizen))
                     .FirstOrDefaultAsync();
 
                 if (existingCitizenBankInfo != null)
@@ -475,12 +475,11 @@ namespace BISPAPIORA.Repositories.CitizenBankInfoServicesRepo
                 }
                 else
                 {
+                    var newAddRequest = new AddEnrolledCitizenBankInfoDTO();
+                    newAddRequest = _mapper.Map(model, newAddRequest);
+                    var response= await AddEnrolledCitizenBankInfo(newAddRequest);
                     // If no matching record is found, return a failure response
-                    return new ResponseModel<EnrolledCitizenBankInfoResponseDTO>()
-                    {
-                        success = false,
-                        remarks = "No Record"
-                    };
+                    return response;
                 }
             }
             catch (Exception ex)

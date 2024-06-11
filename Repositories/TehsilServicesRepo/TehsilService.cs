@@ -284,8 +284,11 @@ namespace BISPAPIORA.Repositories.TehsilServicesRepo
         {
             try
             {
+                var isActive = true;
                 // Retrieve all tehsils from the database associated with the provided districtId
-                var existingTehsils = await db.tbl_tehsils.Include(x => x.tbl_district).Where(x => x.fk_district == Guid.Parse(districtId)).ToListAsync();
+                var existingTehsils = await db.tbl_tehsils
+                    .Include(x => x.tbl_district)
+                    .Where(x => x.fk_district == Guid.Parse(districtId) && x.is_active==isActive).ToListAsync();
 
                 if (existingTehsils.Count() > 0)
                 {

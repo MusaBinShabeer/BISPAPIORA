@@ -10,6 +10,6 @@ namespace BISPAPIORA.Repositories.BankOtherSpecificationServicesRepo
         public  Task<ResponseModel<BankRegisteredOtherSpecificationResponseDTO>> AddRegisteredBankOtherSpecification(AddRegisteredBankOtherSpecificationDTO model);
         public  Task<ResponseModel<BankRegisteredOtherSpecificationResponseDTO>> UpdateRegisteredBankOtherSpecification(UpdateRegisteredBankOtherSpecificationDTO model);
         public Task<ResponseModel<BankRegisteredOtherSpecificationResponseDTO>> AddEnrolledBankOtherSpecification(AddEnrolledBankOtherSpecificationDTO model);
-        public Task<ResponseModel<BankRegisteredOtherSpecificationResponseDTO>> UpdateEnrolleedBankOtherSpecification(UpdateEnrolledCitizenBankInfoDTO model);
+        public Task<ResponseModel<BankRegisteredOtherSpecificationResponseDTO>> UpdateEnrolledBankOtherSpecification(UpdateEnrolledCitizenBankInfoDTO model);
     }
 }

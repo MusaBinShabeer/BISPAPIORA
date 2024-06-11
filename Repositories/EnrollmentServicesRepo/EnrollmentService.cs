@@ -153,7 +153,7 @@ namespace BISPAPIORA.Repositories.EnrollmentServicesRepo
                         //Add Enrollement Id To Update Enrollment DTO
                         updateModel.enrollmentId = newEnrollment.enrollment_id.ToString();
                         //Update the Citizen
-                        var newCitizen = await citizenService.UpdateEnrolledCitizen(updateModel);
+                        var newCitizen = await citizenService.UpdateEnrolledCitizen(updateModel);                      
                         //Check Update Is Success
                         if (newCitizen.success)
                         {
@@ -167,14 +167,7 @@ namespace BISPAPIORA.Repositories.EnrollmentServicesRepo
                                 newRequest = _mapper.Map<AddEnrolledCitizenBankInfoDTO>(model);
                                 // Add Bank Info
                                 var bankResposne = await citizenBankInfoService.AddEnrolledCitizenBankInfo(newRequest);
-                                #endregion
-                                #region Add Citizen Scheme
-                                //Mapping Required Data To Add Citizen Scheme DTO
-                                var newSchemeReq = new AddCitizenSchemeDTO();
-                                newSchemeReq = _mapper.Map<AddCitizenSchemeDTO>(model);
-                                //Add Citizen Scheme
-                                var schemeResp = citizenSchemeService.AddCitizenScheme(newSchemeReq);
-                                #endregion
+                                #endregion                                
                                 #region Add Bank Other Specification
                                 if (!string.IsNullOrEmpty(model.citizenBankOtherSpecification))
                                 {
@@ -213,7 +206,7 @@ namespace BISPAPIORA.Repositories.EnrollmentServicesRepo
                                 {
                                     success = false,
                                     remarks = $"Citizen {model.citizenName} has been not been enrolled successfully",
-                                };
+                                };                              
                             }
                         }
                         else
@@ -228,11 +221,36 @@ namespace BISPAPIORA.Repositories.EnrollmentServicesRepo
                     }
                     else
                     {
-                        return new ResponseModel<EnrollmentResponseDTO>()
+                        var newUpdateReq = new UpdateEnrollmentDTO();
+                        newUpdateReq = _mapper.Map<UpdateEnrollmentDTO>(model);
+                        newUpdateReq.fkCitizen = citizen.citizen_id.ToString();
+                        var response = await citizenService.UpdateEnrolledCitizen(newUpdateReq);
+                        var newRequest = new UpdateEnrolledCitizenBankInfoDTO();
+                        model.fkCitizen= citizen.citizen_id.ToString();
+                        newRequest = _mapper.Map<UpdateEnrolledCitizenBankInfoDTO>(model);
+                        //Add New Bank Info
+                        var resposne = await citizenBankInfoService.UpdateEnrolledCitizenBankInfo(newRequest);
+                        #region Update Or Add Bank Other Specification
+                        if (!string.IsNullOrEmpty(model.citizenBankOtherSpecification))
                         {
-                            success = false,
-                            remarks = "Already Enrolled"
-                        };
+                            //Mapping Required Data to Bank Other Specification DTO
+                            var addBankOtherSpecification = new UpdateEnrolledBankOtherSpecificationDTO();
+                            addBankOtherSpecification = _mapper.Map<UpdateEnrolledBankOtherSpecificationDTO>((model, resposne.data));
+                            //Add Bank Other Specification
+                            var responseBankOtherSpecification = await bankOtherSpecificationService.AddEnrolledBankOtherSpecification(addBankOtherSpecification);
+                        }
+                        #endregion
+                        #region Update Or Add Employment Other Specification
+                        if (!string.IsNullOrEmpty(model.citizenEmploymentOtherSpecification))
+                        {
+                            //Mapping Required Data to Employment Other Specfication DTO
+                            var addEmploymentOtherSpecification = new UpdateEmploymentOtherSpecificationDTO();
+                            addEmploymentOtherSpecification = _mapper.Map<UpdateEmploymentOtherSpecificationDTO>(model);
+                            //Add Employment Other Specification
+                            var responseEmploymentOtherSpecification = await employmentOtherSpecificationService.UpdateEmploymentOtherSpecification(addEmploymentOtherSpecification);
+                        }
+                        #endregion
+                        return response;
                     }
                 }
             }

@@ -138,28 +138,35 @@ namespace BISPAPIORA.Extensions
         }
         public Boolean CheckCompliance(Guid citizenId, CitizenBaseModel citizen)
         {
-            var month = DateTime.Now.Month;
-            var year = DateTime.Now.Year;
-            var currentQuarter = GetQuarter(month);
-            var currentQuarterIndex = (int)Enum.Parse<QuarterIndexEnum>(currentQuarter.ToString());
-            var currentQuarterCode = (year * 4) + currentQuarterIndex;
-            var quarterCodesDTO= GetAllQuarterCodes(citizen.tbl_citizen_scheme.citizen_scheme_quarter_code.Value);
-            var quarterCodes= quarterCodesDTO.Select(x=>x.quarterCode).ToList();
-            if (quarterCodes.Contains(currentQuarterCode))
+            if (citizen.tbl_enrollment != null && citizen.tbl_citizen_scheme != null)
             {
-                var compliance = citizen.tbl_citizen_compliances
-                    .Where(x => x.citizen_compliance_quarter_code.Equals(currentQuarterCode) && x.fk_citizen == citizenId)
-                    .FirstOrDefault();
-                return compliance != null ? compliance.is_compliant.Value : false;
+                var month = DateTime.Now.Month;
+                var year = DateTime.Now.Year;
+                var currentQuarter = GetQuarter(month);
+                var currentQuarterIndex = (int)Enum.Parse<QuarterIndexEnum>(currentQuarter.ToString());
+                var currentQuarterCode = (year * 4) + currentQuarterIndex;
+                var quarterCodesDTO = GetAllQuarterCodes(citizen.tbl_citizen_scheme.citizen_scheme_quarter_code.Value);
+                var quarterCodes = quarterCodesDTO.Select(x => x.quarterCode).ToList();
+                if (quarterCodes.Contains(currentQuarterCode))
+                {
+                    var compliance = citizen.tbl_citizen_compliances
+                        .Where(x => x.citizen_compliance_quarter_code.Equals(currentQuarterCode) && x.fk_citizen == citizenId)
+                        .FirstOrDefault();
+                    return compliance != null ? compliance.is_compliant.Value : false;
+                }
+                else
+                {
+                    var compliance = citizen.tbl_citizen_compliances
+                                       .Where(x => x.fk_citizen == citizen.citizen_id)
+                                       .OrderBy(x => x.citizen_compliance_quarter_code)
+                                       .LastOrDefault();
+                    return compliance != null ? compliance.is_compliant.Value : false;
+
+                }
             }
             else
             {
-                var compliance =  citizen.tbl_citizen_compliances
-                                   .Where(x => x.fk_citizen == citizen.citizen_id)
-                                   .OrderBy(x => x.citizen_compliance_quarter_code)
-                                   .LastOrDefault();               
-                return compliance != null ? compliance.is_compliant.Value : false;
-              
+                return false;
             }
         }
 

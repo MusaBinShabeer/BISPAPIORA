@@ -2,7 +2,7 @@
 {
     public enum AccountTypeEnum
     {
-        Saving = 0,
+        Savings = 0,
         Current = 1
     }
 }

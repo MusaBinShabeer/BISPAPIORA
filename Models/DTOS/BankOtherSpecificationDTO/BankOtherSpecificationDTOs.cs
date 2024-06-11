@@ -16,6 +16,10 @@ namespace BISPAPIORA.Models.DTOS.BankOtherSpecificationDTO
     {
         public string bankOtherSpecificationId { get; set; } = string.Empty;
     }
+    public class UpdateEnrolledBankOtherSpecificationDTO : AddEnrolledBankOtherSpecificationDTO
+    {
+        public string bankOtherSpecificationId { get; set; } = string.Empty;
+    }
     public class BankRegisteredOtherSpecificationResponseDTO : AddRegisteredBankOtherSpecificationDTO
     {
         public string bankOtherSpecificationId { get; set; } = string.Empty;

@@ -282,8 +282,11 @@ namespace BISPAPIORA.Repositories.DistrictServicesRepo
         {
             try
             {
+                var isActive = true;
                 // Retrieve all districts from the database that belong to the specified province, including associated province details
-                var existingDistricts = await db.tbl_districts.Include(x => x.tbl_province).Where(x => x.fk_province == Guid.Parse(provinceId)).ToListAsync();
+                var existingDistricts = await db.tbl_districts
+                    .Include(x => x.tbl_province)
+                    .Where(x => x.fk_province == Guid.Parse(provinceId) && x.is_active==isActive).ToListAsync();
 
                 if (existingDistricts.Count() > 0)
                 {

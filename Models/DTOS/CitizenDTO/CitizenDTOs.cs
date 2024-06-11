@@ -67,6 +67,7 @@ namespace BISPAPIORA.Models.DTOS.CitizenDTO
         public string imageCitizenFingerPrintContentType { get; set; } = string.Empty;
         public string imageCitizenThumbPrintName { get; set; } = string.Empty;
         public string imageCitizenThumbPrintData { get; set; } = string.Empty;
+        public string citizenFamilyBankOtherSpecification { get; set; } = string.Empty;
         public string imageCitizenThumbPrintContentType { get; set; } = string.Empty;
         public bool isCompliant { get; set; } = false;
         public double totalSavings { get; set; } = 0;
