@@ -659,7 +659,7 @@ namespace BISPAPIORA.Repositories.CitizenServicesRepo
                     // Map the verification result to the response model
                     if (verifyCitizen.success)
                     {
-                        var relativeCitizen = await db.tbl_citizens.Where(x => x.unique_hh_id == decimal.Parse(verifyCitizen.data.unique_hh_id.ToString())).FirstOrDefaultAsync();
+                        var relativeCitizen = await db.tbl_citizens.Where(x => x.unique_hh_id == decimal.Parse(verifyCitizen.data.unique_hh_id.ToString()) && x.citizen_id != existingCitizen.citizen_id).FirstOrDefaultAsync();
                         if (relativeCitizen == null)
                         {
                             response.data = _mapper.Map<RegistrationResponseDTO>((verifyCitizen.data, true));
@@ -732,7 +732,7 @@ namespace BISPAPIORA.Repositories.CitizenServicesRepo
                         if (verifyCitizen.success)
                         {
 
-                            var relativeCitizen = await db.tbl_citizens.Where(x => x.unique_hh_id == decimal.Parse(verifyCitizen.data.unique_hh_id.ToString())).FirstOrDefaultAsync();
+                            var relativeCitizen = await db.tbl_citizens.Where(x => x.unique_hh_id == decimal.Parse(verifyCitizen.data.unique_hh_id.ToString()) && x.citizen_id != existingCitizen.citizen_id).FirstOrDefaultAsync();
                             if (relativeCitizen == null)
                             {
                                 response.data = _mapper.Map<EnrollmentResponseDTO>((verifyCitizen.data, true, existingCitizen));
@@ -789,7 +789,7 @@ namespace BISPAPIORA.Repositories.CitizenServicesRepo
                     // Map the verification result to the response model
                     if (verifyCitizen.success)
                     {
-                        var relativeCitizen = await db.tbl_citizens.Where(x => x.unique_hh_id == decimal.Parse(verifyCitizen.data.unique_hh_id.ToString())).FirstOrDefaultAsync();
+                        var relativeCitizen = await db.tbl_citizens.Where(x => x.unique_hh_id == decimal.Parse(verifyCitizen.data.unique_hh_id.ToString()) && x.citizen_id!= existingCitizen.citizen_id).FirstOrDefaultAsync();
                         if (relativeCitizen == null)
                         {
                             response.data = _mapper.Map<EnrollmentResponseDTO>((verifyCitizen.data, true));
