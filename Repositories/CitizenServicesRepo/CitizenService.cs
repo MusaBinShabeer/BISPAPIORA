@@ -710,7 +710,6 @@ namespace BISPAPIORA.Repositories.CitizenServicesRepo
                     .Include(x => x.tbl_citizen_tehsil).ThenInclude(x => x.tbl_district).ThenInclude(x => x.tbl_province)
                     .Include(x => x.tbl_citizen_employment)
                     .Include(x => x.tbl_employment_other_specification)
-                    .Include(x => x.tbl_employment_other_specification)
                     .Include(x => x.tbl_citizen_education)
                     .Include(x => x.tbl_citizen_scheme)
                     .Include(x => x.tbl_citizen_registration)
